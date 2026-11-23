@@ -7,7 +7,7 @@ const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc -
 const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'));
 const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: 'https://policzalnia.pl/', inLanguage: 'pl-PL' };
 ---
-<Base title={`${site.name} - ${site.tagline.toLowerCase()}`} description="Kalkulatory wynagrodzeń, umów, urlopów, podatków, kredytów i oszczędności. Aktualne stawki, wynik od razu." schema={schema}>
+<Base title={`${site.name} - kalkulatory dla pracujących i JDG`} description="Kalkulatory wynagrodzeń, umów, urlopów, podatków, kredytów i oszczędności. Aktualne stawki, wynik od razu." schema={schema}>
   <section class="hero">
     <div>
       <h1>Policz to <mark>zanim</mark> podpiszesz.</h1>
