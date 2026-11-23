@@ -20,7 +20,7 @@ describe('stopy NBP', () => {
     const d = stopy.zmiany.map((z) => z.od);
     expect([...d].sort()).toEqual(d);
   });
-  it('lombardowa = referencyjna + 0,5 pp (od 2020-03-18)', () => {
-    for (const z of stopy.zmiany.filter((z) => z.od >= '2020-03-18')) expect(r2(z.lomb - z.ref)).toBe(0.5);
+  it('lombardowa = referencyjna + 0,5 pp (wyjątek NBP: 29.05.2020 ref 0,10 / lomb 0,50)', () => {
+    for (const z of stopy.zmiany.filter((z) => z.od >= '2020-03-18')) expect(r2(z.lomb - z.ref)).toBe(z.od === '2020-05-29' ? 0.4 : 0.5);
   });
 });
