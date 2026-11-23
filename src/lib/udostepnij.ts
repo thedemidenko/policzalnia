@@ -1,13 +1,16 @@
-// Wspólna obsługa formularzy kalkulatorów: odczyt parametrów z URL, „Udostępnij” i „Kopiuj wynik”.
+// Wspólna obsługa formularzy kalkulatorów: parametry z URL, „Link do wyliczenia”, „Kopiuj wynik”, animacja liczb.
+import { zl } from './format';
+
+type Pole = HTMLInputElement | HTMLSelectElement;
+
 export function podlaczKalkulator(form: HTMLFormElement, przelicz: () => void) {
-  const pola = () => Array.from(form.elements).filter(
-    (el): el is HTMLInputElement | HTMLSelectElement => (el instanceof HTMLInputElement || el instanceof HTMLSelectElement) && !!el.name,
-  );
+  const pola = () => Array.from(form.elements).filter((el): el is Pole => (el instanceof HTMLInputElement || el instanceof HTMLSelectElement) && !!el.name);
   const params = new URLSearchParams(location.search);
   for (const el of pola()) {
     const v = params.get(el.name);
     if (v === null) continue;
-    if (el instanceof HTMLInputElement && el.type === 'checkbox') el.checked = v === '1';
+    if (el instanceof HTMLInputElement && el.type === 'radio') el.checked = el.value === v;
+    else if (el instanceof HTMLInputElement && el.type === 'checkbox') el.checked = v === '1';
     else el.value = v;
   }
   form.addEventListener('input', przelicz);
@@ -23,18 +26,43 @@ export function podlaczKalkulator(form: HTMLFormElement, przelicz: () => void) {
   };
   ramka?.querySelector('[data-udostepnij]')?.addEventListener('click', async () => {
     const p = new URLSearchParams();
-    for (const el of pola()) p.set(el.name, el instanceof HTMLInputElement && el.type === 'checkbox' ? (el.checked ? '1' : '0') : el.value);
+    for (const el of pola()) {
+      if (el instanceof HTMLInputElement && el.type === 'radio') { if (el.checked) p.set(el.name, el.value); }
+      else if (el instanceof HTMLInputElement && el.type === 'checkbox') p.set(el.name, el.checked ? '1' : '0');
+      else p.set(el.name, el.value);
+    }
     const url = `${location.origin}${location.pathname}?${p}`;
-    if (navigator.share) { try { await navigator.share({ title: document.title, url }); return; } catch { /* anulowano */ } }
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ title: document.title, url }); return; } catch { /* anulowano */ } }
     await navigator.clipboard?.writeText(url);
-    komunikat('Link do wyliczenia skopiowany');
+    komunikat('✓ Link skopiowany');
   });
   ramka?.querySelector('[data-kopiuj]')?.addEventListener('click', async () => {
     const wynik = ramka.querySelector<HTMLElement>('[data-wynik]');
     if (!wynik) return;
-    const tekst = Array.from(wynik.querySelectorAll('dt')).map((dt) => `${dt.textContent}: ${dt.nextElementSibling?.textContent}`).join('\n');
-    await navigator.clipboard?.writeText(`${tekst}\n${location.origin}${location.pathname}`);
-    komunikat('Wynik skopiowany');
+    const linie = Array.from(wynik.querySelectorAll('dt')).map((dt) => `${dt.textContent}: ${dt.nextElementSibling?.textContent}`);
+    const g = wynik.querySelector<HTMLElement>('[data-glowny]');
+    if (g) linie.push(`${g.dataset.glowny}: ${g.dataset.wartosc}`);
+    await navigator.clipboard?.writeText(`${linie.join('\n')}\n${location.origin}${location.pathname}`);
+    komunikat('✓ Wynik skopiowany');
   });
   przelicz();
+}
+
+// Płynna zmiana kwoty (licznik), z poszanowaniem prefers-reduced-motion.
+const animacje = new WeakMap<HTMLElement, number>();
+export function ustawKwote(el: HTMLElement | null, wartosc: number, fmt: (n: number) => string = zl) {
+  if (!el) return;
+  const tekst = fmt(wartosc);
+  if (el.dataset.glowny !== undefined) el.dataset.wartosc = tekst;
+  const poprzednia = Number(el.dataset.n ?? NaN);
+  el.dataset.n = String(wartosc);
+  if (!Number.isFinite(poprzednia) || poprzednia === wartosc || matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = tekst; return; }
+  cancelAnimationFrame(animacje.get(el) ?? 0);
+  const start = performance.now(), czas = 280;
+  const krok = (t: number) => {
+    const p = Math.min(1, (t - start) / czas), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = p < 1 ? fmt(poprzednia + (wartosc - poprzednia) * e) : tekst;
+    if (p < 1) animacje.set(el, requestAnimationFrame(krok));
+  };
+  animacje.set(el, requestAnimationFrame(krok));
 }

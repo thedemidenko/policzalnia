@@ -1,0 +1,13 @@
+---
+interface Props { href: string; tytul: string; opis?: string; sekcja: string; nr?: string; strzalka?: string }
+const { href, tytul, opis, sekcja, nr, strzalka = 'Policz →' } = Astro.props;
+const szukaj = `${tytul} ${opis ?? ''}`.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+---
+<li data-szukaj={szukaj}>
+  <a class="fiszka" href={href} data-sekcja={sekcja}>
+    {nr && <span class="nr">{nr}</span>}
+    <b>{tytul}</b>
+    {opis && <small>{opis}</small>}
+    <span class="strzalka">{strzalka}</span>
+  </a>
+</li>

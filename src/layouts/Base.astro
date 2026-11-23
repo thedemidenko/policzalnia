@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import site from '../site.json';
 import Reklama from '../components/Reklama.astro';
+import Logo from '../components/Logo.astro';
 import '../styles/global.css';
 
 interface Props { title: string; description: string; schema?: object; sidebar?: boolean }
@@ -16,6 +17,8 @@ const sekcja = Astro.url.pathname.split('/')[1];
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15201c" media="(prefers-color-scheme: dark)" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -33,19 +36,21 @@ const sekcja = Astro.url.pathname.split('/')[1];
   <body>
     <header class="top">
       <div class="wrap top-in">
-        <a class="logo" href="/">{site.name}</a>
-        <nav aria-label="Działy">
+        <Logo />
+        <nav class="menu" aria-label="Działy">
           {dzialy.map((d) => <a href={`/${d.data.slug}/`} aria-current={sekcja === d.data.slug ? 'true' : undefined}>{d.data.title}</a>)}
           <a href="/poradniki/" aria-current={sekcja === 'poradniki' ? 'true' : undefined}>Poradniki</a>
         </nav>
       </div>
     </header>
-    <div class:list={['wrap', { 'z-sidebarem': sidebar }]}>
-      <main><slot /></main>
+    <div class:list={['wrap', 'uklad', { 'z-sidebarem': sidebar }]}>
+      <main class:list={[{ kolumna: sidebar }]}><slot /></main>
       {sidebar && <aside class="sidebar"><div class="sticky"><Reklama slot="sidebar" /><slot name="sidebar" /></div></aside>}
     </div>
     <footer>
       <div class="wrap">
+        <Logo />
+        <nav aria-label="Działy">{dzialy.map((d) => <a href={`/${d.data.slug}/`}>{d.data.title}</a>)}<a href="/poradniki/">Poradniki</a></nav>
         <nav aria-label="Informacje">{strony.map((s) => <a href={`/${s.data.slug}/`}>{s.data.title}</a>)}</nav>
         <p>© {new Date().getFullYear()} {site.name}. Wyniki kalkulatorów mają charakter informacyjny i nie stanowią porady podatkowej.</p>
       </div>

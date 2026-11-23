@@ -3,6 +3,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Okruszki from '../../components/Okruszki.astro';
+import Fiszka from '../../components/Fiszka.astro';
 import { breadcrumbs, graf } from '../../lib/schema';
 
 export async function getStaticPaths() {
@@ -28,9 +29,10 @@ const kalkulatory = typ === 'dzial'
   <Okruszki sciezka={sciezka} />
   <h1>{d.title}</h1>
   {typ === 'dzial' && 'lead' in d && <p class="lead">{d.lead}</p>}
+  {typ === 'dzial' && kalkulatory.length === 0 && <p class="wkrotce">Pierwsze kalkulatory w tym dziale już wkrótce.</p>}
   {kalkulatory.length > 0 && (
-    <ul class="lista">
-      {kalkulatory.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}<small>{e.data.meta_description}</small></a></li>)}
+    <ul class="fiszki">
+      {kalkulatory.map((e, i) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} opis={e.data.lead} sekcja={e.data.sekcja} nr={String(i + 1).padStart(2, '0')} />)}
     </ul>
   )}
   <article class="tresc"><Content /></article>

@@ -6,6 +6,7 @@ import Kalkulator from '../../components/Kalkulator.astro';
 import Reklama from '../../components/Reklama.astro';
 import Faq from '../../components/Faq.astro';
 import Autor from '../../components/Autor.astro';
+import Fiszka from '../../components/Fiszka.astro';
 import { abs, breadcrumbs, faqPage, graf } from '../../lib/schema';
 
 export async function getStaticPaths() {
@@ -49,6 +50,7 @@ const schema = graf(
 ---
 <Base title={d.meta_title} description={d.meta_description} schema={schema} sidebar>
   <Okruszki sciezka={sciezka} />
+  <span class="etykieta" data-sekcja={d.sekcja}>{dzial?.data.title}</span>
   <h1>{d.title}</h1>
   <p class="lead">{d.lead}</p>
   <Kalkulator klucz={d.kalkulator} />
@@ -58,8 +60,8 @@ const schema = graf(
   <Faq faq={d.faq} />
   {(powiazane.length > 0 || poradniki.length > 0) && (
     <section class="powiazane">
-      {powiazane.length > 0 && (<><h2>Podobne kalkulatory</h2><ul>{powiazane.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}</a></li>)}</ul></>)}
-      {poradniki.length > 0 && (<><h2>Przeczytaj też</h2><ul>{poradniki.map((p) => <li><a href={`/poradniki/${p.data.slug}/`}>{p.data.title}</a></li>)}</ul></>)}
+      {powiazane.length > 0 && (<><h2>Podobne kalkulatory</h2><ul class="fiszki">{powiazane.map((e) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} sekcja={e.data.sekcja} />)}</ul></>)}
+      {poradniki.length > 0 && (<><h2>Przeczytaj też</h2><ul class="fiszki">{poradniki.map((p) => <Fiszka href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} sekcja="poradniki" strzalka="Czytaj →" />)}</ul></>)}
     </section>
   )}
   <Autor autor={d.autor} updated={d.updated} zrodla={d.zrodla} />

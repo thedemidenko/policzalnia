@@ -5,6 +5,7 @@ import Okruszki from '../../components/Okruszki.astro';
 import Faq from '../../components/Faq.astro';
 import Autor from '../../components/Autor.astro';
 import Reklama from '../../components/Reklama.astro';
+import Fiszka from '../../components/Fiszka.astro';
 import { abs, breadcrumbs, faqPage, graf } from '../../lib/schema';
 
 export async function getStaticPaths() {
@@ -33,12 +34,12 @@ const schema = graf(
   <Okruszki sciezka={sciezka} />
   <h1>{d.title}</h1>
   <p class="lead">{d.lead}</p>
-  {kalk[0] && <p><a class="cta" href={`/${kalk[0].data.sekcja}/${kalk[0].data.slug}/`}>→ {kalk[0].data.nazwa_krotka ?? kalk[0].data.title}</a></p>}
+  {kalk[0] && <p><a class="przycisk glowny" href={`/${kalk[0].data.sekcja}/${kalk[0].data.slug}/`}>{kalk[0].data.nazwa_krotka ?? kalk[0].data.title} →</a></p>}
   <article class="tresc"><Content /></article>
   <Reklama slot="przed-faq" />
   <Faq faq={d.faq} />
   {kalk.length > 0 && (
-    <section class="powiazane"><h2>Policz to sam</h2><ul>{kalk.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}</a></li>)}</ul></section>
+    <section class="powiazane"><h2>Policz to sam</h2><ul class="fiszki">{kalk.map((e) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} sekcja={e.data.sekcja} />)}</ul></section>
   )}
   <Autor autor={d.autor} updated={d.updated ?? d.date} zrodla={d.zrodla} />
 </Base>

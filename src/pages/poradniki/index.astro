@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Okruszki from '../../components/Okruszki.astro';
+import Fiszka from '../../components/Fiszka.astro';
 import { breadcrumbs, graf } from '../../lib/schema';
 const lista = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +b.data.date - +a.data.date);
 const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: 'Poradniki', url: '/poradniki/' }];
@@ -9,7 +10,5 @@ const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: 'Poradniki', url: 
 <Base title="Poradniki - stawki, wyliczenia i porównania | Policzalnia" description="Aktualne stawki, instrukcje krok po kroku i porównania dla pracowników i JDG." schema={graf(breadcrumbs(sciezka))}>
   <Okruszki sciezka={sciezka} />
   <h1>Poradniki</h1>
-  <ul class="lista">
-    {lista.map((p) => <li><a href={`/poradniki/${p.data.slug}/`}>{p.data.title}<small>{p.data.lead}</small></a></li>)}
-  </ul>
+  {lista.length ? <ul class="fiszki">{lista.map((p) => <Fiszka href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} opis={p.data.lead} sekcja="poradniki" strzalka="Czytaj →" />)}</ul> : <p class="wkrotce">Pierwsze poradniki już wkrótce.</p>}
 </Base>

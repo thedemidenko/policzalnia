@@ -1,0 +1,66 @@
+{
+  "_opis": "Jedno źródło stawek dla wszystkich kalkulatorów. Źródła i statusy: docs/stawki-zrodla.md. Status: OBOW | OGL | USTAWA | PROJ | WZOR | NIEZNANE.",
+  "lata": {
+    "2026": {
+      "placa_minimalna": { "wartosc": 4806, "status": "OBOW" },
+      "stawka_godzinowa_min": { "wartosc": 31.40, "status": "OBOW" },
+      "prognozowane_przecietne": { "wartosc": 9420, "status": "OBOW" },
+      "limit_30_krotnosci": { "wartosc": 282600, "status": "OBOW" },
+      "zdrowotna_ryczalt_podstawa": { "wartosc": 9228.64, "status": "OBOW", "uwagi": "GUS IV kw. 2025; obowiązuje II 2026 - I 2027" },
+      "zdrowotna_liniowy_limit_odliczenia": { "wartosc": 14100, "status": "OBOW" },
+      "pit": {
+        "status": "OBOW",
+        "progi": [{ "do": 120000, "stawka": 0.12 }, { "do": null, "stawka": 0.32 }],
+        "kwota_zmniejszajaca": 3600,
+        "kwota_wolna": 30000,
+        "liniowy": 0.19,
+        "danina_solidarnosciowa": { "prog": 1000000, "stawka": 0.04 }
+      }
+    },
+    "2027": {
+      "placa_minimalna": { "wartosc": 4950, "status": "OGL", "zrodlo": "Dz.U. 2026 poz. 1213" },
+      "stawka_godzinowa_min": { "wartosc": 32.30, "status": "OGL" },
+      "prognozowane_przecietne": { "wartosc": 10033, "status": "OGL", "zrodlo": "M.P. 2026 poz. 1098" },
+      "limit_30_krotnosci": { "wartosc": 300990, "status": "OGL" },
+      "zdrowotna_ryczalt_podstawa": { "wartosc": null, "status": "NIEZNANE", "uwagi": "GUS ok. 20-22.01.2027" },
+      "zdrowotna_liniowy_limit_odliczenia": { "wartosc": null, "status": "NIEZNANE", "uwagi": "obwieszczenie MF w XII" },
+      "pit": {
+        "status": "USTAWA",
+        "uwagi": "Ustawa z 5.11.2026 czeka na podpis prezydenta (termin 27.11.2026). Przy wecie obowiązuje wariant 'bez_zmian'.",
+        "wariant": "do_decyzji",
+        "warianty": {
+          "nowa_skala": {
+            "progi": [{ "do": 130000, "stawka": 0.12 }, { "do": 150000, "stawka": 0.24 }, { "do": null, "stawka": 0.32 }],
+            "danina_solidarnosciowa": { "prog": 1000000, "stawka": 0.05 }
+          },
+          "bez_zmian": {
+            "progi": [{ "do": 120000, "stawka": 0.12 }, { "do": null, "stawka": 0.32 }],
+            "danina_solidarnosciowa": { "prog": 1000000, "stawka": 0.04 }
+          }
+        },
+        "kwota_zmniejszajaca": 3600,
+        "kwota_wolna": 30000,
+        "liniowy": 0.19
+      }
+    }
+  },
+  "stale": {
+    "skladki": {
+      "emerytalna": { "pracownik": 0.0976, "pracodawca": 0.0976 },
+      "rentowa": { "pracownik": 0.015, "pracodawca": 0.065 },
+      "chorobowa": { "pracownik": 0.0245 },
+      "wypadkowa_domyslna": { "pracodawca": 0.0167, "uwagi": "rok składkowy IV 2026 - III 2027" },
+      "fundusz_pracy": { "pracodawca": 0.0245 },
+      "fgsp": { "pracodawca": 0.001 },
+      "zdrowotna": 0.09,
+      "ppk": { "pracownik": 0.02, "pracodawca": 0.015 }
+    },
+    "kup_pracownicze": { "podstawowe": 250, "podwyzszone": 300 },
+    "ulga_dla_mlodych_limit": 85528,
+    "delegacja_krajowa": {
+      "status": "OBOW", "uwagi": "projekt: dieta 60, nocleg 90, dojazdy 12 - nieogłoszony",
+      "dieta": 45, "ryczalt_nocleg": 67.5, "limit_hotel": 900, "ryczalt_dojazdy": 9,
+      "kilometrowka": { "auto_do_900": 0.89, "auto_pow_900": 1.15, "motocykl": 0.69, "motorower": 0.42 }
+    }
+  }
+}

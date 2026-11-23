@@ -9,11 +9,36 @@ const KOMPONENTY = {
 interface Props { klucz: KluczKalkulatora }
 const K = KOMPONENTY[Astro.props.klucz];
 ---
-<section class="kalkulator" aria-label="Kalkulator">
+<section class="kalkulator" id="kalkulator" aria-label="Kalkulator">
   <K />
   <div class="akcje">
-    <button type="button" data-kopiuj>Kopiuj wynik</button>
-    <button type="button" data-udostepnij>Udostępnij wyliczenie</button>
+    <button type="button" class="przycisk glowny" data-udostepnij>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>
+      Link do wyliczenia
+    </button>
+    <button type="button" class="przycisk" data-kopiuj>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+      Kopiuj wynik
+    </button>
     <span class="komunikat" data-komunikat role="status"></span>
   </div>
 </section>
+<a class="pasek-wyniku" href="#kalkulator" data-pasek aria-hidden="true" tabindex="-1">
+  <span data-pasek-etykieta>Wynik</span><strong data-pasek-wartosc></strong>
+</a>
+<script>
+  const kalk = document.getElementById('kalkulator');
+  const pasek = document.querySelector<HTMLElement>('[data-pasek]');
+  const glowny = kalk?.querySelector<HTMLElement>('[data-glowny]');
+  if (kalk && pasek && glowny) {
+    const et = pasek.querySelector('[data-pasek-etykieta]')!;
+    const wa = pasek.querySelector('[data-pasek-wartosc]')!;
+    const kopiuj = () => { et.textContent = glowny.dataset.glowny || 'Wynik'; wa.textContent = glowny.dataset.wartosc || glowny.textContent; };
+    new MutationObserver(kopiuj).observe(glowny, { attributes: true, childList: true, characterData: true, subtree: true });
+    kopiuj();
+    // pokaż pasek, gdy użytkownik przewinął poniżej kalkulatora
+    new IntersectionObserver(([e]) => {
+      pasek.classList.toggle('widoczny', !e.isIntersecting && e.boundingClientRect.top < 0);
+    }).observe(kalk);
+  }
+</script>

@@ -1,23 +1,78 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Fiszka from '../components/Fiszka.astro';
 import site from '../site.json';
 const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc - b.data.kolejnosc);
-const kalk = await getCollection('kalkulatory', (e) => !e.data.draft);
+const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'));
 const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: 'https://policzalnia.pl/', inLanguage: 'pl-PL' };
 ---
 <Base title={`${site.name} - ${site.tagline.toLowerCase()}`} description="Kalkulatory wynagrodzeń, umów, urlopów, podatków, kredytów i oszczędności. Aktualne stawki, wynik od razu." schema={schema}>
-  <h1>{site.tagline}</h1>
-  <p class="lead">Wynagrodzenia, umowy, urlopy, podatki JDG, kredyty i oszczędności. Aktualne stawki i wynik od razu.</p>
-  {dzialy.map((d) => {
-    const lista = kalk.filter((e) => e.data.sekcja === d.data.slug);
-    return (
-      <section>
-        <h2><a href={`/${d.data.slug}/`}>{d.data.title}</a></h2>
-        {lista.length > 0
-          ? <ul class="lista">{lista.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}</a></li>)}</ul>
-          : <p>{d.data.lead}</p>}
-      </section>
-    );
-  })}
+  <section class="hero">
+    <div>
+      <h1>Policz to <mark>zanim</mark> podpiszesz.</h1>
+      <p class="lead">Wynagrodzenie, umowy, urlop, ZUS i podatki w JDG, kredyty i oszczędności. Aktualne stawki, wynik w trakcie pisania, bez zakładania konta.</p>
+      <div class="szukaj" role="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="szukaj" type="search" placeholder="Co policzyć? urlop, VAT, L4…" aria-label="Szukaj kalkulatora" autocomplete="off" />
+      </div>
+      <p class="szukaj-info" id="szukaj-info" aria-live="polite"></p>
+    </div>
+    <div class="hero-paragon" aria-hidden="true">
+      <div class="paragon-cien"><div class="paragon">
+        <dl>
+          <dt>Rejestracja</dt><dd>0,00 zł</dd>
+          <dt>Reklamy nad wynikiem</dt><dd>0</dd>
+          <dt>Stawki</dt><dd>aktualne ✓</dd>
+          <dt>Czas liczenia</dt><dd>&lt; 1 s</dd>
+        </dl>
+        <div class="suma"><span>Suma</span><strong>spokój</strong></div>
+        <div class="stopka-paragonu">policzalnia.pl · dziękujemy!</div>
+      </div></div>
+    </div>
+  </section>
+
+  <div id="katalog">
+    {dzialy.map((d) => {
+      const lista = kalk.filter((e) => e.data.sekcja === d.data.slug);
+      return (
+        <section class="dzial-blok" data-sekcja={d.data.slug} data-blok>
+          <div class="dzial-naglowek">
+            <h2>{d.data.title}</h2>
+            <a href={`/${d.data.slug}/`}>Cały dział →</a>
+          </div>
+          {lista.length > 0
+            ? <ul class="fiszki">{lista.map((e, i) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} opis={e.data.lead} sekcja={e.data.sekcja} nr={String(i + 1).padStart(2, '0')} />)}</ul>
+            : <p class="wkrotce">{d.data.lead} Pierwsze kalkulatory już wkrótce.</p>}
+        </section>
+      );
+    })}
+    <p class="brak-wynikow" id="brak">Nie mamy jeszcze takiego kalkulatora. <a href="/kontakt/">Napisz, czego szukasz</a>, a dodamy go do listy.</p>
+  </div>
 </Base>
+<script>
+  const input = document.getElementById('szukaj') as HTMLInputElement;
+  const info = document.getElementById('szukaj-info')!;
+  const brak = document.getElementById('brak')!;
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').trim();
+  input.addEventListener('input', () => {
+    const q = norm(input.value);
+    let ile = 0;
+    document.querySelectorAll<HTMLElement>('[data-blok]').forEach((blok) => {
+      let wBloku = 0;
+      blok.querySelectorAll<HTMLElement>('[data-szukaj]').forEach((li) => {
+        const ok = !q || q.split(/\s+/).every((t) => li.dataset.szukaj!.includes(t));
+        li.hidden = !ok; if (ok) wBloku++;
+      });
+      blok.hidden = !!q && wBloku === 0; ile += wBloku;
+    });
+    brak.style.display = q && ile === 0 ? 'block' : 'none';
+    info.textContent = q ? (ile ? `Znaleziono: ${ile}` : '') : '';
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.querySelector<HTMLAnchorElement>('[data-szukaj]:not([hidden]) a')?.click();
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement?.tagName !== 'INPUT') { e.preventDefault(); input.focus(); }
+  });
+</script>

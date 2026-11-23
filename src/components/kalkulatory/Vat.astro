@@ -1,35 +1,39 @@
-<form id="k-vat" class="pola">
-  <div class="row">
-    <div>
-      <label for="vat-kwota">Kwota (zł)</label>
-      <input id="vat-kwota" name="kwota" type="text" inputmode="decimal" value="1000" />
-    </div>
-    <div>
-      <label for="vat-tryb">To jest kwota</label>
-      <select id="vat-tryb" name="tryb"><option value="netto">netto</option><option value="brutto">brutto</option></select>
-    </div>
+---
+import { STAWKI_VAT } from '../../lib/vat';
+---
+<form id="k-vat" class="pola" autocomplete="off">
+  <div class="pole">
+    <label for="vat-kwota">Kwota</label>
+    <div class="kwota" data-jedn="zł"><input id="vat-kwota" name="kwota" type="text" inputmode="decimal" value="1000" /></div>
   </div>
-  <label for="vat-stawka">Stawka VAT</label>
-  <select id="vat-stawka" name="stawka">
-    <option value="23">23%</option><option value="8">8%</option><option value="5">5%</option><option value="0">0%</option>
-  </select>
+  <fieldset class="segmenty">
+    <legend>Wpisana kwota to</legend>
+    <label><input type="radio" name="tryb" value="netto" checked /><span>netto</span></label>
+    <label><input type="radio" name="tryb" value="brutto" /><span>brutto</span></label>
+  </fieldset>
+  <fieldset class="segmenty">
+    <legend>Stawka VAT</legend>
+    {STAWKI_VAT.map((s, i) => <label><input type="radio" name="stawka" value={s} checked={i === 0} /><span>{s}%</span></label>)}
+  </fieldset>
 </form>
-<div class="wynik" data-wynik aria-live="polite">
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
   <dl>
     <dt>Netto</dt><dd id="vat-netto"></dd>
-    <dt>VAT</dt><dd id="vat-vat"></dd>
-    <dt>Brutto</dt><dd id="vat-brutto"></dd>
+    <dt>VAT <span id="vat-stawka-op"></span></dt><dd id="vat-vat"></dd>
   </dl>
-</div>
+  <div class="suma"><span>Brutto</span><strong id="vat-brutto" data-glowny="Brutto"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · dziękujemy!</div>
+</div></div>
 <script>
   import { obliczVat } from '../../lib/vat';
-  import { liczba, zl } from '../../lib/format';
-  import { podlaczKalkulator } from '../../lib/udostepnij';
+  import { liczba } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
   const form = document.getElementById('k-vat') as HTMLFormElement;
-  const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value;
-  const set = (id: string, v: number) => (document.getElementById(id)!.textContent = zl(v));
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id);
   podlaczKalkulator(form, () => {
     const w = obliczVat(liczba(val('kwota')), liczba(val('stawka')), val('tryb') as 'netto' | 'brutto');
-    set('vat-netto', w.netto); set('vat-vat', w.vat); set('vat-brutto', w.brutto);
+    $('vat-stawka-op')!.textContent = `${val('stawka')}%`;
+    ustawKwote($('vat-netto'), w.netto); ustawKwote($('vat-vat'), w.vat); ustawKwote($('vat-brutto'), w.brutto);
   });
 </script>
