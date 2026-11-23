@@ -2,6 +2,22 @@ media:
   input: public/media
   output: /media
 
+components:
+  zrodla:
+    label: Źródła
+    type: object
+    list: true
+    fields:
+      - { name: nazwa, label: Nazwa, type: string }
+      - { name: url, label: Adres URL, type: string }
+  faq:
+    label: FAQ
+    type: object
+    list: true
+    fields:
+      - { name: pytanie, label: Pytanie (kończy się „?”), type: string }
+      - { name: odpowiedz, label: Odpowiedź, type: text }
+
 content:
   - name: kalkulatory
     label: Kalkulatory
@@ -9,34 +25,100 @@ content:
     path: src/content/kalkulatory
     filename: "{fields.slug}.md"
     view:
-      fields: [title, kategoria, draft]
-      primary: title
-      sort: [title]
+      fields: [nazwa_krotka, sekcja, updated, draft]
+      primary: nazwa_krotka
+      sort: [sekcja, nazwa_krotka]
     fields:
-      - { name: slug, label: Adres (np. kalkulator-vat), type: string, required: true, description: "Tylko małe litery, cyfry i myślniki. Po publikacji nie zmieniać." }
-      - { name: title, label: Tytuł (H1), type: string, required: true }
-      - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”, zamiast „:” piszemy „ - ”" }
-      - { name: meta_description, label: Meta description, type: text, required: true }
+      - { name: slug, label: Adres (np. kalkulator-vat), type: string, required: true, description: "Małe litery, cyfry, myślniki. Bez roku. Po publikacji nie zmieniać." }
+      - name: sekcja
+        label: Dział
+        type: select
+        required: true
+        options:
+          values: [{ value: praca, label: Praca i płace }, { value: firma, label: Firma i podatki }, { value: kredyty, label: Kredyty i leasing }, { value: oszczedzanie, label: Oszczędzanie i inwestycje }]
       - name: kalkulator
-        label: Kalkulator
+        label: Mechanizm kalkulatora
         type: select
         required: true
         options:
           values:
-            - { value: vat, label: Kalkulator VAT }
-            - { value: marza, label: Marża i narzut }
-      - { name: kategoria, label: Kategoria, type: string, default: Inne }
-      - { name: lead, label: Wstęp, type: text }
-      - name: faq
-        label: FAQ
-        type: object
-        list: true
-        fields:
-          - { name: pytanie, label: Pytanie, type: string }
-          - { name: odpowiedz, label: Odpowiedź, type: text }
+            - { value: vat, label: VAT netto-brutto }
+      - { name: title, label: Tytuł H1, type: string, required: true }
+      - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
+      - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }
+      - { name: meta_description, label: Meta description, type: text, required: true }
+      - { name: lead, label: Lead (2 zdania), type: text, required: true }
+      - { name: body, label: Treść pod kalkulatorem, type: rich-text }
+      - { name: faq, component: faq }
+      - { name: powiazane, label: Powiązane kalkulatory (adresy), type: string, list: true }
+      - { name: poradniki, label: Powiązane poradniki (adresy), type: string, list: true }
+      - { name: zrodla, component: zrodla }
+      - { name: autor, label: Autor / recenzent, type: reference, options: { collection: autorzy, value: "{slug}", label: "{imie}" }, required: true }
+      - { name: updated, label: Data aktualizacji, type: date, required: true }
       - { name: draft, label: Szkic (niepublikowany), type: boolean, default: true }
-      - { name: updated, label: Data aktualizacji, type: date }
+
+  - name: poradniki
+    label: Poradniki
+    type: collection
+    path: src/content/poradniki
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, date, draft]
+      sort: [date]
+    fields:
+      - { name: slug, label: Adres, type: string, required: true }
+      - { name: title, label: Tytuł H1, type: string, required: true }
+      - { name: meta_title, label: Meta title, type: string, required: true }
+      - { name: meta_description, label: Meta description, type: text, required: true }
+      - { name: lead, label: Lead, type: text, required: true }
+      - { name: kalkulatory, label: Kalkulatory, do których linkuje (adresy), type: string, list: true }
       - { name: body, label: Treść, type: rich-text }
+      - { name: faq, component: faq }
+      - { name: zrodla, component: zrodla }
+      - { name: autor, label: Autor, type: reference, options: { collection: autorzy, value: "{slug}", label: "{imie}" }, required: true }
+      - { name: date, label: Data publikacji, type: date, required: true }
+      - { name: updated, label: Data aktualizacji, type: date }
+      - { name: draft, label: Szkic, type: boolean, default: true }
+
+  - name: dzialy
+    label: Działy
+    type: collection
+    path: src/content/dzialy
+    filename: "{fields.slug}.md"
+    view: { fields: [title, kolejnosc] }
+    fields:
+      - { name: slug, label: Adres (nie zmieniać), type: string, required: true }
+      - { name: title, label: Nazwa, type: string, required: true }
+      - { name: meta_title, label: Meta title, type: string, required: true }
+      - { name: meta_description, label: Meta description, type: text, required: true }
+      - { name: lead, label: Lead, type: text, required: true }
+      - { name: kolejnosc, label: Kolejność w menu, type: number }
+      - { name: body, label: Treść pod listą, type: rich-text }
+
+  - name: strony
+    label: Strony informacyjne
+    type: collection
+    path: src/content/strony
+    filename: "{fields.slug}.md"
+    fields:
+      - { name: slug, label: Adres, type: string, required: true }
+      - { name: title, label: Tytuł, type: string, required: true }
+      - { name: meta_title, label: Meta title, type: string, required: true }
+      - { name: meta_description, label: Meta description, type: text, required: true }
+      - { name: stopka, label: Link w stopce, type: boolean, default: true }
+      - { name: body, label: Treść, type: rich-text }
+
+  - name: autorzy
+    label: Autorzy
+    type: collection
+    path: src/content/autorzy
+    filename: "{fields.slug}.md"
+    fields:
+      - { name: slug, label: Identyfikator, type: string, required: true }
+      - { name: imie, label: Imię i nazwisko, type: string, required: true }
+      - { name: rola, label: Rola / kwalifikacje, type: string, required: true }
+      - { name: url, label: Strona autora, type: string }
+      - { name: body, label: Bio, type: rich-text }
 
   - name: ustawienia
     label: Ustawienia strony
@@ -47,3 +129,4 @@ content:
       - { name: name, label: Nazwa, type: string }
       - { name: tagline, label: Hasło, type: string }
       - { name: noindex, label: Ukryj przed Google (noindex), type: boolean }
+      - { name: reklamy, label: Włącz sloty reklamowe, type: boolean }

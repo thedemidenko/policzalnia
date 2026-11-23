@@ -1,0 +1,11 @@
+---
+interface Props { sciezka: { nazwa: string; url: string }[] }
+const { sciezka } = Astro.props;
+---
+<nav class="okruszki" aria-label="Okruszki">
+  <ol>
+    {sciezka.map((s, i) => (
+      <li>{i < sciezka.length - 1 ? <a href={s.url}>{s.nazwa}</a> : <span aria-current="page">{s.nazwa}</span>}</li>
+    ))}
+  </ol>
+</nav>

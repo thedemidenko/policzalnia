@@ -1,0 +1,20 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+interface Props {
+  autor: CollectionEntry<'kalkulatory'>['data']['autor'];
+  updated?: Date;
+  zrodla: { nazwa: string; url: string }[];
+}
+const { autor, updated, zrodla } = Astro.props;
+const a = await getEntry(autor);
+---
+<aside class="autor">
+  {a && <p><strong>Sprawdził(a):</strong> {a.data.url ? <a href={a.data.url}>{a.data.imie}</a> : a.data.imie}, {a.data.rola}</p>}
+  {updated && <p><strong>Aktualizacja:</strong> <time datetime={updated.toISOString().slice(0, 10)}>{updated.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</time></p>}
+  {zrodla.length > 0 && (
+    <>
+      <p><strong>Źródła:</strong></p>
+      <ul>{zrodla.map((z) => <li><a href={z.url} rel="nofollow noopener" target="_blank">{z.nazwa}</a></li>)}</ul>
+    </>
+  )}
+</aside>

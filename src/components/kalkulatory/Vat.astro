@@ -1,40 +1,35 @@
-<form class="calc" id="calc-vat" onsubmit="return false">
+<form id="k-vat" class="pola">
   <div class="row">
     <div>
       <label for="vat-kwota">Kwota (zł)</label>
-      <input id="vat-kwota" type="number" inputmode="decimal" min="0" step="0.01" value="1000" />
+      <input id="vat-kwota" name="kwota" type="text" inputmode="decimal" value="1000" />
     </div>
     <div>
       <label for="vat-tryb">To jest kwota</label>
-      <select id="vat-tryb"><option value="netto">netto</option><option value="brutto">brutto</option></select>
+      <select id="vat-tryb" name="tryb"><option value="netto">netto</option><option value="brutto">brutto</option></select>
     </div>
   </div>
   <label for="vat-stawka">Stawka VAT</label>
-  <select id="vat-stawka">
+  <select id="vat-stawka" name="stawka">
     <option value="23">23%</option><option value="8">8%</option><option value="5">5%</option><option value="0">0%</option>
   </select>
-  <div class="out" aria-live="polite">
-    <dl>
-      <dt>Netto</dt><dd id="vat-netto"></dd>
-      <dt>VAT</dt><dd id="vat-vat"></dd>
-      <dt>Brutto</dt><dd id="vat-brutto"></dd>
-    </dl>
-  </div>
 </form>
+<div class="wynik" data-wynik aria-live="polite">
+  <dl>
+    <dt>Netto</dt><dd id="vat-netto"></dd>
+    <dt>VAT</dt><dd id="vat-vat"></dd>
+    <dt>Brutto</dt><dd id="vat-brutto"></dd>
+  </dl>
+</div>
 <script>
-  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
-  const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
-  const r2 = (n: number) => Math.round(n * 100) / 100;
-  function calc() {
-    const kwota = parseFloat($('vat-kwota').value) || 0;
-    const stawka = parseFloat($('vat-stawka').value) / 100;
-    let netto: number, vat: number;
-    if ($('vat-tryb').value === 'netto') { netto = r2(kwota); vat = r2(netto * stawka); }
-    else { const brutto = r2(kwota); netto = r2(brutto / (1 + stawka)); vat = r2(brutto - netto); }
-    $('vat-netto').textContent = zl(netto);
-    $('vat-vat').textContent = zl(vat);
-    $('vat-brutto').textContent = zl(netto + vat);
-  }
-  document.getElementById('calc-vat')!.addEventListener('input', calc);
-  calc();
+  import { obliczVat } from '../../lib/vat';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator } from '../../lib/udostepnij';
+  const form = document.getElementById('k-vat') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value;
+  const set = (id: string, v: number) => (document.getElementById(id)!.textContent = zl(v));
+  podlaczKalkulator(form, () => {
+    const w = obliczVat(liczba(val('kwota')), liczba(val('stawka')), val('tryb') as 'netto' | 'brutto');
+    set('vat-netto', w.netto); set('vat-vat', w.vat); set('vat-brutto', w.brutto);
+  });
 </script>

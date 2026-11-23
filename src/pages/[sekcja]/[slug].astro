@@ -1,0 +1,66 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Okruszki from '../../components/Okruszki.astro';
+import Kalkulator from '../../components/Kalkulator.astro';
+import Reklama from '../../components/Reklama.astro';
+import Faq from '../../components/Faq.astro';
+import Autor from '../../components/Autor.astro';
+import { abs, breadcrumbs, faqPage, graf } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const items = await getCollection('kalkulatory', (e) => !e.data.draft);
+  return items.map((entry) => ({ params: { sekcja: entry.data.sekcja, slug: entry.data.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const dzial = await getEntry('dzialy', d.sekcja);
+const url = `/${d.sekcja}/${d.slug}/`;
+const sciezka = [
+  { nazwa: 'Policzalnia', url: '/' },
+  { nazwa: dzial?.data.title ?? d.sekcja, url: `/${d.sekcja}/` },
+  { nazwa: d.nazwa_krotka ?? d.title, url },
+];
+
+// Powiązane: najpierw wskazane ręcznie, potem uzupełnienie z tego samego działu (razem 4–6).
+const wszystkie = await getCollection('kalkulatory', (e) => !e.data.draft && e.data.slug !== d.slug);
+const reczne = d.powiazane.map((s) => wszystkie.find((e) => e.data.slug === s)).filter((e) => !!e);
+const zDzialu = wszystkie.filter((e) => e.data.sekcja === d.sekcja && !reczne.includes(e));
+const powiazane = [...reczne, ...zDzialu].slice(0, 6);
+const poradniki = (await getCollection('poradniki', (p) => !p.data.draft)).filter((p) => d.poradniki.includes(p.data.slug) || p.data.kalkulatory.includes(d.slug)).slice(0, 3);
+
+const schema = graf(
+  breadcrumbs(sciezka),
+  {
+    '@type': 'WebApplication',
+    name: d.nazwa_krotka ?? d.title,
+    url: abs(url),
+    description: d.meta_description,
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Any',
+    inLanguage: 'pl-PL',
+    dateModified: d.updated.toISOString().slice(0, 10),
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'PLN' },
+  },
+  faqPage(d.faq),
+);
+---
+<Base title={d.meta_title} description={d.meta_description} schema={schema} sidebar>
+  <Okruszki sciezka={sciezka} />
+  <h1>{d.title}</h1>
+  <p class="lead">{d.lead}</p>
+  <Kalkulator klucz={d.kalkulator} />
+  <Reklama slot="pod-wynikiem" />
+  <article class="tresc"><Content /></article>
+  <Reklama slot="przed-faq" />
+  <Faq faq={d.faq} />
+  {(powiazane.length > 0 || poradniki.length > 0) && (
+    <section class="powiazane">
+      {powiazane.length > 0 && (<><h2>Podobne kalkulatory</h2><ul>{powiazane.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}</a></li>)}</ul></>)}
+      {poradniki.length > 0 && (<><h2>Przeczytaj też</h2><ul>{poradniki.map((p) => <li><a href={`/poradniki/${p.data.slug}/`}>{p.data.title}</a></li>)}</ul></>)}
+    </section>
+  )}
+  <Autor autor={d.autor} updated={d.updated} zrodla={d.zrodla} />
+</Base>

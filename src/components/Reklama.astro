@@ -1,0 +1,7 @@
+---
+// Slot reklamowy o stałej wysokości (bez przesunięć układu). Dopóki site.reklamy = false, nic nie renderuje.
+import site from '../site.json';
+interface Props { slot: 'pod-wynikiem' | 'w-tresci' | 'przed-faq' | 'sidebar' }
+const { slot } = Astro.props;
+---
+{site.reklamy && <div class={`reklama reklama-${slot}`} data-slot={slot} aria-hidden="true"></div>}

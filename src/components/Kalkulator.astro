@@ -1,0 +1,19 @@
+---
+import type { KluczKalkulatora } from '../lib/rejestr';
+import Vat from './kalkulatory/Vat.astro';
+
+const KOMPONENTY = {
+  vat: Vat,
+} satisfies Record<KluczKalkulatora, unknown>;
+
+interface Props { klucz: KluczKalkulatora }
+const K = KOMPONENTY[Astro.props.klucz];
+---
+<section class="kalkulator" aria-label="Kalkulator">
+  <K />
+  <div class="akcje">
+    <button type="button" data-kopiuj>Kopiuj wynik</button>
+    <button type="button" data-udostepnij>Udostępnij wyliczenie</button>
+    <span class="komunikat" data-komunikat role="status"></span>
+  </div>
+</section>

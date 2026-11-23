@@ -1,0 +1,63 @@
+:root {
+  --bg: #fafaf7; --fg: #1d232a; --muted: #5b6570; --card: #fff; --line: #e3e1da;
+  --accent: #0b6e4f; --accent-fg: #fff; --accent-soft: #e4f2ec; --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #14181c; --fg: #e8e9e6; --muted: #9aa3ab; --card: #1c2126; --line: #2c333a; --accent: #4cc39a; --accent-fg: #0d1a14; --accent-soft: #1d3329; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); }
+h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.2; margin: .6em 0 .4em; }
+h2 { font-size: 1.4rem; line-height: 1.3; margin-top: 1.8em; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+.wrap.z-sidebarem { max-width: 760px; }
+@media (min-width: 1100px) {
+  .wrap.z-sidebarem { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; }
+  .sidebar .sticky { position: sticky; top: 16px; }
+}
+@media (max-width: 1099px) { .sidebar { display: none; } }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--card); }
+.top-in { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; padding-top: 12px; padding-bottom: 12px; max-width: 1100px; }
+.logo { font-weight: 800; font-size: 1.2rem; color: var(--fg); text-decoration: none; }
+header nav { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .95rem; }
+header nav a { color: var(--muted); text-decoration: none; }
+header nav a[aria-current] { color: var(--accent); font-weight: 600; }
+
+.okruszki ol { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 4px; font-size: .88rem; color: var(--muted); }
+.okruszki li + li::before { content: "›"; margin-right: 4px; }
+.okruszki a { color: var(--muted); }
+.lead { font-size: 1.1rem; color: var(--muted); }
+
+.kalkulator { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; margin: 20px 0; }
+.kalkulator label { display: block; font-weight: 600; margin: 12px 0 4px; }
+.kalkulator input, .kalkulator select { width: 100%; padding: 10px 12px; font: inherit; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
+.kalkulator .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .kalkulator .row { grid-template-columns: 1fr; } }
+.wynik { margin-top: 18px; background: var(--accent-soft); border-radius: 8px; padding: 14px 16px; }
+.wynik dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; margin: 0; }
+.wynik dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.akcje { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.akcje button { font: inherit; font-size: .9rem; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; }
+.akcje button:hover { background: var(--accent); color: var(--accent-fg); }
+.komunikat { font-size: .85rem; color: var(--muted); }
+
+.reklama { background: transparent; margin: 24px auto; width: 100%; }
+.reklama-pod-wynikiem, .reklama-w-tresci, .reklama-przed-faq { min-height: 280px; }
+.reklama-sidebar { min-height: 600px; }
+
+.faq details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+.faq summary { font-weight: 600; cursor: pointer; }
+.powiazane ul, .lista { list-style: none; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.powiazane a, .lista a { display: block; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); text-decoration: none; color: var(--fg); height: 100%; }
+.powiazane a:hover, .lista a:hover { border-color: var(--accent); }
+.lista small { display: block; color: var(--muted); margin-top: 4px; }
+.autor { margin-top: 32px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); font-size: .92rem; color: var(--muted); }
+.autor p { margin: 4px 0; }
+footer { border-top: 1px solid var(--line); margin-top: 56px; padding: 20px 0; color: var(--muted); font-size: .88rem; }
+footer nav { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+footer nav a { color: var(--muted); }

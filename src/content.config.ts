@@ -1,22 +1,82 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { KALKULATORY } from './lib/rejestr';
+
+export const SEKCJE = ['praca', 'firma', 'kredyty', 'oszczedzanie'] as const;
+
+const zrodla = z.array(z.object({ nazwa: z.string(), url: z.string().url() })).default([]);
+const faq = z.array(z.object({ pytanie: z.string(), odpowiedz: z.string() })).default([]);
 
 const kalkulatory = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/kalkulatory' }),
   schema: z.object({
-    slug: z.string().optional(),
+    slug: z.string(),
+    sekcja: z.enum(SEKCJE),
     title: z.string(),
     meta_title: z.string(),
     meta_description: z.string(),
-    kalkulator: z.enum(['vat', 'marza']),
-    kategoria: z.string().default('Inne'),
-    lead: z.string().optional(),
-    faq: z
-      .array(z.object({ pytanie: z.string(), odpowiedz: z.string() }))
-      .default([]),
-    draft: z.boolean().default(false),
-    updated: z.coerce.date().optional(),
+    kalkulator: z.enum(KALKULATORY),
+    nazwa_krotka: z.string().optional(),
+    lead: z.string(),
+    faq,
+    powiazane: z.array(z.string()).default([]),
+    poradniki: z.array(z.string()).default([]),
+    zrodla,
+    autor: reference('autorzy'),
+    updated: z.coerce.date(),
+    draft: z.boolean().default(true),
   }),
 });
 
-export const collections = { kalkulatory };
+const dzialy = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/dzialy' }),
+  schema: z.object({
+    slug: z.enum(SEKCJE),
+    title: z.string(),
+    meta_title: z.string(),
+    meta_description: z.string(),
+    lead: z.string(),
+    kolejnosc: z.number().default(0),
+  }),
+});
+
+const poradniki = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/poradniki' }),
+  schema: z.object({
+    slug: z.string(),
+    title: z.string(),
+    meta_title: z.string(),
+    meta_description: z.string(),
+    lead: z.string(),
+    kalkulatory: z.array(z.string()).default([]),
+    faq,
+    zrodla,
+    autor: reference('autorzy'),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    draft: z.boolean().default(true),
+  }),
+});
+
+const strony = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/strony' }),
+  schema: z.object({
+    slug: z.string(),
+    title: z.string(),
+    meta_title: z.string(),
+    meta_description: z.string(),
+    stopka: z.boolean().default(true),
+  }),
+});
+
+const autorzy = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/autorzy' }),
+  schema: z.object({
+    slug: z.string(),
+    imie: z.string(),
+    rola: z.string(),
+    url: z.string().optional(),
+  }),
+});
+
+export const collections = { kalkulatory, dzialy, poradniki, strony, autorzy };

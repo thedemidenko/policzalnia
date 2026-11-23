@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Okruszki from '../../components/Okruszki.astro';
+import { breadcrumbs, graf } from '../../lib/schema';
+const lista = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +b.data.date - +a.data.date);
+const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: 'Poradniki', url: '/poradniki/' }];
+---
+<Base title="Poradniki - stawki, wyliczenia i porównania | Policzalnia" description="Aktualne stawki, instrukcje krok po kroku i porównania dla pracowników i JDG." schema={graf(breadcrumbs(sciezka))}>
+  <Okruszki sciezka={sciezka} />
+  <h1>Poradniki</h1>
+  <ul class="lista">
+    {lista.map((p) => <li><a href={`/poradniki/${p.data.slug}/`}>{p.data.title}<small>{p.data.lead}</small></a></li>)}
+  </ul>
+</Base>

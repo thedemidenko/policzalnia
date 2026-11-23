@@ -1,0 +1,37 @@
+---
+// Obsługuje huby działów (/praca/ …) i strony informacyjne (/o-nas/ …) – obie są jednopoziomowe.
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Okruszki from '../../components/Okruszki.astro';
+import { breadcrumbs, graf } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const dzialy = await getCollection('dzialy');
+  const strony = await getCollection('strony');
+  const slugi = new Set(dzialy.map((d) => d.data.slug));
+  for (const s of strony) if (slugi.has(s.data.slug as never)) throw new Error(`Strona ${s.data.slug} koliduje z działem`);
+  return [
+    ...dzialy.map((d) => ({ params: { sekcja: d.data.slug }, props: { typ: 'dzial' as const, entry: d } })),
+    ...strony.map((s) => ({ params: { sekcja: s.data.slug }, props: { typ: 'strona' as const, entry: s } })),
+  ];
+}
+
+const { typ, entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: d.title, url: `/${d.slug}/` }];
+const kalkulatory = typ === 'dzial'
+  ? (await getCollection('kalkulatory', (e) => !e.data.draft && e.data.sekcja === d.slug)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'))
+  : [];
+---
+<Base title={d.meta_title} description={d.meta_description} schema={graf(breadcrumbs(sciezka))}>
+  <Okruszki sciezka={sciezka} />
+  <h1>{d.title}</h1>
+  {typ === 'dzial' && 'lead' in d && <p class="lead">{d.lead}</p>}
+  {kalkulatory.length > 0 && (
+    <ul class="lista">
+      {kalkulatory.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}<small>{e.data.meta_description}</small></a></li>)}
+    </ul>
+  )}
+  <article class="tresc"><Content /></article>
+</Base>

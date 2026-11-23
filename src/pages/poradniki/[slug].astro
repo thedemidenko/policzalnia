@@ -1,0 +1,44 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Okruszki from '../../components/Okruszki.astro';
+import Faq from '../../components/Faq.astro';
+import Autor from '../../components/Autor.astro';
+import Reklama from '../../components/Reklama.astro';
+import { abs, breadcrumbs, faqPage, graf } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const items = await getCollection('poradniki', (p) => !p.data.draft);
+  return items.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const url = `/poradniki/${d.slug}/`;
+const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: 'Poradniki', url: '/poradniki/' }, { nazwa: d.title, url }];
+const autor = await getEntry(d.autor);
+const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).filter((e) => d.kalkulatory.includes(e.data.slug));
+const schema = graf(
+  breadcrumbs(sciezka),
+  {
+    '@type': 'Article', headline: d.title, description: d.meta_description, url: abs(url), inLanguage: 'pl-PL',
+    datePublished: d.date.toISOString().slice(0, 10), dateModified: (d.updated ?? d.date).toISOString().slice(0, 10),
+    author: autor ? { '@type': 'Person', name: autor.data.imie, ...(autor.data.url ? { url: abs(autor.data.url) } : {}) } : undefined,
+    publisher: { '@type': 'Organization', name: 'Policzalnia', url: abs('/') },
+  },
+  faqPage(d.faq),
+);
+---
+<Base title={d.meta_title} description={d.meta_description} schema={schema} sidebar>
+  <Okruszki sciezka={sciezka} />
+  <h1>{d.title}</h1>
+  <p class="lead">{d.lead}</p>
+  {kalk[0] && <p><a class="cta" href={`/${kalk[0].data.sekcja}/${kalk[0].data.slug}/`}>→ {kalk[0].data.nazwa_krotka ?? kalk[0].data.title}</a></p>}
+  <article class="tresc"><Content /></article>
+  <Reklama slot="przed-faq" />
+  <Faq faq={d.faq} />
+  {kalk.length > 0 && (
+    <section class="powiazane"><h2>Policz to sam</h2><ul>{kalk.map((e) => <li><a href={`/${e.data.sekcja}/${e.data.slug}/`}>{e.data.nazwa_krotka ?? e.data.title}</a></li>)}</ul></section>
+  )}
+  <Autor autor={d.autor} updated={d.updated ?? d.date} zrodla={d.zrodla} />
+</Base>
