@@ -1,0 +1,34 @@
+<form class="calc" id="calc-marza" onsubmit="return false">
+  <div class="row">
+    <div>
+      <label for="m-koszt">Cena zakupu / koszt (zł netto)</label>
+      <input id="m-koszt" type="number" inputmode="decimal" min="0" step="0.01" value="80" />
+    </div>
+    <div>
+      <label for="m-cena">Cena sprzedaży (zł netto)</label>
+      <input id="m-cena" type="number" inputmode="decimal" min="0" step="0.01" value="100" />
+    </div>
+  </div>
+  <div class="out" aria-live="polite">
+    <dl>
+      <dt>Zysk</dt><dd id="m-zysk"></dd>
+      <dt>Marża (od ceny sprzedaży)</dt><dd id="m-marza"></dd>
+      <dt>Narzut (od kosztu)</dt><dd id="m-narzut"></dd>
+    </dl>
+  </div>
+</form>
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+  const pct = (n: number) => isFinite(n) ? n.toLocaleString('pl-PL', { maximumFractionDigits: 2 }) + '%' : '–';
+  function calc() {
+    const koszt = parseFloat($('m-koszt').value) || 0;
+    const cena = parseFloat($('m-cena').value) || 0;
+    const zysk = cena - koszt;
+    $('m-zysk').textContent = zl(zysk);
+    $('m-marza').textContent = cena > 0 ? pct((zysk / cena) * 100) : '–';
+    $('m-narzut').textContent = koszt > 0 ? pct((zysk / koszt) * 100) : '–';
+  }
+  document.getElementById('calc-marza')!.addEventListener('input', calc);
+  calc();
+</script>

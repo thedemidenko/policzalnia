@@ -1,0 +1,42 @@
+---
+import site from '../site.json';
+interface Props { title: string; description?: string; schema?: object }
+const { title, description, schema } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {site.noindex && <meta name="robots" content="noindex" />}
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+    <style is:global>
+      :root { --bg:#fafaf7; --fg:#1d232a; --muted:#5b6570; --card:#fff; --line:#e3e1da; --accent:#0b6e4f; --accent-soft:#e4f2ec; }
+      @media (prefers-color-scheme: dark) { :root { --bg:#14181c; --fg:#e8e9e6; --muted:#9aa3ab; --card:#1c2126; --line:#2c333a; --accent:#4cc39a; --accent-soft:#1d3329; } }
+      * { box-sizing: border-box; }
+      body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+      a { color:var(--accent); }
+      .wrap { max-width:760px; margin:0 auto; padding:0 16px; }
+      header.top { border-bottom:1px solid var(--line); padding:14px 0; }
+      header.top a { text-decoration:none; color:var(--fg); font-weight:700; font-size:1.15rem; }
+      footer { border-top:1px solid var(--line); margin-top:48px; padding:20px 0; color:var(--muted); font-size:.9rem; }
+      .calc { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin:24px 0; }
+      .calc label { display:block; font-weight:600; margin:12px 0 4px; }
+      .calc input, .calc select { width:100%; padding:10px 12px; font:inherit; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); }
+      .calc .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .calc .out { margin-top:18px; background:var(--accent-soft); border-radius:8px; padding:14px; }
+      .calc .out dl { display:grid; grid-template-columns:1fr auto; gap:6px 16px; margin:0; }
+      .calc .out dd { margin:0; font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
+      @media (max-width:520px) { .calc .row { grid-template-columns:1fr; } }
+    </style>
+  </head>
+  <body>
+    <header class="top"><div class="wrap"><a href="/">{site.name}</a></div></header>
+    <main class="wrap"><slot /></main>
+    <footer><div class="wrap">© {new Date().getFullYear()} {site.name}. Wyniki mają charakter informacyjny.</div></footer>
+  </body>
+</html>

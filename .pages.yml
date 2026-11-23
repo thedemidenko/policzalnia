@@ -1,0 +1,49 @@
+media:
+  input: public/media
+  output: /media
+
+content:
+  - name: kalkulatory
+    label: Kalkulatory
+    type: collection
+    path: src/content/kalkulatory
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, kategoria, draft]
+      primary: title
+      sort: [title]
+    fields:
+      - { name: slug, label: Adres (np. kalkulator-vat), type: string, required: true, description: "Tylko małe litery, cyfry i myślniki. Po publikacji nie zmieniać." }
+      - { name: title, label: Tytuł (H1), type: string, required: true }
+      - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”, zamiast „:” piszemy „ - ”" }
+      - { name: meta_description, label: Meta description, type: text, required: true }
+      - name: kalkulator
+        label: Kalkulator
+        type: select
+        required: true
+        options:
+          values:
+            - { value: vat, label: Kalkulator VAT }
+            - { value: marza, label: Marża i narzut }
+      - { name: kategoria, label: Kategoria, type: string, default: Inne }
+      - { name: lead, label: Wstęp, type: text }
+      - name: faq
+        label: FAQ
+        type: object
+        list: true
+        fields:
+          - { name: pytanie, label: Pytanie, type: string }
+          - { name: odpowiedz, label: Odpowiedź, type: text }
+      - { name: draft, label: Szkic (niepublikowany), type: boolean, default: true }
+      - { name: updated, label: Data aktualizacji, type: date }
+      - { name: body, label: Treść, type: rich-text }
+
+  - name: ustawienia
+    label: Ustawienia strony
+    type: file
+    path: src/site.json
+    format: json
+    fields:
+      - { name: name, label: Nazwa, type: string }
+      - { name: tagline, label: Hasło, type: string }
+      - { name: noindex, label: Ukryj przed Google (noindex), type: boolean }

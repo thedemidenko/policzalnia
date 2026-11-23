@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import site from '../site.json';
+const items = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'));
+const grupy = Object.groupBy(items, (e) => e.data.kategoria);
+---
+<Base title={`${site.name} - ${site.tagline}`} description="Proste kalkulatory dla pracowników, freelancerów i jednoosobowych firm.">
+  <h1>{site.tagline}</h1>
+  {Object.entries(grupy).map(([kat, lista]) => (
+    <section>
+      <h2>{kat}</h2>
+      <ul>{lista!.map((e) => <li><a href={`/${e.id}/`}>{e.data.title}</a></li>)}</ul>
+    </section>
+  ))}
+</Base>
