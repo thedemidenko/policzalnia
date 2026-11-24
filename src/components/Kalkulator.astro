@@ -4,12 +4,14 @@ import Vat from './kalkulatory/Vat.astro';
 import Odsetki from './kalkulatory/Odsetki.astro';
 import OdsetkiPodatkowe from './kalkulatory/OdsetkiPodatkowe.astro';
 import Staz from './kalkulatory/Staz.astro';
+import Urlop from './kalkulatory/Urlop.astro';
 
 const KOMPONENTY = {
   vat: Vat,
   odsetki: Odsetki,
   'odsetki-podatkowe': OdsetkiPodatkowe,
   staz: Staz,
+  urlop: Urlop,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

@@ -1,0 +1,177 @@
+---
+const tryby: [string, string][] = [['caly', 'cały rok'], ['proporcjonalny', 'zmiana pracy w roku'], ['pierwsza', 'pierwsza praca']];
+const staz: [string, string][] = [['ponizej', 'poniżej 10 lat'], ['powyzej', '10 lat i więcej'], ['data', 'osiągam 10 lat w tym roku']];
+const etaty: [string, string][] = [['1', 'pełny etat'], ['0.875', '7/8 etatu'], ['0.8', '4/5 etatu'], ['0.75', '3/4 etatu'], ['0.5', '1/2 etatu'], ['0.25', '1/4 etatu'], ['inny', 'inny…']];
+const rok = new Date().getFullYear();
+---
+<form id="k-urlop" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Sytuacja</legend>
+    {tryby.map(([k, e], i) => <label><input type="radio" name="tryb" value={k} checked={i === 0} /><span>{e}</span></label>)}
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="u-rok">Rok</label>
+      <input id="u-rok" name="rok" type="text" inputmode="numeric" value={String(rok)} />
+    </div>
+    <div class="pole">
+      <label for="u-etat">Wymiar etatu</label>
+      <select id="u-etat" name="etat">{etaty.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole" data-etat-inny hidden>
+    <label for="u-etat-inny">Etat (ułamek)</label>
+    <input id="u-etat-inny" name="etatInny" type="text" inputmode="decimal" placeholder="np. 3/5 albo 0,6" />
+  </div>
+  <fieldset class="segmenty">
+    <legend>Staż urlopowy (praca + szkoła)</legend>
+    {staz.map(([k, e], i) => <label><input type="radio" name="staz" value={k} checked={i === 0} /><span>{e}</span></label>)}
+  </fieldset>
+  <div class="pole" data-staz-data hidden>
+    <label for="u-dziesiec">Dzień, w którym mija 10 lat stażu</label>
+    <input id="u-dziesiec" name="dziesiec" type="date" />
+    <small>Nie znasz daty? Policz ją w <a href="/praca/staz-pracy/">kalkulatorze stażu pracy</a>.</small>
+  </div>
+  <div class="pole-para" data-tylko="proporcjonalny pierwsza" hidden>
+    <div class="pole">
+      <label for="u-od">Początek pracy</label>
+      <input id="u-od" name="od" type="date" />
+    </div>
+    <div class="pole">
+      <label for="u-do">Koniec pracy</label>
+      <input id="u-do" name="do" type="date" />
+    </div>
+  </div>
+  <label class="przelacznik" data-tylko="proporcjonalny" hidden><input type="checkbox" name="tenSam" value="1" /> W tym samym miesiącu skończyłem pracę u poprzedniego pracodawcy</label>
+  <details class="wplaty" data-tylko="caly proporcjonalny" data-zmiana>
+    <summary>Zmiana etatu w trakcie roku</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="u-zmiana-od">Nowy etat od</label>
+        <input id="u-zmiana-od" name="zmianaOd" type="date" />
+      </div>
+      <div class="pole">
+        <label for="u-zmiana-etat">Nowy etat</label>
+        <select id="u-zmiana-etat" name="zmianaEtat">{etaty.filter(([k]) => k !== 'inny').map(([k, e]) => <option value={k} selected={k === '0.5'}>{e}</option>)}</select>
+      </div>
+    </div>
+  </details>
+  <details class="wplaty" data-bilans>
+    <summary>Ile urlopu mi zostało?</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="u-zalegly">Zaległy z zeszłego roku</label>
+        <div class="kwota" data-jedn="dni"><input id="u-zalegly" name="zalegly" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="u-wykorzystany">Wykorzystany w tym roku</label>
+        <div class="kwota" data-jedn="dni"><input id="u-wykorzystany" name="wykorzystany" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="u-norma">Dzień urlopu to</label>
+      <select id="u-norma" name="norma"><option value="8">8 godzin</option><option value="7">7 godzin (osoba z niepełnosprawnością)</option></select>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Wymiar roczny</dt><dd id="u-roczny"></dd>
+    <dt id="u-mies-et">Miesiące pracy</dt><dd id="u-mies"></dd>
+    <dt>W godzinach</dt><dd id="u-godz"></dd>
+    <dt data-b hidden>Zaległy</dt><dd data-b hidden id="u-zal"></dd>
+    <dt data-b hidden>Wykorzystany</dt><dd data-b hidden id="u-wyk"></dd>
+    <dt data-b hidden>Zostało</dt><dd data-b hidden id="u-zostalo"></dd>
+  </dl>
+  <ul class="uwagi" id="u-uwagi" hidden></ul>
+  <p class="blad" id="u-blad" hidden></p>
+  <div class="suma suma-tekst"><span id="u-suma-et">Urlop</span><strong id="u-dni" data-glowny="Urlop"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · w tym 4 dni na żądanie</div>
+</div></div>
+<details class="rozbicie" id="u-rozbicie" open>
+  <summary id="u-rozbicie-et">Jak to policzyliśmy</summary>
+  <div class="tabela-przewijana"><table>
+    <thead id="u-thead"></thead>
+    <tbody id="u-tbody"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczUrlop, type Tryb } from '../../lib/urlop';
+  import { liczba } from '../../lib/format';
+  import { podlaczKalkulator } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-urlop') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const n2 = (x: number) => x.toLocaleString('pl-PL', { maximumFractionDigits: 2 });
+  const dniTxt = (x: number) => `${n2(x)} ${x === 1 ? 'dzień' : 'dni'}`;
+  const ulamek = (v: string) => {
+    const m = v.replace(',', '.').match(/^\s*(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*$/);
+    return m ? +m[1] / +m[2] : liczba(v);
+  };
+  const etatTxt = (e: number) => (e === 1 ? 'pełny' : n2(e));
+  if (new URLSearchParams(location.search).has('zmianaOd')) (form.querySelector('[data-zmiana]') as HTMLDetailsElement).open = true;
+  if (new URLSearchParams(location.search).has('zalegly')) (form.querySelector('[data-bilans]') as HTMLDetailsElement).open = true;
+
+  const przelicz = () => {
+    const tryb = val('tryb') as Tryb;
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = !x.dataset.tylko!.split(' ').includes(tryb)));
+    const etatSel = val('etat');
+    form.querySelector<HTMLElement>('[data-etat-inny]')!.hidden = etatSel !== 'inny';
+    const etat = etatSel === 'inny' ? ulamek(val('etatInny')) : +etatSel;
+    const staz = val('staz');
+    form.querySelector<HTMLElement>('[data-staz-data]')!.hidden = staz !== 'data';
+    const zmianaOtwarta = (form.querySelector('[data-zmiana]') as HTMLDetailsElement).open;
+
+    const w = obliczUrlop({
+      rok: Math.round(liczba(val('rok'))) || new Date().getFullYear(),
+      tryb,
+      dziesiecLat: staz === 'powyzej',
+      dataDziesieciu: staz === 'data' ? val('dziesiec') : undefined,
+      etat,
+      zmianaEtatu: zmianaOtwarta && val('zmianaOd') ? { od: val('zmianaOd'), etat: +val('zmianaEtat') } : undefined,
+      od: val('od'), do: val('do'),
+      tenSamMiesiac: (form.elements.namedItem('tenSam') as HTMLInputElement).checked,
+      norma: +val('norma'),
+      zalegly: liczba(val('zalegly')), wykorzystany: liczba(val('wykorzystany')),
+    });
+
+    const blad = $('u-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('u-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    $('u-roczny').textContent = w.blad ? '–' : `${w.roczny} dni`;
+    $('u-mies-et').textContent = tryb === 'pierwsza' ? 'Przepracowane miesiące' : 'Miesiące pracy';
+    $('u-mies').textContent = w.blad ? '–' : String(w.etapy.reduce((s, e) => s + e.miesiace, 0));
+    $('u-godz').textContent = w.blad ? '–' : `${n2(w.godziny)} h`;
+    const bilans = liczba(val('zalegly')) > 0 || liczba(val('wykorzystany')) > 0;
+    document.querySelectorAll<HTMLElement>('.paragon [data-b]').forEach((x) => (x.hidden = !bilans || !!w.blad));
+    $('u-zal').textContent = dniTxt(liczba(val('zalegly')));
+    $('u-wyk').textContent = dniTxt(liczba(val('wykorzystany')));
+    $('u-zostalo').textContent = dniTxt(w.pozostalo);
+
+    const rok = Math.round(liczba(val('rok'))) || new Date().getFullYear();
+    $('u-suma-et').textContent = `Urlop za ${rok}`;
+    const g = $('u-dni');
+    g.textContent = w.blad ? '–' : dniTxt(w.dni);
+    g.dataset.wartosc = g.textContent;
+
+    // tabela: narastanie w pierwszej pracy albo etapy
+    const ok = !w.blad && (w.narastanie.length || w.etapy.length);
+    $('u-rozbicie').hidden = !ok;
+    if (tryb === 'pierwsza') {
+      $('u-rozbicie-et').textContent = 'Kiedy nabywasz kolejne dni';
+      $('u-thead').innerHTML = '<tr><th>Po dniu</th><th>Łącznie</th><th>Godz.</th></tr>';
+      $('u-tbody').innerHTML = w.narastanie.map((x) => `<tr><td>${pl(x.po)}</td><td>${n2(x.dni)} dni</td><td>${n2(x.godziny)} h</td></tr>`).join('');
+    } else {
+      $('u-rozbicie-et').textContent = 'Jak to policzyliśmy';
+      $('u-thead').innerHTML = '<tr><th>Okres</th><th>Mies.</th><th>Etat</th><th>Wymiar roczny</th><th>Dni</th></tr>';
+      $('u-tbody').innerHTML = w.etapy.map((e) => `<tr><td>${pl(e.od)} – ${pl(e.do)}</td><td>${e.miesiace}</td><td>${etatTxt(e.etat)}</td><td>${e.roczny} × ${e.miesiace}/12</td><td>${e.dni}</td></tr>`).join('')
+        + (w.etapy.length > 1 || w.ograniczono ? `<tr class="razem"><td>Razem</td><td></td><td></td><td></td><td>${w.dni}</td></tr>` : '');
+    }
+  };
+  form.querySelectorAll('details').forEach((d) => d.addEventListener('toggle', przelicz));
+  podlaczKalkulator(form, przelicz);
+</script>
