@@ -48,6 +48,7 @@ content:
             - { value: staz, label: Staż pracy }
             - { value: urlop, label: Wymiar urlopu }
             - { value: delegacja, label: Delegacja krajowa }
+            - { value: macierzynski, label: Urlop macierzyński i rodzicielski }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }

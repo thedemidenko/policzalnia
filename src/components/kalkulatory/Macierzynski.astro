@@ -1,0 +1,159 @@
+---
+import stawki from '../../data/stawki.json';
+const rok = String(new Date().getFullYear()) as keyof typeof stawki.lata;
+const prog = (stawki.lata[rok] ?? stawki.lata['2026']).prognozowane_przecietne.wartosc;
+const minJdg = Math.round(prog * 0.6 * 100) / 100;
+const wariant: [string, string][] = [['815', '81,5% przez cały urlop'], ['10070', '100% + 70%']];
+---
+<form id="k-macierzynski" class="pola" autocomplete="off" data-min-jdg={minJdg}>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="m-porod">Data porodu</label>
+      <input id="m-porod" name="porod" type="date" />
+    </div>
+    <div class="pole">
+      <label for="m-dzieci">Liczba dzieci</label>
+      <select id="m-dzieci" name="dzieci"><option value="1">jedno</option><option value="2">bliźnięta</option><option value="3">trojaczki</option><option value="4">czworaczki</option><option value="5">pięcioraczki i więcej</option></select>
+    </div>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Mama pracuje na</legend>
+    <label><input type="radio" name="forma" value="uop" checked /><span>umowie o pracę</span></label>
+    <label><input type="radio" name="forma" value="jdg" /><span>działalności (JDG)</span></label>
+  </fieldset>
+  <div class="pole">
+    <label for="m-brutto" id="m-brutto-et">Średnie wynagrodzenie brutto z 12 miesięcy</label>
+    <div class="kwota" data-jedn="zł"><input id="m-brutto" name="brutto" type="text" inputmode="decimal" value="7000" /></div>
+    <small id="m-brutto-pod"></small>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Wysokość zasiłku</legend>
+    {wariant.map(([k, e], i) => <label><input type="radio" name="wariant" value={k} checked={i === 0} /><span>{e}</span></label>)}
+  </fieldset>
+  <div class="pole">
+    <label for="m-rodz">Urlop rodzicielski mamy (tygodnie)</label>
+    <input id="m-rodz" name="rodz" type="text" inputmode="numeric" placeholder="32" />
+    <small id="m-rodz-pod">Maksymalnie 32 tygodnie. Wpisz 0, jeśli mama wraca do pracy po macierzyńskim.</small>
+  </div>
+  <details class="wplaty" data-tata>
+    <summary>Tata też bierze urlop</summary>
+    <div class="pole">
+      <label for="m-tata">Wynagrodzenie taty brutto (lub podstawa składek JDG)</label>
+      <div class="kwota" data-jedn="zł"><input id="m-tata" name="tata" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="tata9" value="1" checked /> 9 tygodni rodzicielskiego tylko dla taty (płatne 70%)</label>
+    <div class="pole">
+      <label for="m-tataw">Tygodnie, które tata przejmuje od mamy</label>
+      <input id="m-tataw" name="tataw" type="text" inputmode="numeric" placeholder="0" />
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="ojcowski" value="1" checked /> Urlop ojcowski – 2 tygodnie (100%)</label>
+  </details>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="m-przed">Tygodni przed porodem</label>
+        <input id="m-przed" name="przed" type="text" inputmode="numeric" placeholder="0" />
+      </div>
+      <div class="pole">
+        <label for="m-uzup">Urlop uzupełniający</label>
+        <div class="kwota" data-jedn="tyg."><input id="m-uzup" name="uzup" type="text" inputmode="numeric" placeholder="0" /></div>
+      </div>
+    </div>
+    <p class="podpowiedz">Urlop uzupełniający przysługuje rodzicom wcześniaków i dzieci hospitalizowanych po porodzie – tydzień za każdy tydzień w szpitalu, do 8 albo 15 tygodni.</p>
+    <label class="przelacznik"><input type="checkbox" name="pit2" value="1" /> Złożony PIT-2 (zaliczka podatku niższa o 300 zł miesięcznie)</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Podstawa</dt><dd id="m-podstawa"></dd>
+    <dt id="m-mac-et">Macierzyński</dt><dd id="m-mac"></dd>
+    <dt data-r>Rodzicielski</dt><dd data-r id="m-rod"></dd>
+    <dt>Razem brutto</dt><dd id="m-razem"></dd>
+    <dt>Razem na rękę</dt><dd id="m-netto"></dd>
+  </dl>
+  <ul class="uwagi" id="m-uwagi" hidden></ul>
+  <p class="blad" id="m-blad" hidden></p>
+  <div class="suma"><span>Na rękę / mies.</span><strong id="m-glowny" data-glowny="Zasiłek na rękę miesięcznie"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · kwoty brutto za miesiąc</div>
+</div></div>
+<details class="rozbicie" id="m-rozbicie" open>
+  <summary>Plan urlopów i zasiłek</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Okres</th><th>Tyg.</th><th>%</th><th>Mies. brutto</th><th>Razem</th></tr></thead>
+    <tbody id="m-okresy"></tbody>
+  </table></div>
+  <ul class="terminy" id="m-terminy"></ul>
+</details>
+<script>
+  import { obliczMacierzynski, podstawaZasilku, rodzicielskiMaks, type Wariant } from '../../lib/macierzynski';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-macierzynski') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const minJdg = +form.dataset.minJdg!;
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const p = new URLSearchParams(location.search);
+  if (p.has('tata')) (form.querySelector('[data-tata]') as HTMLDetailsElement).open = true;
+  if (p.has('przed') || p.has('uzup')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  if (!el('porod').value) { const d = new Date(); d.setMonth(d.getMonth() + 2); el('porod').value = lokalnie(d); }
+  let forma: string | null = null;
+
+  const przelicz = () => {
+    // zmiana formy: podpowiedź i domyślna kwota
+    if (forma !== null && val('forma') !== forma) el('brutto').value = val('forma') === 'jdg' ? String(minJdg).replace('.', ',') : '7000';
+    forma = val('forma');
+    $('m-brutto-et').textContent = forma === 'jdg' ? 'Podstawa składki chorobowej (średnia z 12 miesięcy)' : 'Średnie wynagrodzenie brutto z 12 miesięcy';
+    $('m-brutto-pod').textContent = forma === 'jdg'
+      ? `Najniższa podstawa w ${new Date().getFullYear()} r. to ${zl(minJdg)}, przy małym ZUS-ie niższa. Zasiłek wymaga dobrowolnego ubezpieczenia chorobowego.`
+      : 'Z premiami i dodatkami, sprzed porodu. Kalkulator odejmie 13,71% składek.';
+    const dzieci = +val('dzieci') as 1 | 2 | 3 | 4 | 5;
+    const maks = rodzicielskiMaks(dzieci);
+    el('rodz').placeholder = String(maks);
+    $('m-rodz-pod').textContent = `Maksymalnie ${maks} tygodni. Wpisz 0, jeśli mama wraca do pracy po macierzyńskim.`;
+    const tataOtw = (form.querySelector('[data-tata]') as HTMLDetailsElement).open;
+    const podstawaMamy = podstawaZasilku(liczba(val('brutto')));
+    const rodz = val('rodz').trim();
+    const w = obliczMacierzynski({
+      porod: val('porod'), dzieci, wariant: val('wariant') as Wariant, podstawaMamy,
+      rodzicielskiMamy: rodz === '' ? undefined : liczba(rodz),
+      przed: liczba(val('przed')), uzupelniajacy: liczba(val('uzup')),
+      podstawaTaty: tataOtw ? podstawaZasilku(liczba(val('tata'))) : 0,
+      tata9: tataOtw && el('tata9').checked, tataWspolne: tataOtw ? liczba(val('tataw')) : 0, ojcowski: tataOtw && el('ojcowski').checked,
+      pit2: el('pit2').checked,
+    });
+
+    const blad = $('m-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const uwagi = [...w.uwagi];
+    const { wariant815: a, wariant10070: b } = w.porownanie;
+    if (!w.blad && a && b) {
+      const r = Math.abs(a - b);
+      uwagi.unshift(r < 50 ? `Oba warianty dają prawie tyle samo (różnica ${zl(r)}) – 81,5% rozkłada pieniądze równo, 100% + 70% daje więcej na początku.`
+        : `Przy tym planie ${a > b ? '81,5% przez cały urlop' : '100% + 70%'} daje więcej o ${zl(r)} brutto.`);
+    }
+    const ul = $('m-uwagi');
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    ustawKwote($('m-podstawa'), podstawaMamy);
+    const mama = w.okresy.filter((o) => o.kto === 'mama');
+    const mac = mama[0], rod = mama.find((o) => o.nazwa === 'Urlop rodzicielski');
+    ustawKwote($('m-mac'), mac?.miesiecznie ?? 0);
+    document.querySelectorAll<HTMLElement>('.paragon [data-r]').forEach((x) => (x.hidden = !rod));
+    ustawKwote($('m-rod'), rod?.miesiecznie ?? 0);
+    ustawKwote($('m-razem'), w.razem);
+    ustawKwote($('m-netto'), w.razemNetto);
+    ustawKwote($('m-glowny'), mac?.miesiecznieNetto ?? 0);
+
+    $('m-rozbicie').hidden = w.okresy.length === 0;
+    $('m-okresy').innerHTML = w.okresy.map((o) => `<tr><td><strong>${o.kto === 'mama' ? 'Mama' : 'Tata'}</strong> · ${o.nazwa}<br>${pl(o.od)} – ${pl(o.do)}</td><td>${o.tygodnie}</td><td>${String(o.procent).replace('.', ',')}</td><td>${zl(o.miesiecznie)}</td><td>${zl(o.razem)}</td></tr>`).join('')
+      + (w.okresy.length > 1 ? `<tr class="razem"><td>Razem</td><td>${w.okresy.reduce((s, o) => s + o.tygodnie, 0)}</td><td></td><td></td><td>${zl(w.razem)}</td></tr>` : '');
+    $('m-terminy').innerHTML = w.terminy.map((t) => `<li>${t.nazwa}: <strong>${pl(t.data)}</strong></li>`).join('');
+  };
+  form.querySelectorAll('details').forEach((d) => d.addEventListener('toggle', przelicz));
+  podlaczKalkulator(form, przelicz);
+</script>
