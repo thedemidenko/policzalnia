@@ -4,9 +4,9 @@ sekcja: oszczedzanie
 title: Kalkulator odsetek ustawowych 2026 - za opóźnienie i w transakcjach handlowych
 nazwa_krotka: Kalkulator odsetek ustawowych
 meta_title: Kalkulator odsetek ustawowych 2026 - za opóźnienie i handlowe | Policzalnia
-meta_description: Policz odsetki ustawowe za opóźnienie, kapitałowe i w transakcjach handlowych za dowolny okres. Kalkulator uwzględnia każdą zmianę stóp NBP i pokazuje rozbicie na okresy.
+meta_description: Policz odsetki ustawowe za opóźnienie, kapitałowe, handlowe i umowne. Rozbicie na okresy, wpłaty częściowe, rekompensata 40/70/100 euro z kursem NBP i wydruk do noty odsetkowej.
 kalkulator: odsetki
-lead: Wpisz kwotę, termin płatności i dzień zapłaty, a kalkulator policzy odsetki ustawowe za każdy dzień opóźnienia. Uwzględnia wszystkie zmiany stóp procentowych NBP od 2016 roku i wcześniejsze stawki z rozporządzeń.
+lead: Wpisz kwotę, termin płatności i dzień zapłaty, a kalkulator policzy odsetki za każdy dzień opóźnienia – z rozbiciem na okresy, wpłatami częściowymi i rekompensatą w transakcjach handlowych. Stawki aktualizujemy po każdej zmianie stóp NBP.
 faq:
   - pytanie: Ile wynoszą odsetki ustawowe za opóźnienie w 2026 roku?
     odpowiedz: Od 5 marca 2026 r. odsetki ustawowe za opóźnienie wynoszą 9,25% w skali roku (stopa referencyjna NBP 3,75% + 5,5 punktu procentowego). Odsetki kapitałowe wynoszą 7,25%, a w transakcjach handlowych w II półroczu 2026 r. – 13,75%.
@@ -20,6 +20,10 @@ faq:
     odpowiedz: Maksymalne odsetki za opóźnienie to dwukrotność odsetek ustawowych za opóźnienie, czyli obecnie 18,5% rocznie. Maksymalne odsetki kapitałowe to dwukrotność odsetek ustawowych, czyli 14,5%. Umowna stawka wyższa od maksymalnej zostaje obniżona do maksimum.
   - pytanie: Czy można żądać odsetek od odsetek?
     odpowiedz: Co do zasady dopiero od dnia wytoczenia powództwa o zaległe odsetki (art. 482 § 1 KC). Wcześniej strony mogą się na to umówić tylko po powstaniu zaległości. Ograniczenie nie dotyczy długoterminowych kredytów bankowych.
+  - pytanie: Czy od odsetek za opóźnienie nalicza się VAT?
+    odpowiedz: Nie. Odsetki za opóźnienie nie są zapłatą za towar ani usługę, więc nie podlegają VAT. Dlatego żąda się ich notą odsetkową, a nie fakturą. W firmie odsetki stają się przychodem podatkowym dopiero wtedy, gdy zostaną zapłacone.
+  - pytanie: Od kiedy liczyć odsetki, gdy na fakturze nie ma terminu płatności?
+    odpowiedz: Między firmami odsetki należą się po 30 dniach od doręczenia faktury lub rachunku (jeśli towar lub usługa zostały już dostarczone). W pozostałych przypadkach dług trzeba zapłacić niezwłocznie po wezwaniu (art. 455 KC), a odsetki biegną od dnia, w którym minął termin wskazany w wezwaniu.
   - pytanie: Dlaczego kalkulator przyjmuje rok jako 365 dni?
     odpowiedz: Przepisy nie określają liczby dni w roku dla odsetek ustawowych, a w praktyce sądów i większości kalkulatorów przyjmuje się 365 dni także w latach przestępnych. Przy 366 dniach wynik za rok przestępny byłby nieznacznie niższy.
 powiazane:
@@ -35,6 +39,8 @@ zrodla:
     url: https://static.nbp.pl/dane/stopy/stopy_procentowe_archiwum.xml
   - nazwa: Rozporządzenie Rady Ministrów w sprawie wysokości odsetek ustawowych (Dz.U. 2014 poz. 1858)
     url: https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20140001858
+  - nazwa: NBP – API kursów walut (kurs EUR do rekompensaty)
+    url: https://api.nbp.pl/
 autor: redakcja
 updated: 2026-11-24
 draft: false
@@ -48,11 +54,16 @@ Kalkulator dzieli okres opóźnienia na części, w których obowiązywała ta s
 
 Wynik każdego okresu jest zaokrąglany do pełnych groszy, a na końcu sumowany. Pod wynikiem znajdziesz tabelę z rozbiciem na okresy – możesz ją dołączyć do wezwania do zapłaty albo pozwu.
 
-Odsetki liczone są **od dnia następującego po terminie płatności do dnia zapłaty włącznie**. Kalkulator obsługuje trzy rodzaje odsetek:
+Odsetki liczone są **od dnia następującego po terminie płatności do dnia zapłaty włącznie**. Jeśli termin wypadł w sobotę albo w święto, kalkulator sam przesuwa go na najbliższy dzień roboczy (art. 115 KC) – możesz to wyłączyć.
+
+Kalkulator obsługuje cztery rodzaje odsetek:
 
 - **ustawowe za opóźnienie** (art. 481 § 2 KC) – gdy ktoś nie zapłacił w terminie, a umowa nie określa innej stawki;
 - **ustawowe kapitałowe** (art. 359 § 2 KC) – gdy należą się odsetki za korzystanie z pieniędzy, np. przy pożyczce bez ustalonego oprocentowania;
-- **w transakcjach handlowych** – gdy obie strony są przedsiębiorcami (albo dłużnikiem jest podmiot publiczny), a zapłata dotyczy dostawy towarów lub usług.
+- **w transakcjach handlowych** – gdy obie strony są przedsiębiorcami (albo dłużnikiem jest podmiot publiczny), a zapłata dotyczy dostawy towarów lub usług;
+- **umowne** – gdy umowa ustala własną stawkę. Jeśli przekracza ona odsetki maksymalne, kalkulator przyjmie stawkę maksymalną, bo tylko tyle można skutecznie żądać.
+
+Dodatkowo możesz wpisać **wpłaty częściowe** dłużnika, a przy transakcjach handlowych doliczyć **rekompensatę 40, 70 lub 100 euro** – kurs euro kalkulator pobiera automatycznie z NBP. Wynik wydrukujesz albo zapiszesz jako PDF przyciskiem „Drukuj / PDF”.
 
 ## Ile wynoszą odsetki ustawowe w 2026 roku?
 
@@ -82,7 +93,7 @@ Od 1 stycznia 2016 r. odsetki ustawowe są powiązane ze stopą referencyjną NB
 | 7.09.2023 | 6,00% | 11,50% | 9,50% |
 | 8.09.2022 | 6,75% | 12,25% | 10,25% |
 
-Kalkulator zna pełną historię zmian od 2016 r. Za okresy wcześniejsze stosuje stawki z rozporządzeń Rady Ministrów: 8% (od 23.12.2014), 13% (od 15.12.2008) i 11,5% (od 15.10.2005). Wtedy obowiązywała jedna stawka odsetek ustawowych – bez podziału na kapitałowe i za opóźnienie.
+Kalkulator zna pełną historię zmian od 2016 r. Za okresy wcześniejsze – aż do 1997 r. – stosuje stawki z rozporządzeń Rady Ministrów, m.in. 8% (od 23.12.2014), 13% (od 15.12.2008) i 11,5% (od 15.10.2005). Wtedy obowiązywała jedna stawka odsetek ustawowych – bez podziału na kapitałowe i za opóźnienie.
 
 ## Jak liczyć odsetki w transakcjach handlowych?
 
@@ -94,7 +105,11 @@ Oprócz odsetek wierzycielowi należy się **rekompensata za koszty odzyskiwania
 - 70 euro – gdy jest wyższa niż 5000 zł, ale niższa niż 50 000 zł,
 - 100 euro – gdy wynosi 50 000 zł lub więcej.
 
-Kwotę w euro przelicza się po średnim kursie NBP z ostatniego dnia roboczego miesiąca poprzedzającego miesiąc, w którym zapłata stała się wymagalna. Kalkulator nie dolicza rekompensaty – dodaj ją osobno.
+Kwotę w euro przelicza się po średnim kursie NBP z ostatniego dnia roboczego miesiąca poprzedzającego miesiąc, w którym zapłata stała się wymagalna. Kalkulator pobiera ten kurs automatycznie i dolicza rekompensatę do kwoty do zapłaty – możesz ją wyłączyć albo wpisać kurs ręcznie.
+
+### Od kiedy liczyć odsetki, gdy nie ustalono terminu płatności?
+
+W transakcjach handlowych, jeśli umowa nie określa terminu, odsetki należą się po upływie **30 dni** od doręczenia faktury (pod warunkiem że towar lub usługa zostały już dostarczone). Umowny termin zapłaty między firmami co do zasady nie może przekraczać **60 dni** od doręczenia faktury, a gdy płaci podmiot publiczny – 30 dni (podmiot leczniczy – 60 dni). Poza transakcjami handlowymi dług bez terminu trzeba spłacić niezwłocznie po wezwaniu (art. 455 KC) – w praktyce w terminie wskazanym w wezwaniu do zapłaty.
 
 ## Przykłady obliczeń
 
@@ -109,7 +124,7 @@ Kwotę w euro przelicza się po średnim kursie NBP z ostatniego dnia roboczego 
 | 1.07–14.08.2026 | 45 | 13,75% | 208,51 zł |
 | **Razem** | **91** | | **425,53 zł** |
 
-Do tego wierzyciel może doliczyć rekompensatę 70 euro.
+Do tego wierzyciel może doliczyć rekompensatę 70 euro – przy kursie 4,2589 zł z 30 kwietnia 2026 r. to 298,12 zł.
 
 **Dług przez kilka zmian stóp.** Kwota 2000 zł, termin płatności 30 listopada 2025 r., zapłata 31 marca 2026 r. W tym czasie stopa referencyjna zmieniała się dwa razy:
 
@@ -120,13 +135,30 @@ Do tego wierzyciel może doliczyć rekompensatę 70 euro.
 | 5.03–31.03.2026 | 27 | 9,25% | 13,68 zł |
 | **Razem** | **121** | | **62,65 zł** |
 
+## Jak wystawić notę odsetkową?
+
+Nota odsetkowa to dokument, którym wierzyciel – najczęściej firma – wzywa do zapłaty odsetek za spóźnioną płatność. Nie jest fakturą i **nie zawiera VAT**, bo odsetki nie są zapłatą za towar ani usługę. Nota powinna zawierać:
+
+- dane wierzyciela i dłużnika, numer i datę wystawienia noty,
+- numer faktury, której dotyczy, jej kwotę i termin płatności,
+- datę zapłaty (albo dzień, na który liczysz odsetki) i liczbę dni opóźnienia,
+- stawkę odsetek i kwotę odsetek – najlepiej z rozbiciem na okresy z kalkulatora,
+- przy transakcjach handlowych – kwotę rekompensaty i kurs euro,
+- termin zapłaty noty i numer rachunku.
+
+Możesz wydrukować wynik kalkulatora albo zapisać go jako PDF i dołączyć do noty jako wyliczenie. W firmie odsetki stają się przychodem podatkowym dopiero wtedy, gdy dłużnik je zapłaci.
+
+## Jak żądać odsetek w sądzie?
+
+W pozwie nie trzeba podawać wyliczonej kwoty odsetek. Wystarczy żądanie zapłaty należności „wraz z odsetkami ustawowymi za opóźnienie od dnia [pierwszy dzień opóźnienia] do dnia zapłaty” – w transakcjach handlowych „z odsetkami ustawowymi za opóźnienie w transakcjach handlowych”. Sąd zasądzi odsetki aż do dnia faktycznej spłaty, a komornik wyliczy ich wysokość. Kalkulator przyda się wtedy, gdy chcesz wcześniej sprawdzić wartość roszczenia albo wezwać dłużnika do zapłaty przed sprawą.
+
 ## Na co uważać przy liczeniu odsetek?
 
-**Termin płatności w weekend lub święto.** Jeśli ostatni dzień terminu przypada w sobotę albo dzień ustawowo wolny od pracy, termin upływa następnego dnia roboczego (art. 115 KC). Wpisz wtedy w kalkulatorze ten dzień roboczy jako termin płatności.
+**Termin płatności w weekend lub święto.** Jeśli ostatni dzień terminu przypada w sobotę albo dzień ustawowo wolny od pracy, termin upływa następnego dnia roboczego (art. 115 KC). Kalkulator uwzględnia to automatycznie, łącznie ze świętami ruchomymi i Wigilią (wolną od 2025 r.).
 
-**Odsetki umowne.** Jeśli umowa przewiduje własną stawkę odsetek za opóźnienie, obowiązuje ona – ale nie może przekroczyć odsetek maksymalnych (obecnie 18,5% rocznie). Kalkulator liczy wyłącznie stawki ustawowe.
+**Odsetki umowne.** Jeśli umowa przewiduje własną stawkę odsetek za opóźnienie, obowiązuje ona – ale nie może przekroczyć odsetek maksymalnych (obecnie 18,5% rocznie). Wybierz w kalkulatorze „umowne” i wpisz stawkę z umowy.
 
-**Częściowe wpłaty.** Wpłata dłużnika w pierwszej kolejności pokrywa zaległe odsetki, a dopiero potem należność główną (art. 451 § 1 KC), chyba że wierzyciel zgodzi się inaczej. Przy wpłatach w ratach policz odsetki osobno dla każdego okresu i każdej pozostałej kwoty.
+**Częściowe wpłaty.** Wpłata dłużnika w pierwszej kolejności pokrywa zaległe odsetki, a dopiero potem należność główną (art. 451 § 1 KC), chyba że wierzyciel zgodzi się inaczej. Kalkulator rozlicza wpłaty właśnie w tej kolejności. Przykład: dług 10 000 zł z terminem 31 marca 2026 r., wpłata 5000 zł 30 kwietnia. Do tego dnia narosło 76,03 zł odsetek, więc z wpłaty 76,03 zł idzie na odsetki, a 4923,97 zł na należność. Od 1 maja odsetki liczy się już od 5076,03 zł – do 30 czerwca to kolejne 78,47 zł.
 
 **Przedawnienie.** Roszczenie o odsetki przedawnia się co do zasady po 3 latach, ale nie później niż roszczenie o należność główną. Termin przedawnienia kończy się w ostatnim dniu roku kalendarzowego.
 

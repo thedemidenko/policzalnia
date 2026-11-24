@@ -39,11 +39,15 @@ export function podlaczKalkulator(form: HTMLFormElement, przelicz: () => void) {
   ramka?.querySelector('[data-kopiuj]')?.addEventListener('click', async () => {
     const wynik = ramka.querySelector<HTMLElement>('[data-wynik]');
     if (!wynik) return;
-    const linie = Array.from(wynik.querySelectorAll('dt')).map((dt) => `${dt.textContent}: ${dt.nextElementSibling?.textContent}`);
+    const linie = Array.from(wynik.querySelectorAll('dt')).filter((dt) => !dt.hidden).map((dt) => `${dt.textContent}: ${dt.nextElementSibling?.textContent}`);
     const g = wynik.querySelector<HTMLElement>('[data-glowny]');
     if (g) linie.push(`${g.dataset.glowny}: ${g.dataset.wartosc}`);
     await navigator.clipboard?.writeText(`${linie.join('\n')}\n${location.origin}${location.pathname}`);
     komunikat('✓ Wynik skopiowany');
+  });
+  ramka?.querySelector('[data-drukuj]')?.addEventListener('click', () => {
+    ramka.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => { if (!d.hidden) d.open = true; });
+    print();
   });
   przelicz();
 }

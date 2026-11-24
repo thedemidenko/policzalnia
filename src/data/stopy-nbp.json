@@ -124,6 +124,56 @@
   ],
   "odsetki_ustawowe_do_2015": [
     {
+      "od": "1997-01-01",
+      "stopa": 35.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "1998-04-15",
+      "stopa": 33.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "1999-02-01",
+      "stopa": 24.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "1999-05-15",
+      "stopa": 21.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "2000-11-01",
+      "stopa": 30.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "2001-12-15",
+      "stopa": 20.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "2002-07-25",
+      "stopa": 16.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "2003-02-01",
+      "stopa": 13.0,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "2003-09-25",
+      "stopa": 12.25,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
+      "od": "2005-01-10",
+      "stopa": 13.5,
+      "zrodlo": "rozporządzenie RM; stawka wg archiwum pit.pl"
+    },
+    {
       "od": "2005-10-15",
       "stopa": 11.5,
       "zrodlo": "Dz.U. 2005 nr 201 poz. 1662"
@@ -138,5 +188,6 @@
       "stopa": 8.0,
       "zrodlo": "Dz.U. 2014 poz. 1858"
     }
-  ]
+  ],
+  "_zrodlo_do_2015": "2005/2008/2014 sprawdzone w Dz.U.; 1997–2005 wg archiwum pit.pl (https://www.pit.pl/odsetki-ustawowe/archiwum-odsetek-ustawowych-922982)."
 }

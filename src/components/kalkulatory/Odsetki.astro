@@ -1,7 +1,5 @@
 ---
-import { NAZWY } from '../../lib/odsetki';
-const rodzaje = Object.entries(NAZWY) as [string, string][];
-const etykiety: Record<string, string> = { opoznienie: 'za opóźnienie', kapitalowe: 'kapitałowe', handlowe: 'handlowe' };
+const rodzaje: [string, string][] = [['opoznienie', 'za opóźnienie'], ['kapitalowe', 'kapitałowe'], ['handlowe', 'handlowe (B2B)'], ['umowne', 'umowne']];
 ---
 <form id="k-odsetki" class="pola" autocomplete="off">
   <div class="pole">
@@ -11,7 +9,7 @@ const etykiety: Record<string, string> = { opoznienie: 'za opóźnienie', kapita
   <div class="pole-para">
     <div class="pole">
       <label for="ods-termin">Termin płatności</label>
-      <input id="ods-termin" name="termin" type="date" min="2005-10-14" />
+      <input id="ods-termin" name="termin" type="date" min="1996-12-31" />
     </div>
     <div class="pole">
       <label for="ods-zaplata">Data zapłaty</label>
@@ -20,17 +18,40 @@ const etykiety: Record<string, string> = { opoznienie: 'za opóźnienie', kapita
   </div>
   <fieldset class="segmenty">
     <legend>Rodzaj odsetek</legend>
-    {rodzaje.map(([k], i) => <label><input type="radio" name="rodzaj" value={k} checked={i === 0} /><span>{etykiety[k]}</span></label>)}
+    {rodzaje.map(([k, e], i) => <label><input type="radio" name="rodzaj" value={k} checked={i === 0} /><span>{e}</span></label>)}
   </fieldset>
-  <label class="przelacznik" data-leczniczy hidden><input type="checkbox" name="leczniczy" value="1" /> Dłużnik to podmiot leczniczy (stopa ref. + 8 pp)</label>
+  <div class="pole" data-tylko="umowne" hidden>
+    <label for="ods-stawka">Stawka umowna (rocznie)</label>
+    <div class="kwota" data-jedn="%"><input id="ods-stawka" name="stawka" type="text" inputmode="decimal" value="12" /></div>
+    <small>Powyżej odsetek maksymalnych kalkulator przyjmie stawkę maksymalną.</small>
+  </div>
+  <div class="opcje" data-tylko="handlowe" hidden>
+    <label class="przelacznik"><input type="checkbox" name="leczniczy" value="1" /> Dłużnik to podmiot leczniczy (stopa ref. + 8 pp)</label>
+    <label class="przelacznik"><input type="checkbox" name="rekompensata" value="1" checked /> Dolicz rekompensatę 40 / 70 / 100 euro</label>
+    <div class="pole" data-rekompensata>
+      <label for="ods-kurs">Kurs EUR (NBP)</label>
+      <div class="kwota" data-jedn="zł"><input id="ods-kurs" name="kurs" type="text" inputmode="decimal" /></div>
+      <small data-kurs-info>Pobieram kurs z NBP…</small>
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="przesun" value="1" checked /> Termin w sobotę lub święto przesuń na dzień roboczy (art. 115 KC)</label>
+  <details class="wplaty" data-wplaty>
+    <summary>Wpłaty częściowe <span data-wplaty-licznik></span></summary>
+    <p class="podpowiedz">Każda wpłata pokrywa najpierw zaległe odsetki, a dopiero potem należność główną (art. 451 KC).</p>
+    <div data-wplaty-lista></div>
+    <button type="button" class="przycisk maly" data-dodaj-wplate>+ Dodaj wpłatę</button>
+  </details>
 </form>
 <div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
   <dl>
     <dt>Należność</dt><dd id="ods-kapital"></dd>
     <dt>Dni opóźnienia</dt><dd id="ods-dni"></dd>
     <dt>Stopa roczna</dt><dd id="ods-stopa"></dd>
-    <dt>Razem</dt><dd id="ods-razem"></dd>
+    <dt data-w hidden>Wpłacono</dt><dd data-w hidden id="ods-wplacono"></dd>
+    <dt data-r hidden id="ods-rekomp-et">Rekompensata</dt><dd data-r hidden id="ods-rekomp"></dd>
+    <dt>Do zapłaty</dt><dd id="ods-razem"></dd>
   </dl>
+  <ul class="uwagi" id="ods-uwagi" hidden></ul>
   <p class="blad" id="ods-blad" hidden></p>
   <div class="suma"><span>Odsetki</span><strong id="ods-odsetki" data-glowny="Odsetki"></strong></div>
   <div class="stopka-paragonu">policzalnia.pl · dziękujemy!</div>
@@ -38,44 +59,127 @@ const etykiety: Record<string, string> = { opoznienie: 'za opóźnienie', kapita
 <details class="rozbicie" id="ods-rozbicie" open>
   <summary>Rozbicie na okresy</summary>
   <div class="tabela-przewijana"><table>
-    <thead><tr><th>Okres</th><th>Dni</th><th>Stopa</th><th>Odsetki</th></tr></thead>
+    <thead><tr><th>Okres</th><th>Dni</th><th>Należność</th><th>Stopa</th><th>Odsetki</th></tr></thead>
     <tbody id="ods-okresy"></tbody>
   </table></div>
+  <div class="tabela-przewijana" id="ods-tab-wplat" hidden><table>
+    <thead><tr><th>Wpłata z dnia</th><th>Kwota</th><th>Na odsetki</th><th>Na należność</th></tr></thead>
+    <tbody id="ods-wplaty"></tbody>
+  </table></div>
 </details>
+<template id="ods-wiersz">
+  <div class="wplata">
+    <input type="date" aria-label="Data wpłaty" />
+    <div class="kwota" data-jedn="zł"><input type="text" inputmode="decimal" aria-label="Kwota wpłaty" placeholder="0" /></div>
+    <button type="button" class="usun" aria-label="Usuń wpłatę">×</button>
+  </div>
+</template>
 <script>
-  import { obliczOdsetki, type RodzajOdsetek } from '../../lib/odsetki';
-  import { liczba, zl } from '../../lib/format';
+  import { obliczOdsetki, rekompensataEur, miesiacKursu, type RodzajOdsetek } from '../../lib/odsetki';
+  import { liczba, r2, zl } from '../../lib/format';
   import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
   const form = document.getElementById('k-odsetki') as HTMLFormElement;
+  const el = <T extends Element = HTMLInputElement>(n: string) => form.elements.namedItem(n) as unknown as T;
   const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
   const $ = (id: string) => document.getElementById(id)!;
-  const data = (iso: string) => iso.split('-').reverse().join('.');
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
   const proc = (n: number) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
-  // domyślnie: zapłata dziś, termin 3 miesiące wcześniej (parametry z linku nadpisują)
-  const dzis = new Date(); const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-  const termin = form.elements.namedItem('termin') as HTMLInputElement;
-  const zaplata = form.elements.namedItem('zaplata') as HTMLInputElement;
-  if (!zaplata.value) zaplata.value = lokalnie(dzis);
-  if (!termin.value) { const t = new Date(dzis); t.setMonth(t.getMonth() - 3); termin.value = lokalnie(t); }
+  // --- wpłaty częściowe: wiersze wd1/wk1, wd2/wk2… (nazwy trafiają do „Linku do wyliczenia”)
+  const lista = form.querySelector<HTMLElement>('[data-wplaty-lista]')!;
+  const wzor = document.getElementById('ods-wiersz') as HTMLTemplateElement;
+  const przenumeruj = () => {
+    lista.querySelectorAll('.wplata').forEach((w, i) => {
+      const [d, k] = w.querySelectorAll('input');
+      d.name = `wd${i + 1}`; k.name = `wk${i + 1}`;
+    });
+    const n = lista.children.length;
+    form.querySelector('[data-wplaty-licznik]')!.textContent = n ? `(${n})` : '';
+  };
+  const dodajWplate = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); };
+  form.querySelector('[data-dodaj-wplate]')!.addEventListener('click', () => { dodajWplate(); (lista.lastElementChild?.querySelector('input') as HTMLInputElement)?.focus(); });
+  lista.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('.usun');
+    if (!b) return;
+    b.closest('.wplata')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input'));
+  });
+  const params = new URLSearchParams(location.search);
+  for (let i = 1; params.has(`wd${i}`); i++) dodajWplate();
+  if (lista.children.length) (form.querySelector('[data-wplaty]') as HTMLDetailsElement).open = true;
 
-  podlaczKalkulator(form, () => {
+  // --- domyślne daty: zapłata dziś, termin 3 miesiące wcześniej
+  const termin = el('termin'), zaplata = el('zaplata');
+  if (!zaplata.value) zaplata.value = lokalnie(new Date());
+  if (!termin.value) { const t = new Date(); t.setMonth(t.getMonth() - 3); termin.value = lokalnie(t); }
+
+  // --- kurs EUR z API NBP (ostatni dzień roboczy miesiąca przed wymagalnością)
+  const kurs = el('kurs'), kursInfo = form.querySelector<HTMLElement>('[data-kurs-info]')!;
+  const kursy = new Map<string, Promise<{ mid: number; data: string } | null>>();
+  let kursMiesiac = '', kursRecznie = false;
+  kurs.addEventListener('input', () => { kursRecznie = true; kursInfo.textContent = 'Kurs wpisany ręcznie.'; });
+  function pobierzKurs(t: string, przelicz: () => void) {
+    const { od, do: doDnia } = miesiacKursu(t);
+    if (od === kursMiesiac || kursRecznie) return;
+    kursMiesiac = od;
+    if (!kursy.has(od)) kursy.set(od, fetch(`https://api.nbp.pl/api/exchangerates/rates/a/eur/${od}/${doDnia}/?format=json`)
+      .then((r) => (r.ok ? r.json() : null)).then((j) => { const x = j?.rates?.at(-1); return x ? { mid: x.mid, data: x.effectiveDate } : null; }).catch(() => null));
+    kursInfo.textContent = 'Pobieram kurs z NBP…';
+    kursy.get(od)!.then((k) => {
+      if (kursMiesiac !== od || kursRecznie) return;
+      if (k) { kurs.value = String(k.mid).replace('.', ','); kursInfo.textContent = `Średni kurs NBP z ${pl(k.data)} (ostatni dzień roboczy miesiąca przed terminem).`; }
+      else kursInfo.textContent = 'Nie udało się pobrać kursu z NBP – wpisz go ręcznie.';
+      przelicz();
+    });
+  }
+
+  const przelicz = () => {
     const rodzaj = val('rodzaj') as RodzajOdsetek;
-    const leczniczy = (form.elements.namedItem('leczniczy') as HTMLInputElement).checked;
-    form.querySelector<HTMLElement>('[data-leczniczy]')!.hidden = rodzaj !== 'handlowe';
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== rodzaj));
     const kwota = liczba(val('kwota'));
-    const w = obliczOdsetki(kwota, termin.value, zaplata.value, rodzaj, leczniczy);
+    const wplaty = [...lista.querySelectorAll('.wplata')].map((w) => { const [d, k] = w.querySelectorAll('input'); return { data: d.value, kwota: liczba(k.value) }; });
+    const w = obliczOdsetki(kwota, termin.value, zaplata.value, rodzaj, {
+      leczniczy: el('leczniczy').checked, stawkaUmowna: liczba(val('stawka')), przesunTermin: el('przesun').checked, wplaty,
+    });
+
+    // rekompensata (tylko transakcje handlowe)
+    const zRekomp = rodzaj === 'handlowe' && el('rekompensata').checked && !w.blad;
+    form.querySelector<HTMLElement>('[data-rekompensata]')!.hidden = !zRekomp;
+    let rekompPln = 0;
+    if (zRekomp) {
+      pobierzKurs(w.terminEfektywny, przelicz);
+      const eur = rekompensataEur(kwota), k = liczba(kurs.value);
+      rekompPln = k > 0 ? r2(eur * k) : 0;
+      $('ods-rekomp-et').textContent = `Rekompensata ${eur} €`;
+      $('ods-rekomp').textContent = k > 0 ? zl(rekompPln) : 'podaj kurs';
+    }
+    document.querySelectorAll<HTMLElement>('.paragon [data-r]').forEach((x) => (x.hidden = !zRekomp));
+
     const blad = $('ods-blad');
     blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const uwagi = $('ods-uwagi');
+    uwagi.hidden = w.uwagi.length === 0; uwagi.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const wplacono = r2(w.wplaty.reduce((s, x) => s + x.kwota, 0));
+    document.querySelectorAll<HTMLElement>('.paragon [data-w]').forEach((x) => (x.hidden = wplacono === 0));
+    ustawKwote($('ods-wplacono'), wplacono);
     ustawKwote($('ods-kapital'), kwota);
     $('ods-dni').textContent = String(w.dni);
     const stopy = [...new Set(w.okresy.map((o) => o.stopa))];
     $('ods-stopa').textContent = stopy.length === 0 ? '–' : stopy.length === 1 ? proc(stopy[0]) : 'zmienna';
-    ustawKwote($('ods-razem'), w.razem);
+    ustawKwote($('ods-razem'), r2(w.razem + rekompPln));
     ustawKwote($('ods-odsetki'), w.odsetki);
+
     $('ods-rozbicie').hidden = w.okresy.length === 0;
     $('ods-okresy').innerHTML = w.okresy
-      .map((o) => `<tr><td>${data(o.od)} – ${data(o.do)}</td><td>${o.dni}</td><td>${proc(o.stopa)}</td><td>${zl(o.odsetki)}</td></tr>`)
-      .join('') + (w.okresy.length > 1 ? `<tr class="razem"><td>Razem</td><td>${w.dni}</td><td></td><td>${zl(w.odsetki)}</td></tr>` : '');
-  });
+      .map((o) => `<tr><td>${pl(o.od)} – ${pl(o.do)}</td><td>${o.dni}</td><td>${zl(o.kapital)}</td><td>${proc(o.stopa)}${o.ograniczona ? '*' : ''}</td><td>${zl(o.odsetki)}</td></tr>`)
+      .join('') + (w.okresy.length > 1 ? `<tr class="razem"><td>Razem</td><td>${w.dni}</td><td></td><td></td><td>${zl(w.odsetki)}</td></tr>` : '');
+    $('ods-tab-wplat').hidden = w.wplaty.length === 0;
+    $('ods-wplaty').innerHTML = w.wplaty
+      .map((x) => `<tr><td>${pl(x.data)}</td><td>${zl(x.kwota)}</td><td>${zl(x.naOdsetki)}</td><td>${zl(x.naKapital)}${x.nadplata ? ` (nadpłata ${zl(x.nadplata)})` : ''}</td></tr>`)
+      .join('');
+    if (w.wplaty.length) $('ods-wplaty').insertAdjacentHTML('beforeend', `<tr class="razem"><td>Pozostało</td><td></td><td>${zl(w.odsetkiDoZaplaty)}</td><td>${zl(w.kapitalDoZaplaty)}</td></tr>`);
+  };
+  podlaczKalkulator(form, przelicz);
 </script>
