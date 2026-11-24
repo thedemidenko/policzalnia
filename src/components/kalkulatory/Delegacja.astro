@@ -1,0 +1,153 @@
+---
+import { POJAZDY } from '../../lib/delegacja';
+const noclegi: [string, string][] = [['brak', 'bez noclegu'], ['ryczalt', 'ryczałt (bez rachunku)'], ['hotel', 'hotel z rachunkiem']];
+---
+<form id="k-delegacja" class="pola" autocomplete="off">
+  <div class="pole">
+    <label for="d-wyjazd">Wyjazd (data i godzina)</label>
+    <input id="d-wyjazd" name="wyjazd" type="datetime-local" />
+  </div>
+  <div class="pole">
+    <label for="d-powrot">Powrót (data i godzina)</label>
+    <input id="d-powrot" name="powrot" type="datetime-local" />
+  </div>
+  <div class="pole">
+    <span class="nazwa">Posiłki zapewnione za darmo</span>
+    <div class="trojka">
+      <label>Śniadania<div class="kwota" data-jedn="×"><input name="sn" type="text" inputmode="numeric" placeholder="0" /></div></label>
+      <label>Obiady<div class="kwota" data-jedn="×"><input name="ob" type="text" inputmode="numeric" placeholder="0" /></div></label>
+      <label>Kolacje<div class="kwota" data-jedn="×"><input name="ko" type="text" inputmode="numeric" placeholder="0" /></div></label>
+    </div>
+    <small>Także śniadanie w cenie hotelu. Śniadanie obniża dietę o 25%, obiad o 50%, kolacja o 25%.</small>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Nocleg</legend>
+    {noclegi.map(([k, e], i) => <label><input type="radio" name="nocleg" value={k} checked={i === 0} /><span>{e}</span></label>)}
+  </fieldset>
+  <div class="pole-para" data-tylko="ryczalt hotel" hidden>
+    <div class="pole" data-tylko="hotel" hidden>
+      <label for="d-hotel">Rachunki za hotel</label>
+      <div class="kwota" data-jedn="zł"><input id="d-hotel" name="hotel" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <div class="pole">
+      <label for="d-noce">Liczba noclegów</label>
+      <input id="d-noce" name="noce" type="text" inputmode="numeric" placeholder="auto" />
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="komunikacja" value="1" /> Ryczałt na komunikację miejską (20% diety za każdą rozpoczętą dobę)</label>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="d-pojazd">Przejazd</label>
+      <select id="d-pojazd" name="pojazd">{Object.entries(POJAZDY).map(([k, n]) => <option value={k}>{n}</option>)}</select>
+    </div>
+    <div class="pole" data-km hidden>
+      <label for="d-km">Przejechane km</label>
+      <div class="kwota" data-jedn="km"><input id="d-km" name="km" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="d-bilety">Bilety</label>
+      <div class="kwota" data-jedn="zł"><input id="d-bilety" name="bilety" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <div class="pole">
+      <label for="d-inne">Parking, autostrada…</label>
+      <div class="kwota" data-jedn="zł"><input id="d-inne" name="inne" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+  </div>
+  <details class="wplaty" data-firma>
+    <summary>Zaliczka i stawki firmy</summary>
+    <div class="pole">
+      <label for="d-zaliczka">Pobrana zaliczka</label>
+      <div class="kwota" data-jedn="zł"><input id="d-zaliczka" name="zaliczka" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="d-dieta-firmy">Dieta w regulaminie</label>
+        <div class="kwota" data-jedn="zł"><input id="d-dieta-firmy" name="dietaFirmy" type="text" inputmode="decimal" placeholder="45" /></div>
+      </div>
+      <div class="pole">
+        <label for="d-km-firmy">Stawka za km w firmie</label>
+        <div class="kwota" data-jedn="zł"><input id="d-km-firmy" name="kmFirmy" type="text" inputmode="decimal" placeholder="maks." /></div>
+      </div>
+    </div>
+    <p class="podpowiedz">Pracodawca spoza budżetówki może ustalić własne stawki w regulaminie, ale dieta nie może być niższa niż 45 zł.</p>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Czas podróży</dt><dd id="d-czas"></dd>
+    <dt>Dieta</dt><dd id="d-dieta"></dd>
+    <dt>Pozostałe</dt><dd id="d-pozostale"></dd>
+    <dt>Razem</dt><dd id="d-razem"></dd>
+    <dt data-z hidden>Zaliczka</dt><dd data-z hidden id="d-zal"></dd>
+  </dl>
+  <ul class="uwagi" id="d-uwagi" hidden></ul>
+  <p class="blad" id="d-blad" hidden></p>
+  <div class="suma"><span id="d-suma-et">Do wypłaty</span><strong id="d-wyplata" data-glowny="Do wypłaty"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · dieta krajowa 45 zł</div>
+</div></div>
+<details class="rozbicie" id="d-rozbicie" open>
+  <summary>Rozliczenie delegacji</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Pozycja</th><th>Wyliczenie</th><th>Kwota</th></tr></thead>
+    <tbody id="d-pozycje"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczDelegacje, type Nocleg, type Pojazd } from '../../lib/delegacja';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-delegacja') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  if (new URLSearchParams(location.search).has('zaliczka')) (form.querySelector('[data-firma]') as HTMLDetailsElement).open = true;
+
+  // domyślnie: wczoraj 7:00 – dziś 17:00
+  if (!el('wyjazd').value) { const d = new Date(); d.setDate(d.getDate() - 1); d.setHours(7, 0, 0, 0); el('wyjazd').value = lokalnie(d); }
+  if (!el('powrot').value) { const d = new Date(); d.setHours(17, 0, 0, 0); el('powrot').value = lokalnie(d); }
+
+  const przelicz = () => {
+    const nocleg = val('nocleg') as Nocleg;
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = !x.dataset.tylko!.split(' ').includes(nocleg)));
+    const pojazd = val('pojazd') as Pojazd;
+    form.querySelector<HTMLElement>('[data-km]')!.hidden = pojazd === 'brak';
+    const noce = val('noce').trim();
+    const w = obliczDelegacje({
+      wyjazd: val('wyjazd'), powrot: val('powrot'),
+      sniadania: liczba(val('sn')), obiady: liczba(val('ob')), kolacje: liczba(val('ko')),
+      nocleg, noce: noce === '' ? undefined : liczba(noce), hotelKwota: liczba(val('hotel')),
+      komunikacja: el('komunikacja').checked,
+      pojazd, km: liczba(val('km')), stawkaKmFirmy: liczba(val('kmFirmy')),
+      bilety: liczba(val('bilety')), inne: liczba(val('inne')), zaliczka: liczba(val('zaliczka')), dietaFirmy: liczba(val('dietaFirmy')),
+    });
+    el('noce').placeholder = `auto: ${w.noceUprawnione}`;
+
+    const blad = $('d-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('d-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const h = Math.floor(w.godziny), m = Math.round((w.godziny - h) * 60);
+    $('d-czas').textContent = w.blad ? '–' : `${h} h${m ? ` ${m} min` : ''}`;
+    ustawKwote($('d-dieta'), w.dieta);
+    ustawKwote($('d-pozostale'), Math.round((w.razem - w.dieta) * 100) / 100);
+    ustawKwote($('d-razem'), w.razem);
+    const zal = liczba(val('zaliczka'));
+    document.querySelectorAll<HTMLElement>('.paragon [data-z]').forEach((x) => (x.hidden = zal <= 0));
+    ustawKwote($('d-zal'), zal);
+    const zwrot = w.doWyplaty < 0;
+    $('d-suma-et').textContent = zwrot ? 'Do zwrotu' : 'Do wypłaty';
+    const g = $('d-wyplata');
+    g.dataset.glowny = zwrot ? 'Do zwrotu pracodawcy' : 'Do wypłaty';
+    ustawKwote(g, Math.abs(w.doWyplaty));
+
+    $('d-rozbicie').hidden = w.pozycje.length === 0;
+    $('d-pozycje').innerHTML = w.pozycje.map((p) => `<tr><td>${p.nazwa}</td><td>${p.opis}</td><td>${zl(p.kwota)}</td></tr>`).join('')
+      + `<tr class="razem"><td>Razem</td><td></td><td>${zl(w.razem)}</td></tr>`;
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

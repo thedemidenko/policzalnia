@@ -120,7 +120,7 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .kwota { position: relative; }
 .kwota input { padding-right: 3.2em; }
 .kwota::after { content: attr(data-jedn); position: absolute; right: 14px; top: 50%; translate: 0 -50%; font: 600 1rem var(--mono); color: var(--olowek); pointer-events: none; }
-.kalkulator input[type=text], .kalkulator input[type=number], .kalkulator input[type=date], .kalkulator select {
+.kalkulator input[type=text], .kalkulator input[type=number], .kalkulator input[type=date], .kalkulator input[type=datetime-local], .kalkulator select {
   width: 100%; font: 600 1.35rem/1.2 var(--mono); color: var(--tusz); letter-spacing: -.02em;
   padding: 14px 14px; border: 1.5px solid var(--tusz); border-radius: 10px; background: var(--papier);
   transition: box-shadow .15s, background .15s;
@@ -298,6 +298,12 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .naglowki-wierszy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 40px; gap: 8px; font-size: .8rem; color: var(--olowek); margin-bottom: 4px; }
 .jeden .usun { visibility: hidden; }
 .zaleglosc + .zaleglosc { margin-top: 0; }
+.trojka { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.trojka label { font-size: .85rem; color: var(--olowek); display: grid; gap: 4px; }
+.kalkulator .trojka input { font-size: 1.05rem; padding: 10px 8px; padding-right: 1.8em; }
+.trojka .kwota::after { right: 10px; font-size: .85rem; }
+.kalkulator input[type=datetime-local] { font-size: 1.05rem; min-height: 52px; padding: 12px 10px; }
+#d-rozbicie td:nth-child(2) { white-space: normal; text-align: left; color: var(--olowek); }
 .paragon .suma-tekst strong { font-size: clamp(1.25rem, 3.4vw, 1.55rem); }
 .okres { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 6px 8px; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--linia); }
 .okres select { grid-column: 1 / 3; }

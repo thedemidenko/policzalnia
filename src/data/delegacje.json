@@ -1,0 +1,11 @@
+{
+  "_opis": "Należności z tytułu krajowej podróży służbowej (rozporządzenie MPiPS z 29.01.2013, Dz.U. 2013 poz. 167 ze zm.) i stawki kilometrówki (rozporządzenie MI z 25.03.2002 ze zm., Dz.U. 2023 poz. 5). Ryczałty liczone od diety: nocleg 150%, limit hotelu 20×, komunikacja miejscowa 20%.",
+  "dieta": [
+    { "od": "2013-03-01", "kwota": 30, "zrodlo": "Dz.U. 2013 poz. 167" },
+    { "od": "2023-01-01", "kwota": 45, "zrodlo": "Dz.U. 2022 poz. 2302" }
+  ],
+  "projekt": { "od": "2027-01-01", "kwota": 60, "status": "PROJ", "uwagi": "Projekt MRPiPS (konsultacje od 23.01.2026, wersja z 21.05.2026); stosować dopiero po ogłoszeniu w Dz.U." },
+  "kilometrowka": [
+    { "od": "2023-01-17", "do900": 0.89, "pow900": 1.15, "motocykl": 0.69, "motorower": 0.42, "zrodlo": "Dz.U. 2023 poz. 5" }
+  ]
+}
