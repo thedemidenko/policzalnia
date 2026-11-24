@@ -128,5 +128,6 @@ content:
     fields:
       - { name: name, label: Nazwa, type: string }
       - { name: tagline, label: Hasło, type: string }
+      - { name: email, label: E-mail kontaktowy, type: string }
       - { name: noindex, label: Ukryj przed Google (noindex), type: boolean }
       - { name: reklamy, label: Włącz sloty reklamowe, type: boolean }
