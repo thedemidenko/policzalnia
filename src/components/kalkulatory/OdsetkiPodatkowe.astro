@@ -1,0 +1,195 @@
+---
+const stawki: [string, string][] = [['podstawowa', 'podstawowa'], ['obnizona', 'obniżona 50%'], ['podwyzszona', 'podwyższona 150%']];
+---
+<form id="k-odsetki-podatkowe" class="pola" autocomplete="off">
+  <div class="pole">
+    <span class="nazwa" id="op-zal-nazwa">Zaległość podatkowa</span>
+    <div class="naglowki-wierszy" aria-hidden="true"><span>Termin płatności</span><span>Kwota</span><span></span></div>
+    <div data-zal-lista role="group" aria-labelledby="op-zal-nazwa">
+      <div class="wplata zaleglosc">
+        <input type="date" name="t1" aria-label="Termin płatności zaległości 1" min="1997-12-31" />
+        <div class="kwota" data-jedn="zł"><input type="text" name="k1" inputmode="decimal" value="10000" aria-label="Kwota zaległości 1" /></div>
+        <button type="button" class="usun" aria-label="Usuń zaległość">×</button>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj-zal>+ Dodaj kolejną zaległość</button>
+    <small>Kilka miesięcy VAT albo zaliczek? Dodaj każdą zaległość osobno – odsetki liczy się od każdej z nich.</small>
+  </div>
+  <div class="pole">
+    <label for="op-zaplata">Data zapłaty</label>
+    <input id="op-zaplata" name="zaplata" type="date" />
+  </div>
+  <fieldset class="segmenty">
+    <legend>Stawka odsetek</legend>
+    {stawki.map(([k, e], i) => <label><input type="radio" name="stawka" value={k} checked={i === 0} /><span>{e}</span></label>)}
+  </fieldset>
+  <div class="pole" data-tylko="obnizona" hidden>
+    <label for="op-korekta">Data złożenia korekty deklaracji</label>
+    <input id="op-korekta" name="korekta" type="date" />
+    <small>Opcjonalnie – sprawdzimy, czy zmieściłeś się w 6 miesiącach i 7 dniach.</small>
+  </div>
+  <p class="podpowiedz" data-tylko="podwyzszona" hidden>Stawkę 150% stosuje się tylko do VAT i akcyzy, gdy zaniżenie wykryje urząd (kontrola, czynności sprawdzające) i przekracza 25% podatku oraz pięciokrotność płacy minimalnej.</p>
+  <label class="przelacznik"><input type="checkbox" name="przesun" value="1" checked /> Termin w sobotę lub święto przesuń na dzień roboczy (art. 12 § 5 Ordynacji)</label>
+  <details class="wplaty" data-zeznanie>
+    <summary>Zaległe zaliczki PIT / CIT</summary>
+    <p class="podpowiedz">Od zaliczek na podatek dochodowy odsetki liczy się najpóźniej do dnia złożenia zeznania rocznego (albo do ostatniego dnia terminu, jeśli zeznania nie złożono).</p>
+    <div class="pole">
+      <label for="op-zeznanie">Data złożenia zeznania</label>
+      <input id="op-zeznanie" name="zeznanie" type="date" />
+    </div>
+  </details>
+  <details class="wplaty" data-wplaty>
+    <summary>Wpłaty częściowe <span data-wplaty-licznik></span></summary>
+    <p class="podpowiedz">Wpłata idzie na zaległość o najwcześniejszym terminie i dzieli się proporcjonalnie na podatek i odsetki (art. 55 § 2 i art. 62 § 1 Ordynacji).</p>
+    <div data-wplaty-lista></div>
+    <button type="button" class="przycisk maly" data-dodaj-wplate>+ Dodaj wpłatę</button>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt id="op-pod-et">Zaległość</dt><dd id="op-podatek-wej"></dd>
+    <dt>Dni zwłoki</dt><dd id="op-dni"></dd>
+    <dt>Stawka roczna</dt><dd id="op-stawka"></dd>
+    <dt data-w hidden>Wpłacono</dt><dd data-w hidden id="op-wplacono"></dd>
+    <dt data-w hidden>Podatek pozostały</dt><dd data-w hidden id="op-podatek"></dd>
+    <dt>Do zapłaty</dt><dd id="op-razem"></dd>
+  </dl>
+  <ul class="uwagi" id="op-uwagi" hidden></ul>
+  <p class="blad" id="op-blad" hidden></p>
+  <div class="suma"><span>Odsetki</span><strong id="op-odsetki" data-glowny="Odsetki"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · zaokrąglone do pełnych złotych</div>
+</div></div>
+<details class="rozbicie" id="op-rozbicie" open>
+  <summary>Rozbicie na okresy</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Okres</th><th>Dni</th><th>Kwota</th><th>Stawka</th><th>Odsetki</th></tr></thead>
+    <tbody id="op-okresy"></tbody>
+  </table></div>
+  <div class="tabela-przewijana" id="op-tab-wplat" hidden><table>
+    <thead><tr><th>Wpłata z dnia</th><th>Kwota</th><th>Na podatek</th><th>Na odsetki</th></tr></thead>
+    <tbody id="op-wplaty"></tbody>
+  </table></div>
+</details>
+<template id="op-wiersz-wplaty">
+  <div class="wplata">
+    <input type="date" aria-label="Data wpłaty" />
+    <div class="kwota" data-jedn="zł"><input type="text" inputmode="decimal" aria-label="Kwota wpłaty" placeholder="0" /></div>
+    <button type="button" class="usun" aria-label="Usuń wpłatę">×</button>
+  </div>
+</template>
+<template id="op-wiersz-zal">
+  <div class="wplata zaleglosc">
+    <input type="date" aria-label="Termin płatności" min="1997-12-31" />
+    <div class="kwota" data-jedn="zł"><input type="text" inputmode="decimal" aria-label="Kwota zaległości" placeholder="0" /></div>
+    <button type="button" class="usun" aria-label="Usuń zaległość">×</button>
+  </div>
+</template>
+<script>
+  import { obliczOdsetkiPodatkowe, sprawdzObnizona, type StawkaPodatkowa } from '../../lib/odsetki-podatkowe';
+  import { liczba, r2, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-odsetki-podatkowe') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const proc = (n: number) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+  const zlote = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const params = new URLSearchParams(location.search);
+
+  // --- listy wierszy: zaległości (t1/k1…) i wpłaty (wd1/wk1…); nazwy trafiają do „Linku do wyliczenia”
+  function lista(kontener: HTMLElement, wzor: HTMLTemplateElement, nazwy: [string, string], po: () => void) {
+    const przenumeruj = () => {
+      kontener.querySelectorAll('.wplata').forEach((w, i) => {
+        const [d, k] = w.querySelectorAll('input');
+        d.name = `${nazwy[0]}${i + 1}`; k.name = `${nazwy[1]}${i + 1}`;
+      });
+      po();
+    };
+    const dodaj = () => { kontener.append(wzor.content.cloneNode(true)); przenumeruj(); };
+    kontener.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('.usun');
+      if (!b) return;
+      b.closest('.wplata')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input'));
+    });
+    przenumeruj();
+    return dodaj;
+  }
+
+  const zalLista = form.querySelector<HTMLElement>('[data-zal-lista]')!;
+  const dodajZal = lista(zalLista, document.getElementById('op-wiersz-zal') as HTMLTemplateElement, ['t', 'k'], () => {
+    zalLista.classList.toggle('jeden', zalLista.children.length === 1);
+  });
+  form.querySelector('[data-dodaj-zal]')!.addEventListener('click', () => { dodajZal(); (zalLista.lastElementChild?.querySelector('input') as HTMLInputElement)?.focus(); });
+  for (let i = 2; params.has(`t${i}`); i++) dodajZal();
+
+  const wplLista = form.querySelector<HTMLElement>('[data-wplaty-lista]')!;
+  const dodajWplate = lista(wplLista, document.getElementById('op-wiersz-wplaty') as HTMLTemplateElement, ['wd', 'wk'], () => {
+    form.querySelector('[data-wplaty-licznik]')!.textContent = wplLista.children.length ? `(${wplLista.children.length})` : '';
+  });
+  form.querySelector('[data-dodaj-wplate]')!.addEventListener('click', () => { dodajWplate(); (wplLista.lastElementChild?.querySelector('input') as HTMLInputElement)?.focus(); });
+  for (let i = 1; params.has(`wd${i}`); i++) dodajWplate();
+  if (wplLista.children.length) (form.querySelector('[data-wplaty]') as HTMLDetailsElement).open = true;
+  if (params.get('zeznanie')) (form.querySelector('[data-zeznanie]') as HTMLDetailsElement).open = true;
+
+  // --- domyślne daty: zapłata dziś, termin – 25. dzień miesiąca sprzed dwóch miesięcy (jak VAT)
+  const zaplata = el('zaplata'), t1 = el('t1');
+  if (!zaplata.value) zaplata.value = lokalnie(new Date());
+  if (!t1.value) { const t = new Date(); t.setDate(1); t.setMonth(t.getMonth() - 2); t.setDate(25); t1.value = lokalnie(t); }
+
+  const wiersze = (kontener: HTMLElement) => [...kontener.querySelectorAll('.wplata')].map((w) => w.querySelectorAll('input'));
+
+  const przelicz = () => {
+    const stawka = val('stawka') as StawkaPodatkowa;
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== stawka));
+    const zaleglosci = wiersze(zalLista).map(([t, k]) => ({ termin: t.value, kwota: liczba(k.value) }));
+    const wplaty = wiersze(wplLista).map(([d, k]) => ({ data: d.value, kwota: liczba(k.value) }));
+    const zezn = val('zeznanie');
+    const w = obliczOdsetkiPodatkowe(zaleglosci, zaplata.value, { stawka, przesunTermin: el('przesun').checked, zeznanie: zezn, wplaty });
+
+    const uwagi = [...w.uwagi];
+    if (stawka === 'obnizona' && val('korekta')) {
+      const pierwszy = w.pozycje.find((p) => !p.blad);
+      if (pierwszy) uwagi.unshift(...sprawdzObnizona(pierwszy.terminEfektywny, val('korekta'), zaplata.value));
+    }
+    const blad = $('op-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('op-uwagi');
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const ok = w.pozycje.filter((p) => !p.blad);
+    const wielu = ok.length > 1;
+    $('op-pod-et').textContent = wielu ? `Zaległości (${ok.length})` : 'Zaległość';
+    ustawKwote($('op-podatek-wej'), r2(ok.reduce((s, p) => s + p.kwota, 0)));
+    const dni = ok.map((p) => p.dni);
+    $('op-dni').textContent = dni.length === 0 ? '–' : wielu ? `${Math.min(...dni)}–${Math.max(...dni)}` : String(dni[0]);
+    const st = [...new Set(ok.flatMap((p) => p.okresy.map((o) => o.stawka)))];
+    $('op-stawka').textContent = st.length === 0 ? '–' : st.length === 1 ? proc(st[0]) : 'zmienna';
+    document.querySelectorAll<HTMLElement>('.paragon [data-w]').forEach((x) => (x.hidden = w.wplacono === 0));
+    ustawKwote($('op-wplacono'), w.wplacono);
+    ustawKwote($('op-podatek'), w.podatek);
+    ustawKwote($('op-razem'), w.razem);
+    ustawKwote($('op-odsetki'), w.odsetki, zlote);
+
+    // rozbicie: przy kilku zaległościach – nagłówek grupy dla każdej
+    const wiersz = (o: { od: string; do: string; dni: number; kwota: number; stawka: number; odsetki: number }) =>
+      `<tr><td>${pl(o.od)} – ${pl(o.do)}</td><td>${o.dni}</td><td>${zl(o.kwota)}</td><td>${proc(o.stawka)}</td><td>${zl(o.odsetki)}</td></tr>`;
+    const html = ok.filter((p) => p.okresy.length).map((p) => {
+      const suma = r2(p.okresy.reduce((s, o) => s + o.odsetki, 0));
+      const glowa = wielu ? `<tr class="grupa"><td colspan="5">Zaległość ${p.nr}: ${zl(p.kwota)}, termin ${pl(p.terminEfektywny)}</td></tr>` : '';
+      const stopa = `<tr class="razem"><td>Razem${p.wplaty.length ? ' naliczone' : ''}</td><td>${p.dni}</td><td></td><td></td><td>${zl(suma)}</td></tr>`;
+      return glowa + p.okresy.map(wiersz).join('') + (p.okresy.length > 1 || wielu || p.wplaty.length ? stopa : '');
+    }).join('');
+    $('op-rozbicie').hidden = html === '';
+    $('op-okresy').innerHTML = html;
+
+    const wpl = ok.flatMap((p) => p.wplaty.map((x) => ({ ...x, nr: p.nr })));
+    $('op-tab-wplat').hidden = wpl.length === 0;
+    $('op-wplaty').innerHTML = wpl.sort((a, b) => a.data.localeCompare(b.data) || a.nr - b.nr)
+      .map((x) => `<tr><td>${pl(x.data)}${wielu ? ` → zal. ${x.nr}` : ''}</td><td>${zl(x.kwota)}</td><td>${zl(x.naPodatek)}</td><td>${zl(x.naOdsetki)}</td></tr>`).join('')
+      + (wpl.length ? `<tr class="razem"><td>Pozostało</td><td></td><td>${zl(w.podatek)}</td><td>${zlote(w.odsetki)}</td></tr>` : '');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

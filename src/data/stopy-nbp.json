@@ -189,5 +189,284 @@
       "zrodlo": "Dz.U. 2014 poz. 1858"
     }
   ],
-  "_zrodlo_do_2015": "2005/2008/2014 sprawdzone w Dz.U.; 1997–2005 wg archiwum pit.pl (https://www.pit.pl/odsetki-ustawowe/archiwum-odsetek-ustawowych-922982)."
+  "_zrodlo_do_2015": "2005/2008/2014 sprawdzone w Dz.U.; 1997–2005 wg archiwum pit.pl (https://www.pit.pl/odsetki-ustawowe/archiwum-odsetek-ustawowych-922982).",
+  "_zrodlo_podatkowe_do_2015": "Tabela stawek odsetek za zwłokę od zaległości podatkowych, Ministerstwo Finansów (portalpodatkowy.mf.gov.pl), obwieszczenia MF w M.P. Od 1.01.2016 stawka = max(8%, 200% stopy lombardowej + 2%) – art. 56 § 1 Ordynacji podatkowej, liczona z pola \"lomb\" w \"zmiany\".",
+  "odsetki_podatkowe_do_2015": [
+    {
+      "od": "1998-01-01",
+      "stopa": 54.0
+    },
+    {
+      "od": "1998-05-21",
+      "stopa": 52.0
+    },
+    {
+      "od": "1998-07-17",
+      "stopa": 48.0
+    },
+    {
+      "od": "1998-10-29",
+      "stopa": 44.0
+    },
+    {
+      "od": "1998-12-10",
+      "stopa": 40.0
+    },
+    {
+      "od": "1999-01-21",
+      "stopa": 34.0
+    },
+    {
+      "od": "1999-11-18",
+      "stopa": 41.0
+    },
+    {
+      "od": "2000-02-24",
+      "stopa": 43.0
+    },
+    {
+      "od": "2000-08-31",
+      "stopa": 46.0
+    },
+    {
+      "od": "2001-03-01",
+      "stopa": 44.0
+    },
+    {
+      "od": "2001-03-29",
+      "stopa": 42.0
+    },
+    {
+      "od": "2001-06-28",
+      "stopa": 39.0
+    },
+    {
+      "od": "2001-08-23",
+      "stopa": 37.0
+    },
+    {
+      "od": "2001-10-26",
+      "stopa": 34.0
+    },
+    {
+      "od": "2001-11-29",
+      "stopa": 31.0
+    },
+    {
+      "od": "2002-01-31",
+      "stopa": 27.0
+    },
+    {
+      "od": "2002-04-26",
+      "stopa": 25.0
+    },
+    {
+      "od": "2002-05-30",
+      "stopa": 24.0
+    },
+    {
+      "od": "2002-06-27",
+      "stopa": 23.0
+    },
+    {
+      "od": "2002-08-29",
+      "stopa": 21.0
+    },
+    {
+      "od": "2002-09-26",
+      "stopa": 20.0
+    },
+    {
+      "od": "2002-10-24",
+      "stopa": 18.0
+    },
+    {
+      "od": "2002-11-28",
+      "stopa": 17.5
+    },
+    {
+      "od": "2003-01-30",
+      "stopa": 17.0
+    },
+    {
+      "od": "2003-02-27",
+      "stopa": 16.0
+    },
+    {
+      "od": "2003-03-27",
+      "stopa": 15.5
+    },
+    {
+      "od": "2003-04-25",
+      "stopa": 14.5
+    },
+    {
+      "od": "2003-05-29",
+      "stopa": 14.0
+    },
+    {
+      "od": "2003-06-26",
+      "stopa": 13.5
+    },
+    {
+      "od": "2004-07-01",
+      "stopa": 14.5
+    },
+    {
+      "od": "2004-07-29",
+      "stopa": 15.0
+    },
+    {
+      "od": "2004-08-26",
+      "stopa": 16.0
+    },
+    {
+      "od": "2005-03-31",
+      "stopa": 15.0
+    },
+    {
+      "od": "2005-04-28",
+      "stopa": 14.0
+    },
+    {
+      "od": "2005-06-30",
+      "stopa": 13.0
+    },
+    {
+      "od": "2005-07-28",
+      "stopa": 12.5
+    },
+    {
+      "od": "2005-09-01",
+      "stopa": 12.0
+    },
+    {
+      "od": "2006-02-01",
+      "stopa": 11.5
+    },
+    {
+      "od": "2006-03-01",
+      "stopa": 11.0
+    },
+    {
+      "od": "2007-04-26",
+      "stopa": 11.5
+    },
+    {
+      "od": "2007-06-28",
+      "stopa": 12.0
+    },
+    {
+      "od": "2007-08-30",
+      "stopa": 12.5
+    },
+    {
+      "od": "2007-11-29",
+      "stopa": 13.0
+    },
+    {
+      "od": "2008-01-31",
+      "stopa": 13.5
+    },
+    {
+      "od": "2008-02-28",
+      "stopa": 14.0
+    },
+    {
+      "od": "2008-03-27",
+      "stopa": 14.5
+    },
+    {
+      "od": "2008-06-26",
+      "stopa": 15.0
+    },
+    {
+      "od": "2008-11-27",
+      "stopa": 14.5
+    },
+    {
+      "od": "2008-12-24",
+      "stopa": 13.0
+    },
+    {
+      "od": "2009-01-28",
+      "stopa": 11.5
+    },
+    {
+      "od": "2009-02-26",
+      "stopa": 11.0
+    },
+    {
+      "od": "2009-03-26",
+      "stopa": 10.5
+    },
+    {
+      "od": "2009-06-25",
+      "stopa": 10.0
+    },
+    {
+      "od": "2010-11-09",
+      "stopa": 12.0
+    },
+    {
+      "od": "2011-01-20",
+      "stopa": 12.5
+    },
+    {
+      "od": "2011-04-06",
+      "stopa": 13.0
+    },
+    {
+      "od": "2011-05-12",
+      "stopa": 13.5
+    },
+    {
+      "od": "2011-06-09",
+      "stopa": 14.0
+    },
+    {
+      "od": "2012-05-10",
+      "stopa": 14.5
+    },
+    {
+      "od": "2012-11-08",
+      "stopa": 14.0
+    },
+    {
+      "od": "2012-12-06",
+      "stopa": 13.5
+    },
+    {
+      "od": "2013-01-10",
+      "stopa": 13.0
+    },
+    {
+      "od": "2013-02-07",
+      "stopa": 12.5
+    },
+    {
+      "od": "2013-03-07",
+      "stopa": 11.5
+    },
+    {
+      "od": "2013-05-09",
+      "stopa": 11.0
+    },
+    {
+      "od": "2013-06-06",
+      "stopa": 10.5
+    },
+    {
+      "od": "2013-07-04",
+      "stopa": 10.0
+    },
+    {
+      "od": "2014-10-09",
+      "stopa": 8.0
+    }
+  ],
+  "prog_odsetek_podatkowych": {
+    "kwota": 8.7,
+    "zrodlo": "art. 54 § 1 pkt 5 Ordynacji podatkowej: 3 × opłata Poczty Polskiej za polecenie (2,90 zł); kwota podawana w kalkulatorze MF (podatki.gov.pl)."
+  }
 }

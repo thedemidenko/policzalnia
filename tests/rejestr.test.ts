@@ -7,7 +7,7 @@ describe('rejestr kalkulatorów', () => {
   const komponenty = readFileSync('src/components/Kalkulator.astro', 'utf8');
   for (const k of KALKULATORY) {
     it(`${k}: jest w .pages.yml`, () => expect(pagesYml).toContain(`value: ${k}`));
-    it(`${k}: jest w mapie komponentów`, () => expect(komponenty).toMatch(new RegExp(`\\b${k}:`)));
+    it(`${k}: jest w mapie komponentów`, () => expect(komponenty).toMatch(new RegExp(`(\\b|')${k}'?:`)));
   }
   it('każdy plik komponentu jest zarejestrowany', () => {
     const pliki = readdirSync('src/components/kalkulatory').map((f) => f.replace('.astro', '').toLowerCase());

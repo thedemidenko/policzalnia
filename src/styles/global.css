@@ -295,11 +295,15 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .paragon .uwagi { margin: 12px 0 0; padding-left: 1.1em; font-size: .8rem; line-height: 1.4; }
 .paragon .uwagi li + li { margin-top: 4px; }
 .rozbicie .tabela-przewijana + .tabela-przewijana { margin-top: 12px; }
+.naglowki-wierszy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 40px; gap: 8px; font-size: .8rem; color: var(--olowek); margin-bottom: 4px; }
+.jeden .usun { visibility: hidden; }
+.zaleglosc + .zaleglosc { margin-top: 0; }
+.rozbicie tr.grupa td { text-align: left; font-weight: 700; background: color-mix(in srgb, var(--zakreslacz) 20%, var(--papier)); white-space: normal; }
 
 /* ===== Wydruk: sam kalkulator z wynikiem ===== */
 @media print {
   body { background: #fff !important; color: #000; }
-  header, footer, .okruszki, .etykieta, .lead, .tresc, .faq, .powiazane, .autor, .reklama, .sidebar, .akcje, .pasek-wyniku, .wplaty .podpowiedz, [data-dodaj-wplate], .usun { display: none !important; }
+  header, footer, .okruszki, .etykieta, .lead, .tresc, .faq, .powiazane, .autor, .reklama, .sidebar, .akcje, .pasek-wyniku, .wplaty .podpowiedz, [data-dodaj-wplate], [data-dodaj-zal], .usun, .naglowki-wierszy + * + .przycisk + small { display: none !important; }
   .kalkulator { box-shadow: none; border: 1px solid #000; grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px; margin-top: 12px; }
   .kalkulator input, .kalkulator select { padding: 6px 8px !important; font-size: .9rem !important; min-height: 0 !important; }
   .segmenty span { padding: 4px 10px; font-size: .8rem; }
