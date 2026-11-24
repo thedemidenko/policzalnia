@@ -1,9 +1,11 @@
 ---
 import type { KluczKalkulatora } from '../lib/rejestr';
 import Vat from './kalkulatory/Vat.astro';
+import Odsetki from './kalkulatory/Odsetki.astro';
 
 const KOMPONENTY = {
   vat: Vat,
+  odsetki: Odsetki,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

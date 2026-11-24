@@ -43,6 +43,7 @@ content:
         options:
           values:
             - { value: vat, label: VAT netto-brutto }
+            - { value: odsetki, label: Odsetki ustawowe i handlowe }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }

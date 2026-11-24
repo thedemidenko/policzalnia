@@ -1,0 +1,81 @@
+---
+import { NAZWY } from '../../lib/odsetki';
+const rodzaje = Object.entries(NAZWY) as [string, string][];
+const etykiety: Record<string, string> = { opoznienie: 'za opóźnienie', kapitalowe: 'kapitałowe', handlowe: 'handlowe' };
+---
+<form id="k-odsetki" class="pola" autocomplete="off">
+  <div class="pole">
+    <label for="ods-kwota">Kwota należności</label>
+    <div class="kwota" data-jedn="zł"><input id="ods-kwota" name="kwota" type="text" inputmode="decimal" value="10000" /></div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ods-termin">Termin płatności</label>
+      <input id="ods-termin" name="termin" type="date" min="2005-10-14" />
+    </div>
+    <div class="pole">
+      <label for="ods-zaplata">Data zapłaty</label>
+      <input id="ods-zaplata" name="zaplata" type="date" />
+    </div>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Rodzaj odsetek</legend>
+    {rodzaje.map(([k], i) => <label><input type="radio" name="rodzaj" value={k} checked={i === 0} /><span>{etykiety[k]}</span></label>)}
+  </fieldset>
+  <label class="przelacznik" data-leczniczy hidden><input type="checkbox" name="leczniczy" value="1" /> Dłużnik to podmiot leczniczy (stopa ref. + 8 pp)</label>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Należność</dt><dd id="ods-kapital"></dd>
+    <dt>Dni opóźnienia</dt><dd id="ods-dni"></dd>
+    <dt>Stopa roczna</dt><dd id="ods-stopa"></dd>
+    <dt>Razem</dt><dd id="ods-razem"></dd>
+  </dl>
+  <p class="blad" id="ods-blad" hidden></p>
+  <div class="suma"><span>Odsetki</span><strong id="ods-odsetki" data-glowny="Odsetki"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · dziękujemy!</div>
+</div></div>
+<details class="rozbicie" id="ods-rozbicie" open>
+  <summary>Rozbicie na okresy</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Okres</th><th>Dni</th><th>Stopa</th><th>Odsetki</th></tr></thead>
+    <tbody id="ods-okresy"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczOdsetki, type RodzajOdsetek } from '../../lib/odsetki';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+  const form = document.getElementById('k-odsetki') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const data = (iso: string) => iso.split('-').reverse().join('.');
+  const proc = (n: number) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+
+  // domyślnie: zapłata dziś, termin 3 miesiące wcześniej (parametry z linku nadpisują)
+  const dzis = new Date(); const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const termin = form.elements.namedItem('termin') as HTMLInputElement;
+  const zaplata = form.elements.namedItem('zaplata') as HTMLInputElement;
+  if (!zaplata.value) zaplata.value = lokalnie(dzis);
+  if (!termin.value) { const t = new Date(dzis); t.setMonth(t.getMonth() - 3); termin.value = lokalnie(t); }
+
+  podlaczKalkulator(form, () => {
+    const rodzaj = val('rodzaj') as RodzajOdsetek;
+    const leczniczy = (form.elements.namedItem('leczniczy') as HTMLInputElement).checked;
+    form.querySelector<HTMLElement>('[data-leczniczy]')!.hidden = rodzaj !== 'handlowe';
+    const kwota = liczba(val('kwota'));
+    const w = obliczOdsetki(kwota, termin.value, zaplata.value, rodzaj, leczniczy);
+    const blad = $('ods-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    ustawKwote($('ods-kapital'), kwota);
+    $('ods-dni').textContent = String(w.dni);
+    const stopy = [...new Set(w.okresy.map((o) => o.stopa))];
+    $('ods-stopa').textContent = stopy.length === 0 ? '–' : stopy.length === 1 ? proc(stopy[0]) : 'zmienna';
+    ustawKwote($('ods-razem'), w.razem);
+    ustawKwote($('ods-odsetki'), w.odsetki);
+    $('ods-rozbicie').hidden = w.okresy.length === 0;
+    $('ods-okresy').innerHTML = w.okresy
+      .map((o) => `<tr><td>${data(o.od)} – ${data(o.do)}</td><td>${o.dni}</td><td>${proc(o.stopa)}</td><td>${zl(o.odsetki)}</td></tr>`)
+      .join('') + (w.okresy.length > 1 ? `<tr class="razem"><td>Razem</td><td>${w.dni}</td><td></td><td>${zl(w.odsetki)}</td></tr>` : '');
+  });
+</script>
