@@ -3,11 +3,13 @@ import type { KluczKalkulatora } from '../lib/rejestr';
 import Vat from './kalkulatory/Vat.astro';
 import Odsetki from './kalkulatory/Odsetki.astro';
 import OdsetkiPodatkowe from './kalkulatory/OdsetkiPodatkowe.astro';
+import Staz from './kalkulatory/Staz.astro';
 
 const KOMPONENTY = {
   vat: Vat,
   odsetki: Odsetki,
   'odsetki-podatkowe': OdsetkiPodatkowe,
+  staz: Staz,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

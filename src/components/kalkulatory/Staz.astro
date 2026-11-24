@@ -1,0 +1,144 @@
+---
+import { NAUKA, RODZAJE } from '../../lib/staz';
+const rodzaje = Object.entries(RODZAJE);
+const nauka = Object.entries(NAUKA);
+---
+<form id="k-staz" class="pola" autocomplete="off">
+  <div class="pole">
+    <span class="nazwa" id="st-okresy-nazwa">Okresy pracy</span>
+    <div class="naglowki-wierszy okres-naglowki" aria-hidden="true"><span>Od</span><span>Do (puste = nadal)</span><span></span></div>
+    <div data-okresy role="group" aria-labelledby="st-okresy-nazwa">
+      <div class="okres">
+        <input type="date" name="o1" aria-label="Początek okresu 1" />
+        <input type="date" name="d1" aria-label="Koniec okresu 1 (puste = trwa)" />
+        <button type="button" class="usun" aria-label="Usuń okres">×</button>
+        <select name="r1" aria-label="Rodzaj okresu 1">{rodzaje.map(([k, n]) => <option value={k}>{n}</option>)}</select>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj-okres>+ Dodaj okres</button>
+    <small>Wpisz każdą umowę ze świadectwa pracy albo zaświadczenia ZUS. Okresy, które się nakładają, liczymy raz.</small>
+  </div>
+  <div class="pole">
+      <label for="st-nauka">Ukończona szkoła (do stażu urlopowego)</label>
+      <select id="st-nauka" name="nauka">{nauka.map(([k, n]) => <option value={k} selected={k === 'brak'}>{n.nazwa}{n.lata ? ` (+${n.lata} l.)` : ''}</option>)}</select>
+  </div>
+  <div class="pole">
+      <label for="st-dzien">Staż na dzień</label>
+      <input id="st-dzien" name="dzien" type="date" />
+  </div>
+  <details class="wplaty" data-koniec-nauki>
+    <summary>Pracowałeś w trakcie nauki?</summary>
+    <p class="podpowiedz">Podaj datę ukończenia szkoły. Do stażu urlopowego wliczymy albo lata nauki, albo pracę w tym czasie – co korzystniejsze (art. 155 § 2 KP).</p>
+    <div class="pole">
+      <label for="st-koniec">Data ukończenia szkoły</label>
+      <input id="st-koniec" name="koniec" type="date" />
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Dni</dt><dd id="st-dni"></dd>
+    <dt data-inne hidden>Tylko etat</dt><dd data-inne hidden id="st-uop"></dd>
+    <dt data-n hidden id="st-nauka-et">Szkoła</dt><dd data-n hidden id="st-nauka-w"></dd>
+    <dt>Do urlopu</dt><dd id="st-urlopowy"></dd>
+    <dt>Urlop</dt><dd id="st-wymiar"></dd>
+    <dt data-prog hidden id="st-prog-et">26 dni od</dt><dd data-prog hidden id="st-prog"></dd>
+  </dl>
+  <ul class="uwagi" id="st-uwagi" hidden></ul>
+  <p class="blad" id="st-blad" hidden></p>
+  <div class="suma suma-tekst"><span>Staż pracy</span><strong id="st-staz" data-glowny="Staż pracy"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · 30 dni = 1 miesiąc przy sumowaniu</div>
+</div></div>
+<details class="rozbicie" id="st-rozbicie" open>
+  <summary>Okresy wliczone do stażu</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Okres</th><th>Długość</th></tr></thead>
+    <tbody id="st-okresy"></tbody>
+  </table></div>
+</details>
+<template id="st-wiersz">
+  <div class="okres">
+    <input type="date" aria-label="Początek okresu" />
+    <input type="date" aria-label="Koniec okresu (puste = trwa)" />
+    <button type="button" class="usun" aria-label="Usuń okres">×</button>
+    <select aria-label="Rodzaj okresu">{rodzaje.map(([k, n]) => <option value={k}>{n}</option>)}</select>
+  </div>
+</template>
+<script>
+  import { obliczStaz, roznica, opisLMD, type LMD, type Nauka, type RodzajOkresu } from '../../lib/staz';
+  import { podlaczKalkulator } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-staz') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const krotko = (x: LMD) => `${x.lata} l. ${x.miesiace} mies. ${x.dni} d.`;
+  const params = new URLSearchParams(location.search);
+
+  // --- wiersze okresów: o1/d1/r1, o2/d2/r2… (nazwy trafiają do „Linku do wyliczenia”)
+  const lista = form.querySelector<HTMLElement>('[data-okresy]')!;
+  const wzor = document.getElementById('st-wiersz') as HTMLTemplateElement;
+  const przenumeruj = () => {
+    lista.querySelectorAll('.okres').forEach((w, i) => {
+      const [o, d] = w.querySelectorAll('input'); const r = w.querySelector('select')!;
+      o.name = `o${i + 1}`; d.name = `d${i + 1}`; r.name = `r${i + 1}`;
+    });
+    lista.classList.toggle('jeden', lista.children.length === 1);
+  };
+  const dodaj = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); };
+  form.querySelector('[data-dodaj-okres]')!.addEventListener('click', () => { dodaj(); (lista.lastElementChild?.querySelector('input') as HTMLInputElement)?.focus(); });
+  lista.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('.usun');
+    if (!b) return;
+    b.closest('.okres')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input'));
+  });
+  przenumeruj();
+  for (let i = 2; params.has(`o${i}`); i++) dodaj();
+  if (params.get('koniec')) (form.querySelector('[data-koniec-nauki]') as HTMLDetailsElement).open = true;
+
+  // --- domyślnie: dziś; przykładowy okres od 1 stycznia 5 lat temu
+  const dzien = el('dzien');
+  if (!dzien.value) dzien.value = lokalnie(new Date());
+  if (!el('o1').value) el('o1').value = `${new Date().getFullYear() - 5}-01-01`;
+
+  const przelicz = () => {
+    const okresy = [...lista.querySelectorAll('.okres')].map((w) => {
+      const [o, d] = w.querySelectorAll('input');
+      return { od: o.value, do: d.value || undefined, rodzaj: w.querySelector('select')!.value as RodzajOkresu };
+    });
+    const w = obliczStaz(okresy, dzien.value, (form.elements.namedItem('nauka') as HTMLSelectElement).value as Nauka, el('koniec').value || undefined);
+
+    const blad = $('st-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const uwagi: string[] = [];
+    if (w.nakladanie) uwagi.push('Część okresów się nakładała – te dni policzyliśmy raz (art. 302¹ § 10 KP).');
+    if (w.maInneOkresy) uwagi.push(`Zlecenia, działalność i pracę za granicą wlicza się od 1.01.2026 (sektor publiczny) albo od 1.05.2026 (pozostali pracodawcy) – po udokumentowaniu, np. zaświadczeniem z ZUS. Bez nich staż wynosi ${opisLMD(w.tylkoUop)}.`);
+    if (w.naukaPominieta) uwagi.push('Praca w czasie nauki daje więcej niż lata szkoły – do stażu urlopowego wliczyliśmy pracę (art. 155 § 2 KP).');
+    if (w.dataProgu) uwagi.push('Datę 26 dni urlopu liczymy przy założeniu, że obecne zatrudnienie trwa bez przerw. Po przekroczeniu 10 lat w ciągu roku przysługuje urlop uzupełniający (art. 158 KP).');
+    const ul = $('st-uwagi');
+    ul.hidden = uwagi.length === 0 || !!w.blad; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    $('st-dni').textContent = w.blad ? '–' : w.dniLaczny.toLocaleString('pl-PL');
+    document.querySelectorAll<HTMLElement>('.paragon [data-inne]').forEach((x) => (x.hidden = !w.maInneOkresy));
+    $('st-uop').textContent = krotko(w.tylkoUop);
+    document.querySelectorAll<HTMLElement>('.paragon [data-n]').forEach((x) => (x.hidden = w.naukaLata === 0 || w.naukaPominieta));
+    $('st-nauka-w').textContent = `+ ${w.naukaLata} lat`;
+    $('st-urlopowy').textContent = w.blad ? '–' : krotko(w.urlopowy);
+    $('st-wymiar').textContent = w.blad ? '–' : `${w.wymiarUrlopu} dni rocznie`;
+    const progWidoczny = !w.blad && w.wymiarUrlopu === 20;
+    document.querySelectorAll<HTMLElement>('.paragon [data-prog]').forEach((x) => (x.hidden = !progWidoczny));
+    $('st-prog-et').textContent = w.dataProgu ? '26 dni od' : 'Do 26 dni';
+    $('st-prog').textContent = w.dataProgu ? pl(w.dataProgu) : w.doProgu ? krotko(w.doProgu) : '';
+
+    const glowny = $('st-staz');
+    const tekst = w.blad ? '–' : krotko(w.laczny);
+    glowny.textContent = tekst;
+    glowny.dataset.wartosc = w.blad ? '–' : opisLMD(w.laczny);
+
+    $('st-rozbicie').hidden = w.scalone.length === 0;
+    $('st-okresy').innerHTML = w.scalone.map((p) => `<tr><td>${pl(p.od)} – ${pl(p.do)}</td><td>${krotko(roznica(p.od, p.do))}</td></tr>`).join('')
+      + (w.scalone.length > 1 ? `<tr class="razem"><td>Razem (30 dni = 1 miesiąc)</td><td>${krotko(w.laczny)}</td></tr>` : '');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
