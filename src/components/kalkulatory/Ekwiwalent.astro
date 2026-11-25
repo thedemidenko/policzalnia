@@ -1,0 +1,111 @@
+---
+const etaty: [string, string][] = [['1', 'pełny etat'], ['0.875', '7/8 etatu'], ['0.75', '3/4 etatu'], ['0.5', '1/2 etatu'], ['0.25', '1/4 etatu']];
+---
+<form id="k-ekwiwalent" class="pola" autocomplete="off">
+  <div class="pole-para">
+    <div class="pole">
+      <label for="e-koniec">Ostatni dzień pracy</label>
+      <input id="e-koniec" name="koniec" type="date" />
+    </div>
+    <div class="pole">
+      <label for="e-etat">Etat</label>
+      <select id="e-etat" name="etat">{etaty.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole">
+    <label for="e-stale">Pensja zasadnicza i stałe dodatki (brutto)</label>
+    <div class="kwota" data-jedn="zł"><input id="e-stale" name="stale" type="text" inputmode="decimal" value="7000" /></div>
+  </div>
+  <details class="wplaty" data-zmienne>
+    <summary>Premie, nadgodziny, prowizje</summary>
+    <div class="pole">
+      <label for="e-zmienne">Średnio miesięcznie z ostatnich 3 miesięcy</label>
+      <div class="kwota" data-jedn="zł"><input id="e-zmienne" name="zmienne" type="text" inputmode="decimal" placeholder="0" /></div>
+      <small>Premie miesięczne, nadgodziny, prowizje, dodatek za pracę w nocy – wypłacone w 3 miesiącach przed odejściem.</small>
+    </div>
+    <div class="pole">
+      <label for="e-premie">Premie kwartalne i roczne z 12 miesięcy (razem)</label>
+      <div class="kwota" data-jedn="zł"><input id="e-premie" name="premie" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+  </details>
+  <fieldset class="segmenty">
+    <legend>Niewykorzystany urlop</legend>
+    <label><input type="radio" name="tryb" value="policz" checked /><span>policz za mnie</span></label>
+    <label><input type="radio" name="tryb" value="dni" /><span>znam liczbę dni</span></label>
+  </fieldset>
+  <div class="pole" data-tylko="dni" hidden>
+    <label for="e-dni">Dni niewykorzystanego urlopu</label>
+    <div class="kwota" data-jedn="dni"><input id="e-dni" name="dni" type="text" inputmode="decimal" value="5" /></div>
+  </div>
+  <div data-tylko="policz" class="opcje">
+    <fieldset class="segmenty">
+      <legend>Staż urlopowy (praca + szkoła)</legend>
+      <label><input type="radio" name="staz" value="ponizej" checked /><span>poniżej 10 lat</span></label>
+      <label><input type="radio" name="staz" value="powyzej" /><span>10 lat i więcej</span></label>
+    </fieldset>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="e-wyk">Wykorzystany w tym roku</label>
+        <div class="kwota" data-jedn="dni"><input id="e-wyk" name="wyk" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="e-zal">Zaległy z lat poprzednich</label>
+        <div class="kwota" data-jedn="dni"><input id="e-zal" name="zal" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="e-poczatek">Początek pracy (jeśli w tym roku)</label>
+      <input id="e-poczatek" name="poczatek" type="date" />
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="norma7" value="1" /> Dzień pracy trwa 7 godzin (osoba z niepełnosprawnością)</label>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Współczynnik</dt><dd id="e-wsp"></dd>
+    <dt>Podstawa</dt><dd id="e-podstawa"></dd>
+    <dt>Za 1 dzień</dt><dd id="e-dzien"></dd>
+    <dt>Za 1 godzinę</dt><dd id="e-godz"></dd>
+    <dt>Urlop</dt><dd id="e-urlop"></dd>
+  </dl>
+  <ul class="uwagi" id="e-uwagi" hidden></ul>
+  <p class="blad" id="e-blad" hidden></p>
+  <div class="suma"><span>Ekwiwalent</span><strong id="e-wynik" data-glowny="Ekwiwalent brutto"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · kwota brutto</div>
+</div></div>
+<script>
+  import { obliczEkwiwalent } from '../../lib/ekwiwalent';
+  import { liczba } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-ekwiwalent') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const n2 = (x: number) => x.toLocaleString('pl-PL', { maximumFractionDigits: 2 });
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const p = new URLSearchParams(location.search);
+  if (p.has('zmienne') || p.has('premie')) (form.querySelector('[data-zmienne]') as HTMLDetailsElement).open = true;
+  if (!el('koniec').value) el('koniec').value = lokalnie(new Date());
+
+  const przelicz = () => {
+    const tryb = val('tryb') as 'dni' | 'policz';
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== tryb));
+    const w = obliczEkwiwalent({
+      koniec: val('koniec'), stale: liczba(val('stale')), zmienne: liczba(val('zmienne')), premie12: liczba(val('premie')),
+      etat: +val('etat'), norma: el('norma7').checked ? 7 : 8, tryb, dni: liczba(val('dni')),
+      poczatek: val('poczatek') || undefined, dziesiecLat: val('staz') === 'powyzej', wykorzystany: liczba(val('wyk')), zalegly: liczba(val('zal')),
+    });
+    const blad = $('e-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('e-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    $('e-wsp').textContent = w.blad ? '–' : `${n2(w.wspolczynnik)} (${w.rok})`;
+    ustawKwote($('e-podstawa'), w.podstawa);
+    ustawKwote($('e-dzien'), w.zaDzien);
+    ustawKwote($('e-godz'), w.zaGodzine);
+    $('e-urlop').textContent = w.blad ? '–' : `${n2(w.dni)} dni = ${n2(w.godziny)} h`;
+    ustawKwote($('e-wynik'), w.ekwiwalent);
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

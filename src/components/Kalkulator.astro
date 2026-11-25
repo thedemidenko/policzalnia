@@ -7,6 +7,7 @@ import Staz from './kalkulatory/Staz.astro';
 import Urlop from './kalkulatory/Urlop.astro';
 import Delegacja from './kalkulatory/Delegacja.astro';
 import Macierzynski from './kalkulatory/Macierzynski.astro';
+import Ekwiwalent from './kalkulatory/Ekwiwalent.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -16,6 +17,7 @@ const KOMPONENTY = {
   urlop: Urlop,
   delegacja: Delegacja,
   macierzynski: Macierzynski,
+  ekwiwalent: Ekwiwalent,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }
