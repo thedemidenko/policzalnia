@@ -336,7 +336,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 }
 .rozbicie tr.aktywny td { background: color-mix(in srgb, var(--kolor, var(--tusz)) 12%, var(--papier)); font-weight: 600; }
 .kalkulator #ls-kredyt { grid-column: 1 / -1; margin: 0; }
-#ls-formy td:first-child, #ls-siatka td:first-child, #lk-por td:first-child, #lk-okresy td:first-child { white-space: nowrap; }
+#ls-formy td:first-child, #ls-siatka td:first-child, #lk-por td:first-child, #lk-okresy td:first-child, #n-war td:first-child { white-space: nowrap; }
 .wiersz-oferty { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; margin-bottom: 8px; }
 .wiersz-oferty > span:first-child { font-weight: 700; }
 .kalkulator .wiersz-oferty input { min-height: 44px; padding: 8px 10px; font-size: .95rem; }

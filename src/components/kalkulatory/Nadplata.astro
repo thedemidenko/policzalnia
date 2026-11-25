@@ -1,0 +1,216 @@
+---
+const coIle: [string, string][] = [['1', 'co miesiąc'], ['3', 'co kwartał'], ['6', 'co pół roku'], ['12', 'co rok']];
+---
+<form id="k-nadplata" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Znam</legend>
+    <label><input type="radio" name="znam" value="saldo" checked /><span>kapitał do spłaty</span></label>
+    <label><input type="radio" name="znam" value="kredyt" /><span>kwotę kredytu</span></label>
+  </fieldset>
+  <div class="pole-para" data-tylko="saldo">
+    <div class="pole">
+      <label for="n-saldo">Kapitał do spłaty</label>
+      <div class="kwota" data-jedn="zł"><input id="n-saldo" name="saldo" type="text" inputmode="decimal" value="300000" /></div>
+    </div>
+    <div class="pole">
+      <label for="n-rat">Zostało rat</label>
+      <div class="kwota" data-jedn="mies."><input id="n-rat" name="rat" type="text" inputmode="numeric" value="300" /></div>
+    </div>
+  </div>
+  <div data-tylko="kredyt" hidden>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="n-kwota">Kwota kredytu</label>
+        <div class="kwota" data-jedn="zł"><input id="n-kwota" name="kwota" type="text" inputmode="decimal" value="400000" /></div>
+      </div>
+      <div class="pole">
+        <label for="n-lata">Okres kredytu</label>
+        <div class="kwota" data-jedn="lat"><input id="n-lata" name="lata" type="text" inputmode="numeric" value="30" /></div>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="n-splacono">Spłacone raty</label>
+      <div class="kwota" data-jedn="rat"><input id="n-splacono" name="splacono" type="text" inputmode="numeric" value="24" /></div>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="n-stopa">Oprocentowanie</label>
+      <div class="kwota" data-jedn="%"><input id="n-stopa" name="stopa" type="text" inputmode="decimal" value="7" aria-describedby="n-stopa-pod" /></div>
+    </div>
+    <div class="pole">
+      <label for="n-raty">Raty</label>
+      <select id="n-raty" name="raty"><option value="rowne">równe</option><option value="malejace">malejące</option></select>
+    </div>
+  </div>
+  <small id="n-stopa-pod">Aktualne oprocentowanie z umowy albo harmonogramu – przy zmiennym to WIBOR (POLSTR) + marża.</small>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="n-jedn">Nadpłata jednorazowa</label>
+      <div class="kwota" data-jedn="zł"><input id="n-jedn" name="jednorazowa" type="text" inputmode="decimal" value="30000" /></div>
+    </div>
+    <div class="pole">
+      <label for="n-mj">Przy racie nr</label>
+      <input id="n-mj" name="mj" type="text" inputmode="numeric" value="1" />
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="n-cykl">Nadpłata cykliczna</label>
+      <div class="kwota" data-jedn="zł"><input id="n-cykl" name="cykliczna" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <div class="pole">
+      <label for="n-co">Jak często</label>
+      <select id="n-co" name="co">{coIle.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    </div>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Co ma dać nadpłata</legend>
+    <label><input type="radio" name="skutek" value="okres" checked /><span>krótszy okres</span></label>
+    <label><input type="radio" name="skutek" value="rata" /><span>niższa rata</span></label>
+    <label><input type="radio" name="skutek" value="mix" /><span>mix</span></label>
+  </fieldset>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="n-od">Cykliczna od raty</label>
+        <input id="n-od" name="od" type="text" inputmode="numeric" placeholder="1" />
+      </div>
+      <div class="pole">
+        <label for="n-ile">Ile razy</label>
+        <input id="n-ile" name="ile" type="text" inputmode="numeric" placeholder="do końca" />
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="n-ns">Nowa stopa</label>
+        <div class="kwota" data-jedn="%"><input id="n-ns" name="ns" type="text" inputmode="decimal" placeholder="bez zmian" /></div>
+      </div>
+      <div class="pole">
+        <label for="n-nsm">Od raty nr</label>
+        <input id="n-nsm" name="nsm" type="text" inputmode="numeric" placeholder="13" />
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="n-prow">Prowizja</label>
+        <div class="kwota" data-jedn="%"><input id="n-prow" name="prowizja" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="n-prowm">Jeszcze przez</label>
+        <div class="kwota" data-jedn="mies."><input id="n-prowm" name="prowm" type="text" inputmode="numeric" placeholder="0" /></div>
+      </div>
+    </div>
+    <small>Hipoteczny ze zmienną stopą: prowizja tylko przez 36 miesięcy od zawarcia umowy, maks. 3% i nie więcej niż roczne odsetki od nadpłaty.</small>
+    <div class="pole">
+      <label for="n-inw">Zamiast nadpłacać, inwestuję na</label>
+      <div class="kwota" data-jedn="% rocznie"><input id="n-inw" name="inw" type="text" inputmode="decimal" value="5" /></div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="belka" value="1" checked /> z podatkiem Belki (inwestycja poza IKE)</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt data-kr hidden>Kapitał dziś</dt><dd data-kr hidden id="n-saldo-w"></dd>
+    <dt>Rata teraz</dt><dd id="n-r0"></dd>
+    <dt>Rata po nadpłacie</dt><dd id="n-r1"></dd>
+    <dt>Liczba rat</dt><dd id="n-ile-w"></dd>
+    <dt data-skr>Krócej o</dt><dd data-skr id="n-skr"></dd>
+    <dt>Koniec spłaty</dt><dd id="n-koniec"></dd>
+    <dt>Odsetki przed</dt><dd id="n-o0"></dd>
+    <dt>Odsetki po</dt><dd id="n-o1"></dd>
+    <dt data-prow hidden>Prowizje</dt><dd data-prow hidden id="n-prow-w"></dd>
+    <dt>Suma nadpłat</dt><dd id="n-sn"></dd>
+  </dl>
+  <ul class="uwagi" id="n-uwagi" hidden></ul>
+  <div class="suma"><span>Oszczędzasz na odsetkach</span><strong id="n-wynik" data-glowny="Oszczędzasz na odsetkach"></strong></div>
+  <div class="stopka-paragonu" id="n-stopka">policzalnia.pl</div>
+</div></div>
+<p class="podpowiedz" id="n-inw-w" hidden></p>
+<details class="rozbicie" id="n-war" open>
+  <summary>Krótszy okres, niższa rata czy mix?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Skutek</th><th>Rata po</th><th>Rat</th><th>Odsetki</th><th>Oszczędzasz</th></tr></thead>
+    <tbody id="n-war-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Mix: rata spada, a różnicę do dzisiejszej raty dopłacasz co miesiąc jako nadpłatę – masz niższą ratę obowiązkową i prawie taki sam efekt jak przy skróceniu okresu.</p>
+</details>
+<details class="rozbicie" id="n-lata">
+  <summary>Rok po roku</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Rok</th><th>Raty</th><th>w tym odsetki</th><th>Nadpłaty</th><th>Zostaje</th></tr></thead>
+    <tbody id="n-lata-t"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="n-harm">
+  <summary>Harmonogram rat po nadpłacie</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Rata</th><th>Kwota</th><th>Odsetki</th><th>Kapitał</th><th>Nadpłata</th><th>Zostaje</th></tr></thead>
+    <tbody id="n-harm-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczNadplate, opisMiesiecy, saldoPo, type Raty, type Skutek } from '../../lib/nadplata';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-nadplata') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (['od', 'ile', 'ns', 'prowizja', 'inw'].some((k) => p.has(k))) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const MIES = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+  const miesiacZa = (n: number) => { const d = new Date(); const m = d.getMonth() + n; return `${MIES[((m % 12) + 12) % 12]} ${d.getFullYear() + Math.floor(m / 12)}`; };
+  const NAZWY: Record<Skutek, string> = { okres: 'krótszy okres', rata: 'niższa rata', mix: 'mix' };
+
+  const przelicz = () => {
+    const znam = val('znam');
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== znam));
+    const raty = val('raty') as Raty;
+    const stopa = liczba(val('stopa'));
+    let saldo = liczba(val('saldo')), rat = Math.round(liczba(val('rat')));
+    if (znam === 'kredyt') {
+      const n = Math.round(liczba(val('lata')) * 12), k = Math.round(liczba(val('splacono')));
+      saldo = saldoPo(liczba(val('kwota')), stopa, n, k, raty); rat = Math.max(1, n - k);
+    }
+    const ns = val('ns').trim();
+    const d = {
+      saldo, stopa, rat: Math.max(1, rat), raty, skutek: val('skutek') as Skutek,
+      jednorazowa: liczba(val('jednorazowa')), miesiacJednorazowej: Math.round(liczba(val('mj'))) || 1,
+      cykliczna: liczba(val('cykliczna')), coIle: +val('co'), odMiesiaca: Math.round(liczba(val('od'))) || 1, ileRazy: Math.round(liczba(val('ile'))) || 0,
+      nowaStopa: ns ? liczba(ns) : undefined, odMiesiacaStopa: Math.round(liczba(val('nsm'))) || 13,
+      prowizja: liczba(val('prowizja')), prowizjaMiesiecy: Math.round(liczba(val('prowm'))),
+    };
+    const w = obliczNadplate(d, { stopa: liczba(val('inw')), belka: el('belka').checked });
+    document.querySelectorAll<HTMLElement>('.paragon [data-kr]').forEach((x) => (x.hidden = znam !== 'kredyt'));
+    document.querySelectorAll<HTMLElement>('.paragon [data-prow]').forEach((x) => (x.hidden = w.wynik.prowizje === 0));
+    ustawKwote($('n-saldo-w'), saldo);
+    ustawKwote($('n-r0'), w.baza.rataPocz);
+    ustawKwote($('n-r1'), w.wynik.rataPo);
+    $('n-ile-w').textContent = w.skrocenie > 0 ? `${w.baza.rat} → ${w.wynik.rat}` : String(w.wynik.rat);
+    document.querySelectorAll<HTMLElement>('.paragon [data-skr]').forEach((x) => (x.hidden = w.skrocenie <= 0));
+    $('n-skr').textContent = opisMiesiecy(w.skrocenie);
+    $('n-koniec').textContent = miesiacZa(w.wynik.rat);
+    ustawKwote($('n-o0'), w.baza.odsetki);
+    ustawKwote($('n-o1'), w.wynik.odsetki);
+    ustawKwote($('n-prow-w'), w.wynik.prowizje);
+    ustawKwote($('n-sn'), w.wynik.nadplaty);
+    ustawKwote($('n-wynik'), w.oszczednosc);
+    $('n-stopka').textContent = `policzalnia.pl · ${raty === 'rowne' ? 'raty równe' : 'raty malejące'} · ${NAZWY[d.skutek]}`;
+    const ul = $('n-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const inw = $('n-inw-w');
+    inw.hidden = !w.inwestycja || w.wynik.nadplaty === 0;
+    if (w.inwestycja) inw.innerHTML = w.inwestycja.lepsze === 'nadplata'
+      ? `<strong>Nadpłata wygrywa</strong> z inwestowaniem tych samych pieniędzy na ${val('inw')}%${el('belka').checked ? ' (po podatku Belki)' : ''} – do końca pierwotnego okresu kredytu zostaje ci o ok. ${zl(w.inwestycja.roznica)} więcej.`
+      : `<strong>Inwestowanie wygrywa</strong> – przy ${val('inw')}%${el('belka').checked ? ' po podatku Belki' : ''} do końca pierwotnego okresu kredytu miałbyś o ok. ${zl(w.inwestycja.roznica)} więcej. Pamiętaj, że zysk z inwestycji nie jest pewny.`;
+
+    $('n-war-t').innerHTML = w.warianty.map((x) => `<tr${x.skutek === d.skutek ? ' class="aktywny"' : ''}><td>${NAZWY[x.skutek]}</td><td>${zl(x.rataPo)}</td><td>${x.rat}</td><td>${zl(x.odsetki)}</td><td>${zl(x.oszczednosc)}</td></tr>`).join('');
+    $('n-lata-t').innerHTML = w.lata.map((l) => `<tr><td>${l.rok}.</td><td>${zl(l.raty)}</td><td>${zl(l.odsetki)}</td><td>${zl(l.nadplaty)}</td><td>${zl(l.saldo)}</td></tr>`).join('');
+    $('n-harm-t').innerHTML = w.wynik.harm.map((h) => `<tr><td>${h.nr}</td><td>${zl(h.rata)}</td><td>${zl(h.odsetki)}</td><td>${zl(h.kapital)}</td><td>${h.nadplata ? zl(h.nadplata) : '–'}</td><td>${zl(h.saldo)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
