@@ -1,39 +1,193 @@
 ---
-import { STAWKI_VAT } from '../../lib/vat';
+const stawki: [string, string][] = [['23', '23%'], ['8', '8%'], ['5', '5%'], ['0', '0%'], ['zw', 'zw'], ['np', 'np']];
+const waluty = ['EUR', 'USD', 'GBP', 'CHF', 'CZK', 'SEK', 'NOK', 'DKK', 'UAH'];
 ---
 <form id="k-vat" class="pola" autocomplete="off">
-  <div class="pole">
-    <label for="vat-kwota">Kwota</label>
-    <div class="kwota" data-jedn="zł"><input id="vat-kwota" name="kwota" type="text" inputmode="decimal" value="1000" /></div>
-  </div>
   <fieldset class="segmenty">
-    <legend>Wpisana kwota to</legend>
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="widok" value="kwota" checked /><span>jedną kwotę</span></label>
+    <label><input type="radio" name="widok" value="faktura" /><span>fakturę z pozycjami</span></label>
+  </fieldset>
+  <fieldset class="segmenty">
+    <legend id="vat-tryb-leg">Znam kwotę</legend>
     <label><input type="radio" name="tryb" value="netto" checked /><span>netto</span></label>
     <label><input type="radio" name="tryb" value="brutto" /><span>brutto</span></label>
+    <label data-tylko="kwota"><input type="radio" name="tryb" value="vat" /><span>kwotę VAT</span></label>
   </fieldset>
-  <fieldset class="segmenty">
-    <legend>Stawka VAT</legend>
-    {STAWKI_VAT.map((s, i) => <label><input type="radio" name="stawka" value={s} checked={i === 0} /><span>{s}%</span></label>)}
-  </fieldset>
+  <div data-tylko="kwota" class="opcje">
+    <div class="pole">
+      <label for="vat-kwota">Kwota</label>
+      <div class="kwota" data-jedn="zł" data-waluta><input id="vat-kwota" name="kwota" type="text" inputmode="decimal" value="1000" /></div>
+    </div>
+    <fieldset class="segmenty">
+      <legend>Stawka VAT</legend>
+      {stawki.slice(0, 4).map(([k, e], i) => <label><input type="radio" name="stawka" value={k} checked={i === 0} /><span>{e}</span></label>)}
+    </fieldset>
+  </div>
+  <div data-tylko="faktura" hidden class="pole">
+    <div class="naglowki-wierszy wiersz-fv" aria-hidden="true"><span>Cena</span><span>Ilość</span><span>Stawka</span><span></span></div>
+    <div data-pozycje>
+      <div class="wiersz-fv">
+        <div class="kwota" data-jedn="zł" data-waluta><input name="c1" type="text" inputmode="decimal" value="100" aria-label="Cena pozycji 1" /></div>
+        <input name="i1" type="text" inputmode="decimal" value="1" aria-label="Ilość pozycji 1" />
+        <select name="s1" aria-label="Stawka pozycji 1">{stawki.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+        <button type="button" class="usun" aria-label="Usuń pozycję">×</button>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj-poz>+ Dodaj pozycję</button>
+    <div class="pole">
+      <label for="vat-metoda">Jak liczyć VAT</label>
+      <select id="vat-metoda" name="metoda"><option value="suma">od sumy w stawce</option><option value="pozycje">przy każdej pozycji</option></select>
+    </div>
+  </div>
+  <details class="wplaty" data-waluty>
+    <summary>Faktura w walucie obcej</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="vat-waluta">Waluta</label>
+        <select id="vat-waluta" name="waluta"><option value="">PLN</option>{waluty.map((w) => <option value={w}>{w}</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for="vat-data">Obowiązek podatkowy</label>
+        <input id="vat-data" name="data" type="date" />
+      </div>
+    </div>
+    <div class="pole">
+      <label for="vat-kurs">Kurs średni NBP</label>
+      <input id="vat-kurs" name="kurs" type="text" inputmode="decimal" placeholder="pobiorę z NBP" />
+      <small data-kurs-info>VAT przelicza się po kursie z ostatniego dnia roboczego przed dniem powstania obowiązku podatkowego (art. 31a).</small>
+    </div>
+  </details>
 </form>
 <div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
   <dl>
     <dt>Netto</dt><dd id="vat-netto"></dd>
     <dt>VAT <span id="vat-stawka-op"></span></dt><dd id="vat-vat"></dd>
+    <dt data-pln hidden>VAT w PLN</dt><dd data-pln hidden id="vat-vat-pln"></dd>
+    <dt data-pln hidden>Brutto w PLN</dt><dd data-pln hidden id="vat-brutto-pln"></dd>
   </dl>
+  <p class="slownie" id="vat-slownie"></p>
   <div class="suma"><span>Brutto</span><strong id="vat-brutto" data-glowny="Brutto"></strong></div>
-  <div class="stopka-paragonu">policzalnia.pl · dziękujemy!</div>
+  <div class="stopka-paragonu">policzalnia.pl · zaokrąglenie do grosza</div>
 </div></div>
+<details class="rozbicie" id="vat-rozbicie" hidden open>
+  <summary>Podsumowanie faktury według stawek</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Stawka</th><th>Netto</th><th>VAT</th><th>Brutto</th></tr></thead>
+    <tbody id="vat-sumy"></tbody>
+  </table></div>
+  <p class="podpowiedz" id="vat-roznica"></p>
+</details>
+<template id="vat-wiersz">
+  <div class="wiersz-fv">
+    <div class="kwota" data-jedn="zł" data-waluta><input type="text" inputmode="decimal" aria-label="Cena" placeholder="0" /></div>
+    <input type="text" inputmode="decimal" value="1" aria-label="Ilość" />
+    <select aria-label="Stawka">{stawki.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    <button type="button" class="usun" aria-label="Usuń pozycję">×</button>
+  </div>
+</template>
 <script>
-  import { obliczVat } from '../../lib/vat';
-  import { liczba } from '../../lib/format';
+  import { faktura, kwotaSlownie, obliczVat, procent, type Pozycja, type StawkaVat } from '../../lib/vat';
+  import { liczba, r2, zl } from '../../lib/format';
   import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+  import { dodajDni } from '../../lib/kalendarz';
+
   const form = document.getElementById('k-vat') as HTMLFormElement;
   const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
-  const $ = (id: string) => document.getElementById(id);
-  podlaczKalkulator(form, () => {
-    const w = obliczVat(liczba(val('kwota')), liczba(val('stawka')), val('tryb') as 'netto' | 'brutto');
-    $('vat-stawka-op')!.textContent = `${val('stawka')}%`;
-    ustawKwote($('vat-netto'), w.netto); ustawKwote($('vat-vat'), w.vat); ustawKwote($('vat-brutto'), w.brutto);
-  });
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const params = new URLSearchParams(location.search);
+
+  // pozycje faktury: c1/i1/s1…
+  const lista = form.querySelector<HTMLElement>('[data-pozycje]')!;
+  const wzor = document.getElementById('vat-wiersz') as HTMLTemplateElement;
+  const przenumeruj = () => {
+    lista.querySelectorAll('.wiersz-fv').forEach((w, i) => {
+      const [c, il] = w.querySelectorAll('input'); const s = w.querySelector('select')!;
+      c.name = `c${i + 1}`; il.name = `i${i + 1}`; s.name = `s${i + 1}`;
+    });
+    lista.classList.toggle('jeden', lista.children.length === 1);
+  };
+  const dodaj = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); };
+  form.querySelector('[data-dodaj-poz]')!.addEventListener('click', () => { dodaj(); (lista.lastElementChild?.querySelector('input') as HTMLInputElement)?.focus(); });
+  lista.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('.usun'); if (!b) return; b.closest('.wiersz-fv')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input')); });
+  przenumeruj();
+  for (let i = 2; params.has(`c${i}`); i++) dodaj();
+  if (params.get('waluta')) (form.querySelector('[data-waluty]') as HTMLDetailsElement).open = true;
+
+  // kurs NBP z ostatniego dnia roboczego przed datą obowiązku podatkowego
+  const kursy = new Map<string, Promise<{ mid: number; data: string } | null>>();
+  let kursKlucz = '', kursRecznie = false;
+  const kursInput = form.elements.namedItem('kurs') as HTMLInputElement;
+  const kursInfo = form.querySelector<HTMLElement>('[data-kurs-info]')!;
+  kursInput.addEventListener('input', () => { kursRecznie = kursInput.value.trim() !== ''; });
+  function pobierzKurs(waluta: string, data: string, po: () => void) {
+    const klucz = `${waluta}|${data}`;
+    if (klucz === kursKlucz || kursRecznie) return;
+    kursKlucz = klucz;
+    const od = dodajDni(data, -10), doD = dodajDni(data, -1);
+    if (!kursy.has(klucz)) kursy.set(klucz, fetch(`https://api.nbp.pl/api/exchangerates/rates/a/${waluta.toLowerCase()}/${od}/${doD}/?format=json`)
+      .then((r) => (r.ok ? r.json() : null)).then((j) => { const x = j?.rates?.at(-1); return x ? { mid: x.mid, data: x.effectiveDate } : null; }).catch(() => null));
+    kursInfo.textContent = 'Pobieram kurs z NBP…';
+    kursy.get(klucz)!.then((k) => {
+      if (kursKlucz !== klucz || kursRecznie) return;
+      if (k) { kursInput.value = String(k.mid).replace('.', ','); kursInfo.textContent = `Kurs średni NBP z ${pl(k.data)} – ostatni dzień roboczy przed obowiązkiem podatkowym.`; }
+      else kursInfo.textContent = 'Nie udało się pobrać kursu – wpisz go ręcznie.';
+      po();
+    });
+  }
+  const dataInput = form.elements.namedItem('data') as HTMLInputElement;
+  if (!dataInput.value) dataInput.value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
+  const przelicz = () => {
+    const widok = val('widok');
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== widok));
+    $('vat-tryb-leg').textContent = widok === 'faktura' ? 'Ceny na fakturze są' : 'Znam kwotę';
+    let tryb = val('tryb') as 'netto' | 'brutto' | 'vat';
+    if (widok === 'faktura' && tryb === 'vat') { (form.querySelector('input[name=tryb][value=netto]') as HTMLInputElement).checked = true; tryb = 'netto'; }
+    const waluta = val('waluta');
+    form.querySelectorAll<HTMLElement>('[data-waluta]').forEach((x) => (x.dataset.jedn = waluta || 'zł'));
+    const fmt = (n: number) => (waluta ? `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${waluta}` : zl(n));
+
+    let w: { netto: number; vat: number; brutto: number };
+    if (widok === 'kwota') {
+      w = obliczVat(liczba(val('kwota')), procent(val('stawka') as StawkaVat), tryb);
+      $('vat-stawka-op').textContent = `${val('stawka')}%`;
+      $('vat-rozbicie').hidden = true;
+    } else {
+      const poz: Pozycja[] = [...lista.querySelectorAll('.wiersz-fv')].map((r) => {
+        const [c, il] = r.querySelectorAll('input');
+        return { cena: liczba(c.value), ilosc: liczba(il.value), stawka: r.querySelector('select')!.value as StawkaVat };
+      });
+      const metoda = val('metoda') as 'suma' | 'pozycje';
+      const f = faktura(poz, tryb as 'netto' | 'brutto', metoda);
+      const inna = faktura(poz, tryb as 'netto' | 'brutto', metoda === 'suma' ? 'pozycje' : 'suma');
+      w = f.razem;
+      $('vat-stawka-op').textContent = '';
+      $('vat-rozbicie').hidden = f.sumy.length === 0;
+      $('vat-sumy').innerHTML = f.sumy.map((s) => `<tr><td>${s.stawka === 'zw' || s.stawka === 'np' ? s.stawka : s.stawka + '%'}</td><td>${fmt(s.netto)}</td><td>${fmt(s.vat)}</td><td>${fmt(s.brutto)}</td></tr>`).join('')
+        + (f.sumy.length > 1 ? `<tr class="razem"><td>Razem</td><td>${fmt(w.netto)}</td><td>${fmt(w.vat)}</td><td>${fmt(w.brutto)}</td></tr>` : '');
+      const r = r2(inna.razem.vat - w.vat);
+      $('vat-roznica').textContent = r === 0 ? 'Oba sposoby liczenia VAT dają tu ten sam wynik.' : `Licząc VAT ${metoda === 'suma' ? 'przy każdej pozycji' : 'od sumy w stawce'}, wyszłoby o ${Math.abs(r).toLocaleString('pl-PL', { minimumFractionDigits: 2 })} ${waluta || 'zł'} ${r > 0 ? 'więcej' : 'mniej'} – obie metody są dopuszczalne, ważne, by stosować jedną konsekwentnie.`;
+    }
+    $('vat-netto').textContent = fmt(w.netto);
+    $('vat-vat').textContent = fmt(w.vat);
+    const g = $('vat-brutto');
+    if (waluta) { g.textContent = fmt(w.brutto); g.dataset.wartosc = g.textContent; } else ustawKwote(g, w.brutto);
+
+    // waluta → PLN
+    const zWaluta = !!waluta;
+    document.querySelectorAll<HTMLElement>('.paragon [data-pln]').forEach((x) => (x.hidden = !zWaluta));
+    let slownie = w.brutto;
+    if (zWaluta) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dataInput.value)) pobierzKurs(waluta, dataInput.value, przelicz);
+      const kurs = liczba(kursInput.value);
+      $('vat-vat-pln').textContent = kurs > 0 ? zl(r2(w.vat * kurs)) : 'podaj kurs';
+      $('vat-brutto-pln').textContent = kurs > 0 ? zl(r2(w.brutto * kurs)) : '–';
+      slownie = kurs > 0 ? r2(w.brutto * kurs) : 0;
+    }
+    $('vat-slownie').textContent = slownie > 0 ? `Słownie: ${kwotaSlownie(slownie)}` : '';
+  };
+  form.querySelectorAll('details').forEach((d) => d.addEventListener('toggle', przelicz));
+  podlaczKalkulator(form, przelicz);
 </script>

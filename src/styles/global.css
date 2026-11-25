@@ -300,6 +300,13 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .zaleglosc + .zaleglosc { margin-top: 0; }
 .terminy { margin: 12px 0 0; padding-left: 1.1em; font-size: .88rem; }
 .terminy li + li { margin-top: 4px; }
+.wiersz-fv { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .7fr) minmax(0, .9fr) 40px; gap: 6px; align-items: center; margin-bottom: 8px; }
+.kalkulator .wiersz-fv input, .kalkulator .wiersz-fv select { font-size: .92rem; padding: 8px 6px; min-height: 44px; letter-spacing: -.02em; }
+.kalkulator .wiersz-fv .kwota input { padding-right: 2.6em; }
+.wiersz-fv .kwota::after { right: 6px; font-size: .75rem; }
+.naglowki-wierszy.wiersz-fv { margin-bottom: 4px; }
+.wiersz-fv .usun { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--papier); color: var(--tusz); font-size: 1.2rem; cursor: pointer; }
+.paragon .slownie { font-size: .78rem; line-height: 1.35; margin: 10px 0 0; color: var(--olowek); }
 .trojka { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .trojka label { font-size: .85rem; color: var(--olowek); display: grid; gap: 4px; }
 .kalkulator .trojka input { font-size: 1.05rem; padding: 10px 8px; padding-right: 1.8em; }
@@ -316,7 +323,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 /* ===== Wydruk: sam kalkulator z wynikiem ===== */
 @media print {
   body { background: #fff !important; color: #000; }
-  header, footer, .okruszki, .etykieta, .lead, .tresc, .faq, .powiazane, .autor, .reklama, .sidebar, .akcje, .pasek-wyniku, .wplaty .podpowiedz, [data-dodaj-wplate], [data-dodaj-zal], [data-dodaj-okres], .usun, .naglowki-wierszy + * + .przycisk + small { display: none !important; }
+  header, footer, .okruszki, .etykieta, .lead, .tresc, .faq, .powiazane, .autor, .reklama, .sidebar, .akcje, .pasek-wyniku, .wplaty .podpowiedz, [data-dodaj-wplate], [data-dodaj-zal], [data-dodaj-okres], [data-dodaj-poz], .usun, .naglowki-wierszy + * + .przycisk + small { display: none !important; }
   .kalkulator { box-shadow: none; border: 1px solid #000; grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px; margin-top: 12px; }
   .kalkulator input, .kalkulator select { padding: 6px 8px !important; font-size: .9rem !important; min-height: 0 !important; }
   .segmenty span { padding: 4px 10px; font-size: .8rem; }
