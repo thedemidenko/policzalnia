@@ -1,0 +1,171 @@
+---
+import { LIMITY } from '../../lib/ike';
+const lata = Object.keys(LIMITY);
+const teraz = new Date().getFullYear();
+---
+<form id="k-ike" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="zysk" checked /><span>ile zyskam na IKE</span></label>
+    <label><input type="radio" name="tryb" value="limit" /><span>ile mogę wpłacić</span></label>
+  </fieldset>
+  <div data-tylko="zysk" class="opcje">
+    <div class="pole-para">
+      <div class="pole">
+        <label for="ik-w">Wpłata co miesiąc</label>
+        <div class="kwota" data-jedn="zł"><input id="ik-w" name="miesiecznie" type="text" inputmode="decimal" value="500" /></div>
+      </div>
+      <div class="pole">
+        <label for="ik-stopa">Stopa zwrotu</label>
+        <div class="kwota" data-jedn="% rocznie"><input id="ik-stopa" name="stopa" type="text" inputmode="decimal" value="6" /></div>
+      </div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="pelny" value="1" /> Wpłacam pełny limit co roku</label>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="ik-wiek">Twój wiek</label>
+        <div class="kwota" data-jedn="lat"><input id="ik-wiek" name="wiek" type="text" inputmode="numeric" value="35" /></div>
+      </div>
+      <div class="pole">
+        <label for="ik-ww">Wypłata w wieku</label>
+        <div class="kwota" data-jedn="lat"><input id="ik-ww" name="ww" type="text" inputmode="numeric" value="60" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="ik-inw">W co inwestujesz</label>
+        <select id="ik-inw" name="inwestycja">
+          <option value="fundusz">ETF, fundusze</option>
+          <option value="obligacje">obligacje skarbowe (EDO)</option>
+          <option value="konto">lokata, konto</option>
+        </select>
+      </div>
+      <div class="pole">
+        <label for="ik-pit">Twój PIT</label>
+        <select id="ik-pit" name="pit"><option value="12">12%</option><option value="19">19% (liniowy)</option><option value="32">32%</option></select>
+      </div>
+    </div>
+    <details class="wplaty" data-wiecej>
+      <summary>Więcej opcji</summary>
+      <div class="pole-para">
+        <div class="pole">
+          <label for="ik-start">Mam już na IKE</label>
+          <div class="kwota" data-jedn="zł"><input id="ik-start" name="start" type="text" inputmode="decimal" placeholder="0" /></div>
+        </div>
+        <div class="pole">
+          <label for="ik-g">Wzrost płac (limitu)</label>
+          <div class="kwota" data-jedn="%"><input id="ik-g" name="wzrost" type="text" inputmode="decimal" value="4" /></div>
+        </div>
+      </div>
+      <label class="przelacznik"><input type="checkbox" name="upr" value="1" /> Mam uprawnienia emerytalne (wypłata od 55 lat)</label>
+    </details>
+  </div>
+  <div data-tylko="limit" class="opcje" hidden>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="ik-rok">Rok</label>
+        <select id="ik-rok" name="rok">{lata.map((r) => <option value={r} selected={+r === teraz}>{r}</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for="ik-rodz">Konto</label>
+        <select id="ik-rodz" name="rodzaj"><option value="ike">IKE</option><option value="ikze">IKZE</option><option value="ikzeJdg">IKZE – działalność</option></select>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="ik-wpl">Wpłaciłem już w tym roku</label>
+      <div class="kwota" data-jedn="zł"><input id="ik-wpl" name="wplacono" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+  </div>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl data-tylko-w="zysk">
+    <dt>Wpłacisz</dt><dd id="ik-wpl-w"></dd>
+    <dt>Zysk</dt><dd id="ik-zysk"></dd>
+    <dt>Bez IKE miałbyś</dt><dd id="ik-bez"></dd>
+    <dt>Zysk z ulgi</dt><dd id="ik-kor"></dd>
+    <dt>Zwrot przed 60</dt><dd id="ik-zwrot"></dd>
+  </dl>
+  <dl data-tylko-w="limit" hidden>
+    <dt>Limit roczny</dt><dd id="ik-lim"></dd>
+    <dt>Miesięcznie (1/12)</dt><dd id="ik-lim-m"></dd>
+    <dt>Wpłacaj co mies.</dt><dd id="ik-mies"></dd>
+    <dt>Zostało miesięcy</dt><dd id="ik-mies-n"></dd>
+  </dl>
+  <ul class="uwagi" id="ik-uwagi" hidden></ul>
+  <div class="suma"><span id="ik-et">Na IKE będziesz mieć</span><strong id="ik-wynik" data-glowny="Na IKE będziesz mieć"></strong></div>
+  <div class="stopka-paragonu" id="ik-stopka">policzalnia.pl</div>
+</div></div>
+<details class="rozbicie" id="ik-por" open>
+  <summary>IKE, IKZE czy zwykłe konto?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Gdzie</th><th>Wpłacasz</th><th>Na koniec</th></tr></thead>
+    <tbody id="ik-por-t"></tbody>
+  </table></div>
+  <p class="podpowiedz" id="ik-por-pod"></p>
+</details>
+<details class="rozbicie" id="ik-lata">
+  <summary>Stan IKE co 5 lat</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Wiek</th><th>Wpłacone</th><th>Na IKE</th><th>Bez IKE (po podatku)</th></tr></thead>
+    <tbody id="ik-lata-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { oblicz, pozostalyLimit, warunki, type Inwestycja } from '../../lib/ike';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-ike') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  if (['start', 'upr'].some((k) => new URLSearchParams(location.search).has(k))) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== tryb));
+    document.querySelectorAll<HTMLElement>('.paragon [data-tylko-w]').forEach((x) => (x.hidden = x.dataset.tylkoW !== tryb));
+    $('ik-por').hidden = $('ik-lata').hidden = tryb !== 'zysk';
+    const g = $('ik-wynik'), ul = $('ik-uwagi');
+    const ustawEt = (t: string) => { $('ik-et').textContent = t; g.dataset.glowny = t; };
+
+    if (tryb === 'limit') {
+      const rok = +val('rok');
+      const teraz = new Date();
+      const miesiac = rok === teraz.getFullYear() ? teraz.getMonth() + 1 : rok > teraz.getFullYear() ? 1 : 12;
+      const p = pozostalyLimit(rok, liczba(val('wplacono')), miesiac, val('rodzaj') as never);
+      ustawKwote($('ik-lim'), p.limit); ustawKwote($('ik-lim-m'), p.miesiecznyLimit);
+      $('ik-mies').textContent = p.zostalo > 0 ? zl(p.miesiecznie) : '–';
+      $('ik-mies-n').textContent = String(p.miesiecy);
+      ustawEt('Możesz jeszcze wpłacić'); ustawKwote(g, p.zostalo);
+      $('ik-stopka').textContent = `policzalnia.pl · wpłaty liczą się wg daty zaksięgowania – do 31 grudnia`;
+      ul.hidden = true;
+      return;
+    }
+    const wiek = Math.round(liczba(val('wiek'))), ww = Math.max(wiek + 1, Math.round(liczba(val('ww'))));
+    const lat = ww - wiek;
+    const w = oblicz({
+      miesiecznie: liczba(val('miesiecznie')), pelnyLimit: el('pelny').checked, start: liczba(val('start')), lata: lat,
+      stopa: liczba(val('stopa')), wzrostPlac: liczba(val('wzrost')), inwestycja: val('inwestycja') as Inwestycja, pit: +val('pit'),
+    });
+    ustawKwote($('ik-wpl-w'), w.wplaty); ustawKwote($('ik-zysk'), w.zysk); ustawKwote($('ik-bez'), w.zwykle);
+    ustawKwote($('ik-kor'), w.korzysc); ustawKwote($('ik-zwrot'), w.zwrot);
+    ustawEt(`Na IKE w wieku ${ww} lat`); ustawKwote(g, w.ike);
+    $('ik-stopka').textContent = `policzalnia.pl · ${lat} lat oszczędzania · wypłata bez podatku`;
+    const u = warunki(wiek, ww, lat, el('upr').checked).uwagi;
+    if (w.przekroczenie) u.unshift('Wpłata przekracza roczny limit IKE – nadwyżki nie liczymy (limit 2026: 28 260 zł, 2027: 30 099 zł).');
+    ul.hidden = u.length === 0; ul.innerHTML = u.map((x) => `<li>${x}</li>`).join('');
+
+    const z = w.ikze, pit = val('pit');
+    const rows: [string, number, number, string?][] = [
+      ['IKE', z.wplaty, z.ike],
+      [`IKZE + zwroty`, z.wplaty, z.razem],
+      ['zwykłe konto', z.wplaty, z.zwykle],
+    ];
+    const max = Math.max(...rows.map((r) => r[2]));
+    $('ik-por-t').innerHTML = rows.map((r) => `<tr${r[2] === max ? ' class="aktywny"' : ''}><td>${r[0]}</td><td>${zl(r[1])}</td><td>${zl(r[2])}</td></tr>`).join('');
+    $('ik-por-pod').textContent = `Te same wpłaty, ale w limicie IKZE (11 304 zł w 2026 r.). IKZE: ${zl(z.ryczalt)} ryczałtu 10% przy wypłacie, ale co roku zwrot PIT – razem ${zl(z.ulga)}, który inwestujemy na zwykłym koncie (${zl(z.zwroty)} na koniec). IKZE wypłacisz dopiero od 65 lat.`;
+    $('ik-lata-t').innerHTML = w.lata.filter((l, i) => (i + 1) % 5 === 0 || i === w.lata.length - 1).map((l) => `<tr><td>${wiek + l.rok} lat</td><td>${zl(l.wplaty)}</td><td>${zl(l.ike)}</td><td>${zl(l.zwykle)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
