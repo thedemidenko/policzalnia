@@ -39,14 +39,14 @@ Reforma obniżająca – zawetowana (https://www.gazetaprawna.pl/podatki/artykul
 Dieta 45 zł (<8 h 0; 8–12 h 50%; >12 h 100%; śniadanie −25%, obiad −50%, kolacja −25%), nocleg ryczałt 67,50, hotel limit 900, dojazdy 9 zł/doba, kilometrówka 0,89 / 1,15 / 0,69 / 0,42. **PROJ:** 60 / 90 / 12 zł od 1.01.2027 – nieogłoszone na 19.11.2026.
 
 ## Zasiłek chorobowy
-80% / 100% / 70%; pracodawca 33 dni (50+: 14 dni). Od 1.01.2027 jeden okres zasiłkowy dla wszystkich tytułów (Dz.U. 2026 poz. 26).
+80% / 100% (70% za szpital zniesione 1.01.2022 – sprawdzone w art. 11 ustawy zasiłkowej, Dz.U. 2026 poz. 854); pracodawca 33 dni (50+: 14 dni). Od 1.01.2027 jeden okres zasiłkowy dla wszystkich tytułów (Dz.U. 2026 poz. 26).
 
 ## Staż pracy
 Dz.U. 2025 poz. 1423: zlecenia, JDG, agencyjne wliczane do stażu – od 1.01.2026 sektor publiczny, od 1.05.2026 pozostali; wymagane zaświadczenie ZUS.
 
 ## Do sprawdzenia
 1. PIT 2027 – decyzja prezydenta do 27.11.2026.
-2. Limit 50% KUP (prawa autorskie) przy nowej skali – 120 czy 130 tys.
+2. Limit 50% KUP (prawa autorskie) przy nowej skali – 120 czy 130 tys. (art. 22 ust. 9a = górna granica 1. przedziału; src/lib/dzielo.ts LIMIT_KUP50 = 120 000 – zmienić, jeśli wejdzie nowa skala).
 3. Zdrowotna ryczałt od II 2027 – GUS w styczniu.
 4. Limit odliczenia zdrowotnej (liniowy) 2027 – MF w grudniu.
 5. Dieta 60 zł – Dz.U. w grudniu.

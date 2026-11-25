@@ -1,0 +1,110 @@
+---
+const rok = new Date().getFullYear();
+const sytuacje: [string, string][] = [
+  ['brak', 'tylko to zlecenie (też emeryt, JDG)'],
+  ['student', 'uczeń / student do 26 lat'],
+  ['etat', 'mam też etat (min. płaca minimalna)'],
+  ['pracodawca', 'zlecenie u mojego pracodawcy'],
+];
+---
+<form id="k-zlecenie" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Znam kwotę</legend>
+    <label><input type="radio" name="kierunek" value="brutto" checked /><span>brutto</span></label>
+    <label><input type="radio" name="kierunek" value="netto" /><span>na rękę</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="u-kwota" id="u-kwota-et">Kwota brutto</label>
+      <div class="kwota" data-jedn="zł"><input id="u-kwota" name="kwota" type="text" inputmode="decimal" value="5000" /></div>
+    </div>
+    <div class="pole">
+      <label for="u-rok">Rok</label>
+      <select id="u-rok" name="rok"><option value={String(rok)}>{rok}</option><option value={String(rok + 1)}>{rok + 1}</option></select>
+    </div>
+  </div>
+  <div class="pole">
+    <label for="u-syt">Twoja sytuacja</label>
+    <select id="u-syt" name="sytuacja" aria-describedby="u-syt-pod">{sytuacje.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    <small id="u-syt-pod">„Mam też etat” – także inne zlecenie, od którego ZUS jest płacony od co najmniej płacy minimalnej.</small>
+  </div>
+  <label class="przelacznik" data-tylko="brak"><input type="checkbox" name="chorobowe" value="1" checked /> Dobrowolna składka chorobowa (2,45%) – prawo do L4 i macierzyńskiego</label>
+  <label class="przelacznik" data-ulga><input type="checkbox" name="ulga" value="1" /> Mam mniej niż 26 lat (ulga dla młodych – bez PIT)</label>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <fieldset class="segmenty">
+      <legend>Koszty uzyskania przychodu</legend>
+      <label><input type="radio" name="koszty" value="20" checked /><span>20%</span></label>
+      <label><input type="radio" name="koszty" value="50" /><span>50% – prawa autorskie</span></label>
+    </fieldset>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="u-pit2">PIT-2</label>
+        <select id="u-pit2" name="pit2"><option value="0">nie</option><option value="300">300 zł</option><option value="150">150 zł</option><option value="100">100 zł</option></select>
+      </div>
+      <div class="pole">
+        <label for="u-godz">Godzin w miesiącu</label>
+        <input id="u-godz" name="godziny" type="text" inputmode="decimal" placeholder="opcjonalnie" />
+      </div>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Brutto</dt><dd id="u-brutto"></dd>
+    <dt>Składki ZUS</dt><dd id="u-zus"></dd>
+    <dt>Zdrowotna</dt><dd id="u-zdr"></dd>
+    <dt>Podatek</dt><dd id="u-pit"></dd>
+    <dt>Koszt firmy</dt><dd id="u-koszt"></dd>
+  </dl>
+  <ul class="uwagi" id="u-uwagi" hidden></ul>
+  <div class="suma"><span id="u-suma-et">Na rękę</span><strong id="u-wynik" data-glowny="Na rękę"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · zaliczka PIT 12%</div>
+</div></div>
+<details class="rozbicie" id="u-rozbicie">
+  <summary>Szczegóły wyliczenia</summary>
+  <div class="tabela-przewijana"><table><tbody id="u-szczegoly"></tbody></table></div>
+</details>
+<script>
+  import { bruttoZNettoZlecenia, obliczZlecenie, type Sytuacja } from '../../lib/zlecenie';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-zlecenie') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (p.has('godziny') || p.get('koszty') === '50' || (p.get('pit2') ?? '0') !== '0') (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+
+  const przelicz = () => {
+    const sytuacja = val('sytuacja') as Sytuacja;
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== sytuacja));
+    form.querySelector<HTMLElement>('[data-ulga]')!.hidden = sytuacja === 'student';
+    const opcje = { rok: +val('rok'), sytuacja, chorobowe: el('chorobowe').checked, ulgaMlodych: sytuacja !== 'student' && el('ulga').checked,
+      autorskie: val('koszty') === '50' ? 1 : 0, pit2: +val('pit2'), godziny: liczba(val('godziny')) };
+    const kierunek = val('kierunek');
+    const kwota = liczba(val('kwota'));
+    $('u-kwota-et').textContent = kierunek === 'netto' ? 'Ile chcesz na rękę' : 'Kwota brutto';
+    const brutto = kierunek === 'netto' ? bruttoZNettoZlecenia(kwota, opcje) : kwota;
+    const w = obliczZlecenie({ ...opcje, brutto });
+    const ul = $('u-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    ustawKwote($('u-brutto'), w.brutto);
+    ustawKwote($('u-zus'), w.spoleczne);
+    ustawKwote($('u-zdr'), w.zdrowotna);
+    ustawKwote($('u-pit'), w.podatek);
+    ustawKwote($('u-koszt'), w.kosztZleceniodawcy);
+    const g = $('u-wynik');
+    $('u-suma-et').textContent = kierunek === 'netto' ? 'Brutto w umowie' : 'Na rękę';
+    g.dataset.glowny = kierunek === 'netto' ? 'Brutto w umowie' : 'Na rękę';
+    ustawKwote(g, kierunek === 'netto' ? w.brutto : w.netto);
+    const wiersz = (a: string, b: number) => `<tr><td>${a}</td><td>${zl(b)}</td></tr>`;
+    $('u-szczegoly').innerHTML = [
+      wiersz('Składka emerytalna 9,76%', w.emerytalna), wiersz('Składka rentowa 1,5%', w.rentowa), wiersz('Składka chorobowa 2,45%', w.chorobowa),
+      wiersz('Składka zdrowotna 9%', w.zdrowotna), wiersz('Koszty uzyskania przychodu', w.koszty), wiersz('Dochód', w.dochod),
+      wiersz(w.ryczalt ? 'Podatek zryczałtowany 12%' : 'Zaliczka na PIT', w.podatek), wiersz('Składki płacone przez zleceniodawcę', w.skladkiZleceniodawcy),
+    ].join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
