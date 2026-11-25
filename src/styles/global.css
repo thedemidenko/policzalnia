@@ -305,7 +305,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .kalkulator .trojka input { font-size: 1.05rem; padding: 10px 8px; padding-right: 1.8em; }
 .trojka .kwota::after { right: 10px; font-size: .85rem; }
 .kalkulator input[type=datetime-local] { font-size: 1.05rem; min-height: 52px; padding: 12px 10px; }
-#d-rozbicie td:nth-child(2) { white-space: normal; text-align: left; color: var(--olowek); }
+#d-rozbicie td:nth-child(2), #dr-rok td:nth-child(4) { white-space: normal; text-align: left; color: var(--olowek); }
 .paragon .suma-tekst strong { font-size: clamp(1.25rem, 3.4vw, 1.55rem); }
 .okres { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 6px 8px; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--linia); }
 .okres select { grid-column: 1 / 3; }

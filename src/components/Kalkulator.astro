@@ -9,6 +9,7 @@ import Delegacja from './kalkulatory/Delegacja.astro';
 import Macierzynski from './kalkulatory/Macierzynski.astro';
 import Ekwiwalent from './kalkulatory/Ekwiwalent.astro';
 import L4 from './kalkulatory/L4.astro';
+import DniRobocze from './kalkulatory/DniRobocze.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -20,6 +21,7 @@ const KOMPONENTY = {
   macierzynski: Macierzynski,
   ekwiwalent: Ekwiwalent,
   l4: L4,
+  'dni-robocze': DniRobocze,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

@@ -1,0 +1,116 @@
+<form id="k-dni" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co chcesz policzyć?</legend>
+    <label><input type="radio" name="tryb" value="miedzy" checked /><span>dni robocze między datami</span></label>
+    <label><input type="radio" name="tryb" value="dodaj" /><span>datę za X dni roboczych</span></label>
+  </fieldset>
+  <div class="pole-para" data-tylko="miedzy">
+    <div class="pole">
+      <label for="dr-od">Od (włącznie)</label>
+      <input id="dr-od" name="od" type="date" />
+    </div>
+    <div class="pole">
+      <label for="dr-do">Do (włącznie)</label>
+      <input id="dr-do" name="do" type="date" />
+    </div>
+  </div>
+  <div class="pole-para" data-tylko="dodaj" hidden>
+    <div class="pole">
+      <label for="dr-start">Data początkowa</label>
+      <input id="dr-start" name="start" type="date" />
+    </div>
+    <div class="pole">
+      <label for="dr-n">Dni roboczych</label>
+      <input id="dr-n" name="n" type="text" inputmode="numeric" value="14" />
+      <small>Liczba ujemna – wstecz.</small>
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="soboty" value="1" /> Soboty też są dniami roboczymi</label>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl data-tylko="miedzy">
+    <dt>Dni kalendarzowe</dt><dd id="dr-kal"></dd>
+    <dt>Soboty i niedziele</dt><dd id="dr-weekend"></dd>
+    <dt>Święta</dt><dd id="dr-swieta"></dd>
+    <dt>Wymiar czasu pracy</dt><dd id="dr-wymiar"></dd>
+  </dl>
+  <dl data-tylko="dodaj" hidden>
+    <dt>Dzień tygodnia</dt><dd id="dr-dzien"></dd>
+    <dt>Dni kalendarzowe</dt><dd id="dr-kal2"></dd>
+  </dl>
+  <ul class="uwagi" id="dr-uwagi" hidden></ul>
+  <p class="blad" id="dr-blad" hidden></p>
+  <div class="suma suma-tekst"><span id="dr-suma-et">Dni robocze</span><strong id="dr-wynik" data-glowny="Dni robocze"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · święta wg ustawy, z Wigilią</div>
+</div></div>
+<details class="rozbicie" id="dr-rozbicie" open>
+  <summary id="dr-rok-et">Wymiar czasu pracy</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Miesiąc</th><th>Dni pracy</th><th>Godziny</th><th>Dni świąt</th></tr></thead>
+    <tbody id="dr-rok"></tbody>
+  </table></div>
+</details>
+<script>
+  import { dodajDniRobocze, rokPracy, zakres } from '../../lib/dni-robocze';
+  import { NAZWY_DNI, dzienTygodnia } from '../../lib/kalendarz';
+  import { liczba } from '../../lib/format';
+  import { podlaczKalkulator } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-dni') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const dzis = new Date();
+  if (!el('od').value) el('od').value = `${dzis.getFullYear()}-${String(dzis.getMonth() + 1).padStart(2, '0')}-01`;
+  if (!el('do').value) { const k = new Date(dzis.getFullYear(), dzis.getMonth() + 1, 0); el('do').value = lokalnie(k); }
+  if (!el('start').value) el('start').value = lokalnie(dzis);
+  let rokTabeli = 0;
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    document.querySelectorAll<HTMLElement>('#kalkulator [data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== tryb));
+    const soboty = el('soboty').checked;
+    const blad = $('dr-blad'), ul = $('dr-uwagi'), g = $('dr-wynik');
+    let rok = dzis.getFullYear();
+    const uwagi: string[] = [];
+    if (tryb === 'miedzy') {
+      const z = zakres(val('od'), val('do'), soboty);
+      blad.hidden = !z.blad; blad.textContent = z.blad ?? '';
+      $('dr-suma-et').textContent = 'Dni robocze';
+      g.textContent = z.blad ? '–' : String(z.dniRobocze);
+      g.dataset.wartosc = g.textContent;
+      $('dr-kal').textContent = String(z.dniKalendarzowe);
+      $('dr-weekend').textContent = `${z.soboty} + ${z.niedziele}`;
+      $('dr-swieta').textContent = String(z.swieta.length);
+      $('dr-wymiar').textContent = `${z.wymiarGodzin} h`;
+      if (z.swieta.length) uwagi.push('Święta: ' + z.swieta.map((s) => `${pl(s.data)} ${s.nazwa}`).join(', ') + '.');
+      if (z.swietaWSoboty) uwagi.push(`${z.swietaWSoboty === 1 ? 'Święto wypada' : 'Święta wypadają'} w sobotę – pracodawca musi dać za ${z.swietaWSoboty === 1 ? 'nie' : 'nie'} inny dzień wolny, więc wymiar czasu pracy jest o ${8 * z.swietaWSoboty} h mniejszy.`);
+      if (!z.blad) rok = +val('od').slice(0, 4);
+    } else {
+      const start = val('start');
+      const ok = /^\d{4}-\d{2}-\d{2}$/.test(start);
+      blad.hidden = ok; blad.textContent = ok ? '' : 'Podaj datę początkową.';
+      const n = Math.trunc(liczba(val('n')));
+      const wynik = ok ? dodajDniRobocze(start, n, soboty) : '';
+      $('dr-suma-et').textContent = n < 0 ? 'Data wcześniej' : 'Data';
+      g.textContent = wynik ? pl(wynik) : '–';
+      g.dataset.wartosc = g.textContent;
+      $('dr-dzien').textContent = wynik ? NAZWY_DNI[dzienTygodnia(wynik)] : '–';
+      $('dr-kal2').textContent = wynik ? String(Math.abs(Math.round((Date.parse(wynik) - Date.parse(start)) / 86400000))) : '–';
+      uwagi.push('Liczymy od dnia następnego po dacie początkowej – tak jak terminy w dniach.');
+      if (ok) rok = +start.slice(0, 4);
+    }
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    if (rok !== rokTabeli && rok > 1900 && rok < 2200) {
+      rokTabeli = rok;
+      const r = rokPracy(rok);
+      $('dr-rok-et').textContent = `Wymiar czasu pracy w ${rok} r.`;
+      $('dr-rok').innerHTML = r.miesiace.map((m) => `<tr><td>${m.nazwa}</td><td>${m.dniRobocze}</td><td>${m.godziny}</td><td>${m.swieta.map((x) => x.split(' – ')[0]).join(', ') || '–'}</td></tr>`).join('')
+        + `<tr class="razem"><td>Razem</td><td>${r.dni}</td><td>${r.godziny}</td><td></td></tr>`;
+    }
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
