@@ -1,0 +1,183 @@
+---
+import { KAPITALIZACJE } from '../../lib/procent';
+---
+<form id="k-procent" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="wynik" checked /><span>ile uzbieram</span></label>
+    <label><input type="radio" name="tryb" value="cel" /><span>jak dojść do celu</span></label>
+  </fieldset>
+  <div class="pole" data-cel hidden>
+    <label for="ps-cel">Cel – ile chcesz mieć</label>
+    <div class="kwota" data-jedn="zł"><input id="ps-cel" name="cel" type="text" inputmode="decimal" value="1000000" /></div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ps-kap">Kapitał na start</label>
+      <div class="kwota" data-jedn="zł"><input id="ps-kap" name="kapital" type="text" inputmode="decimal" value="10000" /></div>
+    </div>
+    <div class="pole">
+      <label for="ps-stopa">Oprocentowanie</label>
+      <div class="kwota" data-jedn="% rocznie"><input id="ps-stopa" name="stopa" type="text" inputmode="decimal" value="6" /></div>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ps-wpl" id="ps-wpl-et">Regularna wpłata</label>
+      <div class="kwota" data-jedn="zł"><input id="ps-wpl" name="wplata" type="text" inputmode="decimal" value="500" /></div>
+    </div>
+    <div class="pole">
+      <label for="ps-co">Jak często</label>
+      <select id="ps-co" name="co"><option value="1">co miesiąc</option><option value="3">co kwartał</option><option value="12">co rok</option></select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ps-lata">Okres</label>
+      <div class="kwota" data-jedn="lat"><input id="ps-lata" name="lata" type="text" inputmode="decimal" value="20" /></div>
+    </div>
+    <div class="pole">
+      <label for="ps-kapit">Kapitalizacja</label>
+      <select id="ps-kapit" name="kapitalizacja">{KAPITALIZACJE.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole">
+    <label for="ps-pod">Podatek od zysku</label>
+    <select id="ps-pod" name="podatek">
+      <option value="kapitalizacja">Belka 19% przy każdej kapitalizacji (lokata, konto)</option>
+      <option value="koniec">Belka 19% przy wypłacie (fundusz, ETF akumulujący)</option>
+      <option value="brak">bez podatku (IKE, OKI w limicie)</option>
+      <option value="ikze">IKZE – 10% od całości przy wypłacie</option>
+    </select>
+  </div>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="ps-kiedy">Wpłata</label>
+        <select id="ps-kiedy" name="kiedy"><option value="pocz">na początku okresu</option><option value="kon">na końcu okresu</option></select>
+      </div>
+      <div class="pole">
+        <label for="ps-wz">Wpłaty rosną co rok o</label>
+        <div class="kwota" data-jedn="%"><input id="ps-wz" name="wzrost" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="ps-inf">Inflacja</label>
+        <div class="kwota" data-jedn="%"><input id="ps-inf" name="inflacja" type="text" inputmode="decimal" value="3,5" /></div>
+      </div>
+      <label class="przelacznik"><input type="checkbox" name="wyplacam" value="1" /> zamiast wpłacać – wypłacam</label>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt data-cel hidden id="ps-dociel-et">Obecną wpłatą</dt><dd data-cel hidden id="ps-dociel"></dd>
+    <dt id="ps-wpl-w-et">Wpłacisz</dt><dd id="ps-wpl-w"></dd>
+    <dt>Odsetki</dt><dd id="ps-ods"></dd>
+    <dt>Podatek</dt><dd id="ps-pod-w"></dd>
+    <dt>Zysk na czysto</dt><dd id="ps-zysk"></dd>
+    <dt>Realnie (dziś)</dt><dd id="ps-real"></dd>
+    <dt>Stopa efektywna</dt><dd id="ps-ear"></dd>
+    <dt>Podwojenie po</dt><dd id="ps-x2"></dd>
+  </dl>
+  <ul class="uwagi" id="ps-uwagi" hidden></ul>
+  <div class="suma"><span id="ps-et">Po latach masz</span><strong id="ps-wynik" data-glowny="Po latach masz"></strong></div>
+  <div class="stopka-paragonu" id="ps-stopka">policzalnia.pl</div>
+</div></div>
+<figure class="wykres-ps" id="ps-wykres">
+  <svg id="ps-svg" role="img" aria-labelledby="ps-wykres-opis" viewBox="0 0 640 260" preserveAspectRatio="none"></svg>
+  <figcaption id="ps-wykres-opis"><span class="lg lg-w"></span> wpłaty <span class="lg lg-z"></span> zysk po podatku <span id="ps-wykres-max"></span></figcaption>
+</figure>
+<details class="rozbicie" id="ps-por" open>
+  <summary>Ten sam plan przy różnym podatku</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Gdzie oszczędzasz</th><th>Na koniec</th><th>Podatek</th></tr></thead>
+    <tbody id="ps-por-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Lokata – Belka 19% przy każdej kapitalizacji; fundusz, ETF akumulujący – 19% od zysku przy wypłacie; IKE – bez podatku; IKZE – 10% od całości przy wypłacie (bez ulgi w PIT).</p>
+</details>
+<details class="rozbicie" id="ps-lata">
+  <summary>Rok po roku</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Rok</th><th>Wpłaty</th><th>Odsetki</th><th>Podatek</th><th>Saldo</th><th>Realnie</th></tr></thead>
+    <tbody id="ps-lata-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { miesiecyDoCelu, oblicz, wplataNaCel, type Czestotliwosc, type Kapitalizacja, type Podatek } from '../../lib/procent';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-procent') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (['kiedy', 'wzrost', 'wyplacam'].some((k) => p.has(k))) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const lat = (n: number) => (n === 1 ? 'rok' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'lata' : 'lat');
+  const okres = (mies: number) => { const l = Math.floor(mies / 12), m = mies % 12; return [l ? `${l} ${lat(l)}` : '', m ? `${m} mies.` : ''].filter(Boolean).join(' '); };
+  const krotko = (x: number) => (x >= 1e6 ? (x / 1e6).toFixed(x >= 1e7 ? 0 : 1).replace('.', ',') + ' mln zł' : Math.round(x / 1000) + ' tys. zł');
+  const NAZWY: Record<Podatek, string> = { kapitalizacja: 'lokata, konto', koniec: 'fundusz, ETF', brak: 'IKE', ikze: 'IKZE' };
+
+  function wykres(lata: { rok: number; saldo: number }[], wplatyNarast: number[]) {
+    const svg = $('ps-svg');
+    const max = Math.max(1, ...lata.map((l) => l.saldo));
+    const n = lata.length, W = 640, H = 250, gap = n > 30 ? 1 : 3, bw = (W - gap * (n - 1)) / n;
+    svg.innerHTML = lata.map((l, i) => {
+      const x = i * (bw + gap);
+      const hS = (Math.max(0, l.saldo) / max) * H, hW = Math.min(hS, (Math.max(0, wplatyNarast[i]) / max) * H);
+      return `<rect class="s-z" x="${x.toFixed(1)}" y="${(H - hS + 5).toFixed(1)}" width="${bw.toFixed(1)}" height="${(hS - hW).toFixed(1)}"><title>Rok ${l.rok}: ${zl(l.saldo)}</title></rect>`
+        + `<rect class="s-w" x="${x.toFixed(1)}" y="${(H - hW + 5).toFixed(1)}" width="${bw.toFixed(1)}" height="${hW.toFixed(1)}"><title>Rok ${l.rok}: ${zl(l.saldo)}</title></rect>`;
+    }).join('');
+    $('ps-wykres-max').textContent = `· najwyżej ${krotko(max)}`;
+  }
+
+  const przelicz = () => {
+    const cel = val('tryb') === 'cel';
+    document.querySelectorAll<HTMLElement>('[data-cel]').forEach((x) => (x.hidden = !cel));
+    const wyplacam = el('wyplacam').checked;
+    $('ps-wpl-et').textContent = wyplacam ? 'Regularna wypłata' : 'Regularna wpłata';
+    const d = {
+      kapital: liczba(val('kapital')), wplata: liczba(val('wplata')) * (wyplacam ? -1 : 1), co: +val('co') as Czestotliwosc,
+      poczatek: val('kiedy') !== 'kon', wzrostWplat: liczba(val('wzrost')), stopa: liczba(val('stopa')), lata: Math.max(1 / 12, liczba(val('lata'))),
+      kapitalizacja: val('kapitalizacja') as Kapitalizacja, podatek: val('podatek') as Podatek, inflacja: liczba(val('inflacja')),
+    };
+    const w = oblicz(d);
+    let celWplata = 0;
+    if (cel) {
+      const c = liczba(val('cel'));
+      const potrz = wplataNaCel(c, d);
+      const m = wyplacam ? null : miesiecyDoCelu(c, d);
+      $('ps-dociel-et').textContent = 'Obecnie cel za';
+      $('ps-dociel').textContent = m === null ? '100+ lat' : okres(m);
+      celWplata = potrz;
+    }
+    $('ps-wpl-w-et').textContent = w.wyplacono > 0 ? 'Wypłacisz' : 'Wpłacisz';
+    ustawKwote($('ps-wpl-w'), w.wyplacono > 0 ? w.wyplacono : w.wplaty);
+    ustawKwote($('ps-ods'), w.odsetki); ustawKwote($('ps-pod-w'), w.podatek); ustawKwote($('ps-zysk'), w.zysk); ustawKwote($('ps-real'), w.realnie);
+    $('ps-ear').textContent = (w.ear * 100).toFixed(3).replace('.', ',') + '%';
+    $('ps-x2').textContent = Number.isFinite(w.podwojenie) ? `${w.podwojenie.toFixed(1).replace('.', ',')} lat` : '–';
+    const n = Math.round(w.lat * 10) / 10;
+    const lataTxt = `${String(n).replace('.', ',')} ${n === 1 ? 'roku' : 'latach'}`;
+    const et = cel ? `Wpłacaj ${d.co === 1 ? 'co miesiąc' : d.co === 3 ? 'co kwartał' : 'co rok'}, by mieć cel po ${lataTxt}` : `Po ${lataTxt} masz`;
+    $('ps-et').textContent = et; $('ps-wynik').dataset.glowny = et;
+    ustawKwote($('ps-wynik'), cel ? celWplata : w.koncowy);
+    $('ps-stopka').textContent = `policzalnia.pl · reguła 72: ${Number.isFinite(w.regula72) ? w.regula72.toFixed(1).replace('.', ',') + ' lat' : '–'}`;
+    const ul = $('ps-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    let narast = d.kapital;
+    const wn = w.lata.map((l) => (narast += l.wplaty));
+    // wartość po podatku, gdyby wypłacić wszystko w danym roku (fundusz/ETF, IKZE)
+    const poPodatku = w.lata.map((l, i) => ({ rok: l.rok, saldo: d.podatek === 'koniec' ? l.saldo - Math.max(0, l.saldo - wn[i]) * 0.19 : d.podatek === 'ikze' ? l.saldo * 0.9 : l.saldo }));
+    wykres(poPodatku, wn);
+    $('ps-por-t').innerHTML = (['kapitalizacja', 'koniec', 'brak', 'ikze'] as Podatek[]).map((t) => {
+      const x = t === d.podatek ? w : oblicz({ ...d, podatek: t });
+      return `<tr${t === d.podatek ? ' class="aktywny"' : ''}><td>${NAZWY[t]}</td><td>${zl(x.koncowy)}</td><td>${zl(x.podatek)}</td></tr>`;
+    }).join('');
+    $('ps-lata-t').innerHTML = w.lata.map((l) => `<tr><td>${l.rok}.</td><td>${zl(l.wplaty)}</td><td>${zl(l.odsetki)}</td><td>${zl(l.podatek)}</td><td>${zl(l.saldo)}</td><td>${zl(l.realnie)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

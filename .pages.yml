@@ -59,6 +59,7 @@ content:
             - { value: lokaty, label: Lokaty }
             - { value: nadplata, label: Nadpłata kredytu }
             - { value: ppk, label: PPK }
+            - { value: procent-skladany, label: Procent składany }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }

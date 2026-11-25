@@ -1,0 +1,8 @@
+{
+  "_opis": "Roczne limity wpłat: IKE = 3× prognozowane przeciętne wynagrodzenie, IKZE = 1,2× (1,8× dla prowadzących działalność). 2027: prognozowane wynagrodzenie 10 033 zł (obwieszczenie MRPiPS). IKZE – wypłata po 65 r.ż. z 10% ryczałtem.",
+  "lata": {
+    "2026": { "ike": 28260, "ikze": 11304, "ikzeJdg": 16956 },
+    "2027": { "ike": 30099, "ikze": 12039.6, "ikzeJdg": 18059.4 }
+  },
+  "ryczaltIkze": 10
+}

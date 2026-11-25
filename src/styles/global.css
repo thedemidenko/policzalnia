@@ -342,3 +342,12 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .kalkulator .wiersz-oferty input { min-height: 44px; padding: 8px 10px; font-size: .95rem; }
 .naglowki-wierszy.wiersz-oferty { margin-bottom: 4px; }
 .porownanie-ofert { margin-bottom: 12px; }
+.kalkulator .wykres-ps { grid-column: 1 / -1; margin: 0; }
+.wykres-ps svg { display: block; width: 100%; height: 200px; border-bottom: 1.5px solid var(--tusz); }
+.wykres-ps .s-w { fill: color-mix(in srgb, var(--tusz) 22%, var(--papier)); }
+.wykres-ps .s-z { fill: var(--oszczedzanie); }
+.wykres-ps figcaption { font-size: .82rem; color: var(--olowek); margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.wykres-ps .lg { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 2px; }
+.wykres-ps .lg-w { background: color-mix(in srgb, var(--tusz) 22%, var(--papier)); }
+.wykres-ps .lg-z { background: var(--oszczedzanie); }
+@media print { .wykres-ps svg { height: 150px; } }
