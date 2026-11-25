@@ -16,6 +16,7 @@ import Zlecenie from './kalkulatory/Zlecenie.astro';
 import Leasing from './kalkulatory/Leasing.astro';
 import Lokaty from './kalkulatory/Lokaty.astro';
 import Nadplata from './kalkulatory/Nadplata.astro';
+import Ppk from './kalkulatory/Ppk.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -34,6 +35,7 @@ const KOMPONENTY = {
   leasing: Leasing,
   lokaty: Lokaty,
   nadplata: Nadplata,
+  ppk: Ppk,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

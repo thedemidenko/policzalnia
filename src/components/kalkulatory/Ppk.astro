@@ -1,0 +1,184 @@
+---
+const proc = (od: number, doo: number, krok = 0.5) => { const t: string[] = []; for (let x = od; x <= doo + 1e-9; x += krok) t.push(String(x)); return t; };
+const pl = (x: string) => x.replace('.', ',') + '%';
+---
+<form id="k-ppk" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="uzbieram" checked /><span>ile uzbieram</span></label>
+    <label><input type="radio" name="tryb" value="zwrot" /><span>zwrot – ile dostanę</span></label>
+  </fieldset>
+  <div data-tylko="uzbieram" class="opcje">
+    <div class="pole-para">
+      <div class="pole">
+        <label for="pk-brutto">Pensja brutto</label>
+        <div class="kwota" data-jedn="zł"><input id="pk-brutto" name="brutto" type="text" inputmode="decimal" value="8000" /></div>
+      </div>
+      <div class="pole">
+        <label for="pk-pit">Podatek</label>
+        <select id="pk-pit" name="pit"><option value="12">12%</option><option value="32">32%</option><option value="0">0% (do 26 lat)</option></select>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="pk-wiek">Twój wiek</label>
+        <div class="kwota" data-jedn="lat"><input id="pk-wiek" name="wiek" type="text" inputmode="numeric" value="30" /></div>
+      </div>
+      <div class="pole">
+        <label for="pk-ww">Wypłata w wieku</label>
+        <div class="kwota" data-jedn="lat"><input id="pk-ww" name="ww" type="text" inputmode="numeric" value="60" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="pk-w">Twoja wpłata</label>
+        <select id="pk-w" name="wplata">{['2', '1.5', '1', '0.5'].map((x) => <option value={x}>{pl(x)}</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for="pk-wd">+ dodatkowa</label>
+        <select id="pk-wd" name="dodatkowa">{proc(0, 2).map((x) => <option value={x}>{pl(x)}</option>)}</select>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="pk-pd">Pracodawca: 1,5% + dodatkowa</label>
+      <select id="pk-pd" name="pracodawca">{proc(0, 2.5).map((x) => <option value={x}>{x === '0' ? 'bez dodatkowej (razem 1,5%)' : `+${pl(x)} (razem ${pl(String(1.5 + +x))})`}</option>)}</select>
+    </div>
+    <details class="wplaty" data-wiecej>
+      <summary>Założenia</summary>
+      <div class="trojka">
+        <div class="pole">
+          <label for="pk-stopa">Stopa zwrotu</label>
+          <div class="kwota" data-jedn="%"><input id="pk-stopa" name="stopa" type="text" inputmode="decimal" value="5" /></div>
+        </div>
+        <div class="pole">
+          <label for="pk-g">Wzrost płac</label>
+          <div class="kwota" data-jedn="%"><input id="pk-g" name="wzrost" type="text" inputmode="decimal" value="3" /></div>
+        </div>
+        <div class="pole">
+          <label for="pk-inf">Inflacja</label>
+          <div class="kwota" data-jedn="%"><input id="pk-inf" name="inflacja" type="text" inputmode="decimal" value="2,5" /></div>
+        </div>
+      </div>
+      <small>Stopa zwrotu rocznie po opłatach funduszu (maks. 0,5% + 0,1% za wynik). Ustawa o PPK zakładała realnie 3,5% przy wzroście płac 2,8%.</small>
+    </details>
+  </div>
+  <div data-tylko="zwrot" class="opcje" hidden>
+    <small class="pole">Dane znajdziesz w aplikacji albo na wyciągu instytucji, która prowadzi twoje PPK.</small>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="pk-zw">Twoje wpłaty</label>
+        <div class="kwota" data-jedn="zł"><input id="pk-zw" name="zw" type="text" inputmode="decimal" value="8000" /></div>
+      </div>
+      <div class="pole">
+        <label for="pk-zp">Wpłaty pracodawcy</label>
+        <div class="kwota" data-jedn="zł"><input id="pk-zp" name="zp" type="text" inputmode="decimal" value="6000" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="pk-zs">Dopłaty państwa</label>
+        <div class="kwota" data-jedn="zł"><input id="pk-zs" name="zs" type="text" inputmode="decimal" value="730" /></div>
+      </div>
+      <div class="pole">
+        <label for="pk-zv">Wartość konta</label>
+        <div class="kwota" data-jedn="zł"><input id="pk-zv" name="zv" type="text" inputmode="decimal" value="17000" /></div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl data-tylko-w="uzbieram">
+    <dt>Na konto co miesiąc</dt><dd id="pk-mies"></dd>
+    <dt>Na rękę mniej o</dt><dd id="pk-mniej"></dd>
+    <dt>Twoje wpłaty</dt><dd id="pk-wl"></dd>
+    <dt>Od pracodawcy</dt><dd id="pk-pr"></dd>
+    <dt>Od państwa</dt><dd id="pk-pa"></dd>
+    <dt>Zysk funduszu</dt><dd id="pk-zy"></dd>
+    <dt>Realnie (dziś)</dt><dd id="pk-real"></dd>
+  </dl>
+  <dl data-tylko-w="zwrot" hidden>
+    <dt>Twoja część</dt><dd id="pk-z-wl"></dd>
+    <dt>70% od pracodawcy</dt><dd id="pk-z-pr"></dd>
+    <dt>Podatek Belki</dt><dd id="pk-z-pod"></dd>
+    <dt>30% do ZUS</dt><dd id="pk-z-zus"></dd>
+    <dt>Wraca do państwa</dt><dd id="pk-z-pa"></dd>
+    <dt>Kosztowało cię</dt><dd id="pk-z-koszt"></dd>
+    <dt>Zysk mimo zwrotu</dt><dd id="pk-z-zysk"></dd>
+  </dl>
+  <ul class="uwagi" id="pk-uwagi" hidden></ul>
+  <div class="suma"><span id="pk-et">Po latach na koncie</span><strong id="pk-wynik" data-glowny="Po latach na koncie"></strong></div>
+  <div class="stopka-paragonu" id="pk-stopka">policzalnia.pl</div>
+</div></div>
+<details class="rozbicie" id="pk-wyp" open>
+  <summary>Jak wypłacić – i ile to daje?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Sposób</th><th>Dostajesz</th><th>Podatek</th></tr></thead>
+    <tbody id="pk-wyp-t"></tbody>
+  </table></div>
+  <p class="podpowiedz" id="pk-sam"></p>
+</details>
+<details class="rozbicie" id="pk-lata">
+  <summary>Stan konta co 5 lat</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Wiek</th><th>Twoje wpłaty</th><th>Pracodawca</th><th>Państwo</th><th>Na koncie</th></tr></thead>
+    <tbody id="pk-lata-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczPPK, zwrotTeraz } from '../../lib/ppk';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-ppk') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (['stopa', 'wzrost', 'inflacja'].some((k) => p.has(k))) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const lat = (n: number) => (n === 1 ? 'rok' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'lata' : 'lat');
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== tryb));
+    document.querySelectorAll<HTMLElement>('.paragon [data-tylko-w]').forEach((x) => (x.hidden = x.dataset.tylkoW !== tryb));
+    const g = $('pk-wynik'), et = $('pk-et');
+    const ul = $('pk-uwagi');
+    if (tryb === 'zwrot') {
+      const z = zwrotTeraz(liczba(val('zw')), liczba(val('zp')), liczba(val('zs')), liczba(val('zv')));
+      ustawKwote($('pk-z-wl'), z.wlasne); ustawKwote($('pk-z-pr'), z.pracodawca70); ustawKwote($('pk-z-pod'), z.podatek);
+      ustawKwote($('pk-z-zus'), z.doZus); ustawKwote($('pk-z-pa'), z.panstwo); ustawKwote($('pk-z-koszt'), z.koszt); ustawKwote($('pk-z-zysk'), z.zyskNaZwrocie);
+      et.textContent = 'Dostaniesz na konto'; g.dataset.glowny = 'Dostaniesz na konto';
+      ustawKwote(g, z.naKonto);
+      $('pk-stopka').textContent = 'policzalnia.pl · koszt = twoje wpłaty + PIT 12% od wpłat pracodawcy';
+      ul.hidden = false;
+      ul.innerHTML = '<li>30% z części pracodawcy trafi na twoje konto emerytalne w ZUS – nie przepada, ale wypłacisz je dopiero z emeryturą.</li>';
+      $('pk-wyp').hidden = true; $('pk-lata').hidden = true;
+      return;
+    }
+    $('pk-wyp').hidden = false; $('pk-lata').hidden = false;
+    const wiek = Math.round(liczba(val('wiek'))), ww = Math.round(liczba(val('ww')));
+    const w = obliczPPK({
+      brutto: liczba(val('brutto')), wiek, wiekWyplaty: Math.max(wiek + 1, ww), wplata: +val('wplata'), dodatkowa: +val('dodatkowa'),
+      pracodawcaDodatkowa: +val('pracodawca'), stopa: liczba(val('stopa')), wzrostPlac: liczba(val('wzrost')), pit: +val('pit'), inflacja: liczba(val('inflacja')),
+    });
+    ustawKwote($('pk-mies'), w.naKontoMiesiecznie); ustawKwote($('pk-mniej'), w.naRekeMniej);
+    ustawKwote($('pk-wl'), w.wlasne); ustawKwote($('pk-pr'), w.pracodawca); ustawKwote($('pk-pa'), w.panstwo);
+    ustawKwote($('pk-zy'), w.zysk); ustawKwote($('pk-real'), w.realnie.wartosc);
+    const n = Math.round(w.lat);
+    et.textContent = `Po ${n} ${lat(n) === 'rok' ? 'roku' : 'latach'} na koncie`; g.dataset.glowny = et.textContent;
+    ustawKwote(g, w.wartosc);
+    $('pk-stopka').textContent = `policzalnia.pl · na każdą złotówkę z twojej kieszeni ${w.mnoznik.toFixed(2).replace('.', ',')} zł`;
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const wiersz = (a: string, b: string, c: string, akt = false) => `<tr${akt ? ' class="aktywny"' : ''}><td>${a}</td><td>${b}</td><td>${c}</td></tr>`;
+    const z = w.zwrot;
+    $('pk-wyp-t').innerHTML = (w.po60 ? [
+      wiersz('25% + 120 rat', `${zl(w.jednorazowo25)} + ${zl(w.rata120)}/mies.`, '0 zł', true),
+      wiersz('całość od razu', zl(w.calosc), zl(w.podatekCalosc)),
+    ] : []).concat([
+      wiersz('zwrot przed 60', zl(z.naKonto), zl(z.podatek), !w.po60),
+    ]).join('');
+    $('pk-sam').innerHTML = `Te same pieniądze z własnej kieszeni (${zl(w.kosztTwoj)}: twoje wpłaty i podatek od wpłat pracodawcy) odkładane samodzielnie na ${val('stopa')}% dałyby po podatku Belki <strong>${zl(w.sam)}</strong>. PPK daje o ${zl(w.przewaga)} więcej${w.po60 ? '' : ' – nawet przy zwrocie'}.${w.po60 ? ` Rata z PPK w dzisiejszych pieniądzach (po inflacji): ${zl(w.realnie.rata120)}.` : ''}`;
+    $('pk-lata-t').innerHTML = w.lata.filter((l, i) => (i + 1) % 5 === 0 || i === w.lata.length - 1).map((l) => `<tr><td>${l.wiek} lat</td><td>${zl(l.wlasne)}</td><td>${zl(l.pracodawca)}</td><td>${zl(l.panstwo)}</td><td>${zl(l.wartosc)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
