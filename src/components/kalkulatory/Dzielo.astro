@@ -1,0 +1,80 @@
+<form id="k-dzielo" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Znam kwotę</legend>
+    <label><input type="radio" name="kierunek" value="brutto" checked /><span>brutto</span></label>
+    <label><input type="radio" name="kierunek" value="netto" /><span>na rękę</span></label>
+  </fieldset>
+  <div class="pole">
+    <label for="z-kwota" id="z-kwota-et">Wynagrodzenie brutto z umowy</label>
+    <div class="kwota" data-jedn="zł"><input id="z-kwota" name="kwota" type="text" inputmode="decimal" value="5000" /></div>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Koszty uzyskania przychodu</legend>
+    <label><input type="radio" name="koszty" value="20" checked /><span>20%</span></label>
+    <label><input type="radio" name="koszty" value="50" /><span>50% – prawa autorskie</span></label>
+    <label><input type="radio" name="koszty" value="mix" /><span>część autorska</span></label>
+  </fieldset>
+  <div class="pole" data-tylko="mix" hidden>
+    <label for="z-udzial">Jaka część wynagrodzenia jest za prawa autorskie?</label>
+    <div class="kwota" data-jedn="%"><input id="z-udzial" name="udzial" type="text" inputmode="numeric" value="80" /></div>
+  </div>
+  <div class="pole" data-tylko="50 mix" hidden>
+    <label for="z-wyk">Koszty 50% wykorzystane wcześniej w tym roku</label>
+    <div class="kwota" data-jedn="zł"><input id="z-wyk" name="wyk" type="text" inputmode="decimal" placeholder="0" /></div>
+    <small>Roczny limit kosztów 50% to 120 000 zł ze wszystkich umów.</small>
+  </div>
+  <div class="pole">
+    <label for="z-pit2">PIT-2 złożony u zamawiającego</label>
+    <select id="z-pit2" name="pit2"><option value="0">nie</option><option value="300">tak – 300 zł (1/12)</option><option value="150">tak – 150 zł (1/24)</option><option value="100">tak – 100 zł (1/36)</option></select>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="wlasny" value="1" /> Zamawiającym jest mój pracodawca (dzieło oskładkowane jak etat)</label>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Brutto</dt><dd id="z-brutto"></dd>
+    <dt data-zus hidden>Składki ZUS</dt><dd data-zus hidden id="z-zus"></dd>
+    <dt data-zus hidden>Zdrowotna</dt><dd data-zus hidden id="z-zdr"></dd>
+    <dt>Koszty</dt><dd id="z-koszty"></dd>
+    <dt>Podatek</dt><dd id="z-podatek"></dd>
+    <dt>Koszt zamawiającego</dt><dd id="z-koszt"></dd>
+  </dl>
+  <ul class="uwagi" id="z-uwagi" hidden></ul>
+  <div class="suma"><span id="z-suma-et">Na rękę</span><strong id="z-wynik" data-glowny="Na rękę"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · zaliczka PIT 12%</div>
+</div></div>
+<script>
+  import { bruttoZNetto, obliczDzielo } from '../../lib/dzielo';
+  import { liczba } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-dzielo') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+
+  const przelicz = () => {
+    const k = val('koszty');
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = !x.dataset.tylko!.split(' ').includes(k)));
+    const autorskie = k === '20' ? 0 : k === '50' ? 1 : Math.min(100, Math.max(0, liczba(val('udzial')))) / 100;
+    const opcje = { autorskie, wykorzystane50: liczba(val('wyk')), pit2: +val('pit2'), wlasnyPracodawca: el('wlasny').checked };
+    const kierunek = val('kierunek');
+    const kwota = liczba(val('kwota'));
+    $('z-kwota-et').textContent = kierunek === 'netto' ? 'Ile chcesz dostać na rękę' : 'Wynagrodzenie brutto z umowy';
+    const brutto = kierunek === 'netto' ? bruttoZNetto(kwota, opcje) : kwota;
+    const w = obliczDzielo({ ...opcje, brutto });
+    const ul = $('z-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    ustawKwote($('z-brutto'), w.brutto);
+    document.querySelectorAll<HTMLElement>('.paragon [data-zus]').forEach((x) => (x.hidden = !opcje.wlasnyPracodawca || w.ryczalt));
+    ustawKwote($('z-zus'), w.skladkiSpoleczne);
+    ustawKwote($('z-zdr'), w.zdrowotna);
+    ustawKwote($('z-koszty'), w.koszty);
+    ustawKwote($('z-podatek'), w.podatek);
+    ustawKwote($('z-koszt'), w.kosztZamawiajacego);
+    const g = $('z-wynik');
+    $('z-suma-et').textContent = kierunek === 'netto' ? 'Brutto w umowie' : 'Na rękę';
+    g.dataset.glowny = kierunek === 'netto' ? 'Brutto w umowie' : 'Na rękę';
+    ustawKwote(g, kierunek === 'netto' ? w.brutto : w.netto);
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

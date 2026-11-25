@@ -39,7 +39,7 @@ zrodla:
   - nazwa: ZUS – wysokość zasiłku macierzyńskiego
     url: https://www.zus.pl/pl/swiadczenia/zasilki/zasilek-macierzynski/wysokosc
 autor: redakcja
-updated: 2026-11-24
+updated: 2026-11-25
 draft: false
 ---
 
@@ -123,7 +123,7 @@ Tata dostaje zasiłek od **swojej** podstawy:
 
 ## Jak liczy się zasiłek na rękę?
 
-Od zasiłku macierzyńskiego **nie płaci się składek ZUS ani zdrowotnej** – pobiera się tylko zaliczkę na podatek: 12% zasiłku, a po złożeniu PIT-2 o 300 zł mniej. Dlatego na rękę zostaje więcej niż z pensji tej samej wysokości. Kalkulator pokazuje kwotę netto szacunkowo – dokładna zależy od tego, kto wypłaca zasiłek (pracodawca czy ZUS) i od ulg w zeznaniu rocznym.
+Od zasiłku macierzyńskiego **nie płaci się składek ZUS ani zdrowotnej** – pobiera się tylko zaliczkę na podatek: 12% zasiłku, a po złożeniu PIT-2 o 300 zł mniej. Dlatego na rękę zostaje więcej niż z pensji tej samej wysokości. **Przed 26. urodzinami zasiłek jest zwolniony z PIT** (ulga dla młodych, do 85 528 zł rocznie razem z pensją i zleceniami) – wtedy na rękę dostajesz całą kwotę brutto. Kalkulator pokazuje kwotę netto szacunkowo – dokładna zależy od tego, kto wypłaca zasiłek (pracodawca czy ZUS) i od ulg w zeznaniu rocznym.
 
 ## Jakie wnioski i terminy trzeba pamiętać?
 

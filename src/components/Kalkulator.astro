@@ -11,6 +11,7 @@ import Ekwiwalent from './kalkulatory/Ekwiwalent.astro';
 import L4 from './kalkulatory/L4.astro';
 import DniRobocze from './kalkulatory/DniRobocze.astro';
 import Nadgodziny from './kalkulatory/Nadgodziny.astro';
+import Dzielo from './kalkulatory/Dzielo.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -24,6 +25,7 @@ const KOMPONENTY = {
   l4: L4,
   'dni-robocze': DniRobocze,
   nadgodziny: Nadgodziny,
+  dzielo: Dzielo,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

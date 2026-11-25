@@ -53,6 +53,7 @@ content:
             - { value: l4, label: Zwolnienie lekarskie (L4) }
             - { value: dni-robocze, label: Dni robocze }
             - { value: nadgodziny, label: Nadgodziny }
+            - { value: dzielo, label: Umowa o dzieło }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }
