@@ -1,0 +1,190 @@
+---
+import { INFLACJA, KAPITALIZACJE } from '../../lib/lokaty';
+const infl = String(INFLACJA.wartosc).replace('.', ',');
+const oferty: [string, string][] = [['6', '3'], ['5', '6'], ['4,5', '12']];
+---
+<form id="k-lokaty" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="zysk" checked /><span>zysk z lokaty</span></label>
+    <label><input type="radio" name="tryb" value="cel" /><span>ile wpłacić</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="lk-kwota" id="lk-kwota-et">Kwota lokaty</label>
+      <div class="kwota" data-jedn="zł"><input id="lk-kwota" name="kwota" type="text" inputmode="decimal" value="10000" /></div>
+    </div>
+    <div class="pole">
+      <label for="lk-stopa">Oprocentowanie</label>
+      <div class="kwota" data-jedn="% rocznie"><input id="lk-stopa" name="stopa" type="text" inputmode="decimal" value="5" /></div>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="lk-okres">Okres</label>
+      <input id="lk-okres" name="okres" type="text" inputmode="numeric" value="3" />
+    </div>
+    <div class="pole">
+      <label for="lk-jedn">Jednostka</label>
+      <select id="lk-jedn" name="jednostka"><option value="miesiace">miesiące</option><option value="dni">dni</option><option value="lata">lata</option></select>
+    </div>
+  </div>
+  <div class="pole">
+      <label for="lk-kap">Kapitalizacja odsetek</label>
+      <select id="lk-kap" name="kapitalizacja">{KAPITALIZACJE.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    </div>
+  <div class="pole">
+      <label for="lk-pod">Podatek</label>
+      <select id="lk-pod" name="podatek">
+        <option value="belka">podatek Belki 19%</option>
+        <option value="oki">lokata na OKI (od 2027)</option>
+        <option value="brak">bez podatku (IKE, IKZE)</option>
+        <option value="firma">lokata firmowa</option>
+      </select>
+  </div>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="lk-odn">Odnów lokatę</label>
+        <input id="lk-odn" name="odnowienia" type="text" inputmode="numeric" placeholder="0 razy" aria-describedby="lk-odn-pod" />
+      </div>
+      <div class="pole">
+        <label for="lk-infl">Inflacja roczna</label>
+        <div class="kwota" data-jedn="%"><input id="lk-infl" name="inflacja" type="text" inputmode="decimal" value={infl} /></div>
+      </div>
+    </div>
+    <small id="lk-odn-pod">Np. lokata na 3 miesiące odnowiona 3 razy = rok. Zysk netto dopisuje się do kolejnej lokaty. Inflacja: GUS, {INFLACJA.okres}.</small>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="lk-baza">Odsetki liczone</label>
+        <select id="lk-baza" name="baza"><option value="miesiace">za miesiące (m/12)</option><option value="365">za dni (dni/365)</option><option value="360">za dni (dni/360)</option></select>
+      </div>
+      <div class="pole">
+        <label for="lk-start">Data założenia</label>
+        <input id="lk-start" name="start" type="date" />
+      </div>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt data-cel hidden>Trzeba wpłacić</dt><dd data-cel hidden id="lk-wplac"></dd>
+    <dt>Odsetki brutto</dt><dd id="lk-ods"></dd>
+    <dt data-belka>Podatek Belki</dt><dd data-belka id="lk-pod-w"></dd>
+    <dt data-oki hidden>Podatek OKI</dt><dd data-oki hidden id="lk-oki"></dd>
+    <dt data-wyp hidden>Na rękę co miesiąc</dt><dd data-wyp hidden id="lk-mies"></dd>
+    <dt id="lk-konc-et">Po lokacie masz</dt><dd id="lk-konc"></dd>
+    <dt>Stopa netto</dt><dd id="lk-netto"></dd>
+    <dt>Realnie (inflacja)</dt><dd id="lk-real"></dd>
+    <dt>Koniec</dt><dd id="lk-koniec"></dd>
+  </dl>
+  <ul class="uwagi" id="lk-uwagi" hidden></ul>
+  <div class="suma"><span id="lk-glowny-et">Zysk na czysto</span><strong id="lk-wynik" data-glowny="Zysk na czysto"></strong></div>
+  <div class="stopka-paragonu" id="lk-stopka">policzalnia.pl · podatek w górę do grosza</div>
+</div></div>
+<details class="rozbicie" id="lk-okresy">
+  <summary>Zysk przy innych okresach</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Okres</th><th>Odsetki</th><th>Podatek</th><th>Zysk na czysto</th></tr></thead>
+    <tbody id="lk-okresy-t"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="lk-harm" hidden>
+  <summary>Kolejne lokaty</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Lokata</th><th>Od – do</th><th>Odsetki</th><th>Podatek</th><th>Saldo</th></tr></thead>
+    <tbody id="lk-harm-t"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="lk-por">
+  <summary>Porównaj oferty – która lokata da więcej?</summary>
+  <div class="porownanie-ofert">
+    <div class="naglowki-wierszy wiersz-oferty" aria-hidden="true"><span>Oferta</span><span>Oprocentowanie</span><span>Okres (mies.)</span></div>
+    {oferty.map(([s, m], i) => (
+      <div class="wiersz-oferty">
+        <span>{'ABC'[i]}</span>
+        <div class="kwota" data-jedn="%"><input form="k-lokaty" name={`s${i + 1}`} type="text" inputmode="decimal" value={s} aria-label={`Oprocentowanie oferty ${'ABC'[i]}`} /></div>
+        <input form="k-lokaty" name={`m${i + 1}`} type="text" inputmode="numeric" value={m} aria-label={`Okres oferty ${'ABC'[i]} w miesiącach`} />
+      </div>
+    ))}
+  </div>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Oferta</th><th>Zysk w okresie</th><th>Za rok (odnawiana)</th><th>Stopa netto</th></tr></thead>
+    <tbody id="lk-por-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Dla kwoty z kalkulatora, z podatkiem. „Za rok” zakłada odnawianie lokaty na tych samych warunkach – promocje zwykle się nie odnawiają.</p>
+</details>
+<script>
+  import { kwotaNaCel, obliczLokate, type Baza, type Jednostka, type Kapitalizacja, type Opodatkowanie } from '../../lib/lokaty';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-lokaty') as HTMLFormElement;
+  const val = (n: string) => ((form.elements.namedItem(n) as RadioNodeList | HTMLInputElement | null)?.value ?? '');
+  const $ = (id: string) => document.getElementById(id)!;
+  const pr = (x: number) => x.toFixed(2).replace('.', ',') + '%';
+  const data = (s?: string) => (s ? s.split('-').reverse().join('.') : '');
+  const p = new URLSearchParams(location.search);
+  if (['odnowienia', 'baza', 'start'].some((k) => p.has(k))) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  if (['s1', 'm1', 's2'].some((k) => p.has(k))) ($('lk-por') as HTMLDetailsElement).open = true;
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    const kap = val('kapitalizacja') as Kapitalizacja;
+    const podatek = val('podatek') as Opodatkowanie;
+    const wsp = {
+      stopa: liczba(val('stopa')), okres: Math.max(1, Math.round(liczba(val('okres')) || 1)), jednostka: val('jednostka') as Jednostka,
+      kapitalizacja: kap, baza: val('baza') as Baza, start: val('start') || undefined, odnowienia: Math.round(liczba(val('odnowienia'))),
+      podatek, inflacja: liczba(val('inflacja')),
+    };
+    const cel = tryb === 'cel';
+    $('lk-kwota-et').textContent = cel ? (kap === 'wyplata' ? 'Ile chcesz co miesiąc na rękę' : 'Ile chcesz zarobić na czysto') : 'Kwota lokaty';
+    const kwota = cel ? kwotaNaCel(liczba(val('kwota')), wsp) : liczba(val('kwota'));
+    const w = obliczLokate({ ...wsp, kwota });
+    const miesiecy = Math.max(1, Math.round(w.lata * 12));
+
+    document.querySelectorAll<HTMLElement>('.paragon [data-cel]').forEach((x) => (x.hidden = !cel));
+    document.querySelectorAll<HTMLElement>('.paragon [data-belka]').forEach((x) => (x.hidden = podatek !== 'belka'));
+    document.querySelectorAll<HTMLElement>('.paragon [data-oki]').forEach((x) => (x.hidden = podatek !== 'oki'));
+    document.querySelectorAll<HTMLElement>('.paragon [data-wyp]').forEach((x) => (x.hidden = kap !== 'wyplata'));
+    ustawKwote($('lk-wplac'), kwota);
+    ustawKwote($('lk-ods'), w.odsetki);
+    ustawKwote($('lk-pod-w'), w.podatek);
+    ustawKwote($('lk-oki'), w.podatekOki);
+    ustawKwote($('lk-mies'), w.zysk / miesiecy);
+    $('lk-konc-et').textContent = kap === 'wyplata' ? 'Kapitał + wypłaty' : 'Po lokacie masz';
+    ustawKwote($('lk-konc'), w.koncowa);
+    $('lk-netto').textContent = pr(w.stopaNetto) + ' rocznie';
+    ustawKwote($('lk-real'), w.zyskRealny);
+    $('lk-koniec').textContent = `${data(w.koniec)} · ${w.dni} dni`;
+    const g = $('lk-wynik');
+    const et = cel ? 'Wpłać na lokatę' : 'Zysk na czysto';
+    $('lk-glowny-et').textContent = et; g.dataset.glowny = et;
+    ustawKwote(g, cel ? kwota : w.zysk);
+    $('lk-stopka').textContent = podatek === 'belka' ? `policzalnia.pl · podatek Belki 19%, w górę do grosza` : podatek === 'oki' ? 'policzalnia.pl · OKI – podatek od wartości (szacunek)' : 'policzalnia.pl · kwoty bez podatku';
+    const ul = $('lk-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    // inne okresy przy tych samych warunkach
+    const okresy: [number, string][] = [[1, '1 mies.'], [3, '3 mies.'], [6, '6 mies.'], [12, '12 mies.'], [24, '2 lata'], [36, '3 lata']];
+    $('lk-okresy-t').innerHTML = okresy.map(([m, e]) => {
+      const x = obliczLokate({ ...wsp, kwota, okres: m, jednostka: 'miesiace', odnowienia: 0 });
+      const aktywny = wsp.jednostka === 'miesiace' && wsp.okres === m && !wsp.odnowienia;
+      return `<tr${aktywny ? ' class="aktywny"' : ''}><td>${e}</td><td>${zl(x.odsetki)}</td><td>${zl(x.podatek + x.podatekOki)}</td><td>${zl(x.zysk)}</td></tr>`;
+    }).join('');
+
+    $('lk-harm').hidden = w.okresy.length < 2;
+    $('lk-harm-t').innerHTML = w.okresy.map((o) => `<tr><td>${o.nr}.</td><td>${data(o.od)} – ${data(o.do)}</td><td>${zl(o.odsetki)}</td><td>${zl(o.podatek)}</td><td>${zl(o.saldo)}</td></tr>`).join('');
+
+    $('lk-por-t').innerHTML = [1, 2, 3].map((i) => {
+      const s = liczba(val(`s${i}`)), m = Math.round(liczba(val(`m${i}`)));
+      if (!(s > 0) || !(m > 0)) return '';
+      const raz = obliczLokate({ ...wsp, kwota, stopa: s, okres: m, jednostka: 'miesiace', odnowienia: 0 });
+      const rok = m < 12 && 12 % m === 0 ? obliczLokate({ ...wsp, kwota, stopa: s, okres: m, jednostka: 'miesiace', odnowienia: 12 / m - 1 }).zysk : null;
+      return `<tr><td>${'ABC'[i - 1]} · ${String(s).replace('.', ',')}% · ${m} mies.</td><td>${zl(raz.zysk)}</td><td>${rok === null ? (m === 12 ? zl(raz.zysk) : '–') : zl(rok)}</td><td>${pr(raz.stopaNetto)}</td></tr>`;
+    }).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+  $('lk-por').addEventListener('input', przelicz); // pola porównania są poza <form> (atrybut form)
+</script>
