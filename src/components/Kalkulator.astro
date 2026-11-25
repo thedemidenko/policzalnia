@@ -13,6 +13,7 @@ import DniRobocze from './kalkulatory/DniRobocze.astro';
 import Nadgodziny from './kalkulatory/Nadgodziny.astro';
 import Dzielo from './kalkulatory/Dzielo.astro';
 import Zlecenie from './kalkulatory/Zlecenie.astro';
+import Leasing from './kalkulatory/Leasing.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -28,6 +29,7 @@ const KOMPONENTY = {
   nadgodziny: Nadgodziny,
   dzielo: Dzielo,
   zlecenie: Zlecenie,
+  leasing: Leasing,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

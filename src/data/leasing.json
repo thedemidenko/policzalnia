@@ -1,0 +1,10 @@
+{
+  "_opis": "Parametry kalkulatora leasingu. Limity: art. 23 ust. 1 pkt 4 lit. b i c, pkt 47a, ust. 5e ustawy o PIT (Dz.U. 2026 poz. 592) – od 1.01.2026 także dla umów zawartych wcześniej. WIBOR 3M – tylko podpowiedź domyślnego oprocentowania.",
+  "vat": 23,
+  "limity": { "spalinowy": 100000, "niskoemisyjny": 150000, "elektryczny": 225000 },
+  "limitUbezpieczenia": 150000,
+  "jednorazowaAmortyzacja": 10000,
+  "minOkresOperacyjny": 24,
+  "wibor3m": { "wartosc": 3.89, "data": "2026-11-24" },
+  "marzaPrzyklad": 3
+}

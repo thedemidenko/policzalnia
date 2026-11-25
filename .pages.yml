@@ -55,6 +55,7 @@ content:
             - { value: nadgodziny, label: Nadgodziny }
             - { value: dzielo, label: Umowa o dzieło }
             - { value: zlecenie, label: Umowa zlecenie }
+            - { value: leasing, label: Leasing samochodu }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }

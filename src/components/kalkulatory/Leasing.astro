@@ -1,0 +1,203 @@
+---
+import { NAPEDY, OPODATKOWANIE, WIBOR } from '../../lib/leasing';
+const okresy = [24, 36, 48, 60, 72, 84];
+const wibor = WIBOR.wartosc.toFixed(2).replace('.', ',');
+const dataWibor = WIBOR.data.split('-').reverse().join('.');
+---
+<form id="k-leasing" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Kto bierze leasing</legend>
+    <label><input type="radio" name="kto" value="firma" checked /><span>firma</span></label>
+    <label><input type="radio" name="kto" value="prywatnie" /><span>osoba prywatna</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ls-cena">Cena auta</label>
+      <div class="kwota" data-jedn="zł"><input id="ls-cena" name="cena" type="text" inputmode="decimal" value="150000" /></div>
+    </div>
+    <div class="pole">
+      <label for="ls-typ">Cena podana</label>
+      <select id="ls-typ" name="typ"><option value="netto">netto</option><option value="brutto">brutto (z VAT)</option></select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ls-wplata">Opłata wstępna</label>
+      <div class="kwota" data-jedn="%"><input id="ls-wplata" name="wplata" type="text" inputmode="decimal" value="10" /></div>
+    </div>
+    <div class="pole">
+      <label for="ls-wykup">Wykup</label>
+      <div class="kwota" data-jedn="%"><input id="ls-wykup" name="wykup" type="text" inputmode="decimal" value="10" /></div>
+    </div>
+  </div>
+  <div class="pole">
+    <label for="ls-okres">Okres leasingu</label>
+    <select id="ls-okres" name="okres">{okresy.map((o) => <option value={String(o)} selected={o === 48}>{o} miesięcy ({o / 12} {o === 24 || o === 36 || o === 48 ? 'lata' : 'lat'})</option>)}</select>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Z oferty znam</legend>
+    <label><input type="radio" name="tryb" value="stopa" checked /><span>oprocentowanie</span></label>
+    <label><input type="radio" name="tryb" value="rata" /><span>ratę</span></label>
+    <label><input type="radio" name="tryb" value="suma" /><span>sumę opłat</span></label>
+  </fieldset>
+  <div class="pole" data-tylko="stopa">
+    <label for="ls-stopa">Oprocentowanie roczne</label>
+    <div class="kwota" data-jedn="%"><input id="ls-stopa" name="stopa" type="text" inputmode="decimal" value="6,89" aria-describedby="ls-stopa-pod" /></div>
+    <small id="ls-stopa-pod">WIBOR 3M {wibor}% ({dataWibor}) + marża leasingodawcy, zwykle 2–4 p.p.</small>
+  </div>
+  <div class="pole" data-tylko="rata" hidden>
+    <label for="ls-rata" id="ls-rata-et">Rata z oferty (netto)</label>
+    <div class="kwota" data-jedn="zł"><input id="ls-rata" name="rata" type="text" inputmode="decimal" placeholder="np. 2950" /></div>
+  </div>
+  <div class="pole" data-tylko="suma" hidden>
+    <label for="ls-suma">Suma opłat z oferty</label>
+    <div class="kwota" data-jedn="% ceny"><input id="ls-suma" name="suma" type="text" inputmode="decimal" placeholder="np. 115" /></div>
+    <small>Opłata wstępna + wszystkie raty + wykup jako procent ceny auta.</small>
+  </div>
+  <div data-firma class="opcje">
+    <div class="pole">
+      <label for="ls-naped">Rodzaj auta</label>
+      <select id="ls-naped" name="naped">{NAPEDY.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    </div>
+    <div class="pole">
+      <label for="ls-podatek">Forma opodatkowania</label>
+      <select id="ls-podatek" name="podatek">{OPODATKOWANIE.map(([k, e]) => <option value={k} selected={k === 'liniowy'}>{e}</option>)}</select>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="vatowiec" value="1" checked /> Jestem czynnym podatnikiem VAT</label>
+    <label class="przelacznik" data-osobowy><input type="checkbox" name="firmowe" value="1" /> Auto wyłącznie do firmy (VAT-26, kilometrówka) – 100% VAT</label>
+    <details class="wplaty" data-wiecej>
+      <summary>Więcej opcji</summary>
+      <div class="pole">
+        <label for="ls-eks">Paliwo, serwis i inne wydatki miesięcznie (brutto)</label>
+        <div class="kwota" data-jedn="zł"><input id="ls-eks" name="eksploatacja" type="text" inputmode="decimal" placeholder="opcjonalnie" /></div>
+      </div>
+      <label class="przelacznik"><input type="checkbox" name="wykupfirma" value="1" checked /> Wykup do firmy (jako środek trwały)</label>
+    </details>
+  </div>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt data-f>Rata netto</dt><dd data-f id="ls-rata-n"></dd>
+    <dt>Rata brutto</dt><dd id="ls-rata-b"></dd>
+    <dt>Opłata wstępna</dt><dd id="ls-wpl"></dd>
+    <dt>Wykup</dt><dd id="ls-wyk"></dd>
+    <dt>Suma opłat</dt><dd id="ls-sum"></dd>
+    <dt>Suma opłat / cena</dt><dd id="ls-suma-proc"></dd>
+    <dt>Odsetki łącznie</dt><dd id="ls-koszt"></dd>
+    <dt>Oprocentowanie</dt><dd id="ls-opr"></dd>
+    <dt data-f>Odliczony VAT</dt><dd data-f id="ls-vat"></dd>
+    <dt data-f>W koszty</dt><dd data-f id="ls-kup"></dd>
+    <dt data-f>Mniej podatku</dt><dd data-f id="ls-osz"></dd>
+    <dt data-f>Realny koszt</dt><dd data-f id="ls-real"></dd>
+  </dl>
+  <ul class="uwagi" id="ls-uwagi" hidden></ul>
+  <div class="suma"><span id="ls-glowny-et">Rata po VAT i podatkach</span><strong id="ls-wynik" data-glowny="Rata po VAT i podatkach"></strong></div>
+  <div class="stopka-paragonu" id="ls-stopka">policzalnia.pl · kwoty w zł</div>
+</div></div>
+<p class="podpowiedz" id="ls-kredyt" hidden></p>
+<details class="rozbicie" id="ls-formy" open>
+  <summary>Ten sam leasing w różnych formach opodatkowania</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Forma</th><th>Rata po podatkach</th><th>Mniej podatku</th><th>Realny koszt</th></tr></thead>
+    <tbody id="ls-formy-t"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="ls-lata">
+  <summary>Rok po roku – koszty, VAT i oszczędność</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Rok umowy</th><th>Opłaty netto</th><th>w tym odsetki</th><th>Koszty</th><th>VAT</th><th>Mniej podatku</th></tr></thead>
+    <tbody id="ls-lata-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Opłata wstępna w 1. roku, wykup w ostatnim. Roczne kwoty liczone od miesiąca startu umowy.</p>
+</details>
+<details class="rozbicie" id="ls-siatka">
+  <summary>Rata przy innym okresie i wykupie</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Okres</th><th>Wykup 1%</th><th>10%</th><th>20%</th><th>30%</th></tr></thead>
+    <tbody id="ls-siatka-t"></tbody>
+  </table></div>
+  <p class="podpowiedz" id="ls-siatka-pod"></p>
+</details>
+<details class="rozbicie" id="ls-harm">
+  <summary>Harmonogram rat – część kapitałowa i odsetkowa</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Rata</th><th>Kwota</th><th>Odsetki</th><th>Kapitał</th><th>Zostaje</th></tr></thead>
+    <tbody id="ls-harm-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczLeasing, rataAnnuitetowa, VAT, type Kto, type Naped, type Opodatkowanie, type TrybOprocentowania } from '../../lib/leasing';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-leasing') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pr = (x: number, m = 2) => x.toFixed(m).replace('.', ',') + '%';
+  const p = new URLSearchParams(location.search);
+  if (p.has('eksploatacja') || p.get('wykupfirma') === '0') (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+
+  // domyślnie: firma – cena netto, osoba prywatna – cena brutto
+  let ktoPoprzednio: string | null = null;
+  const przelicz = () => {
+    const kto = val('kto') as Kto;
+    if (ktoPoprzednio !== null && ktoPoprzednio !== kto) el('typ').value = kto === 'firma' ? 'netto' : 'brutto';
+    if (ktoPoprzednio === null && !p.has('typ') && kto === 'prywatnie') el('typ').value = 'brutto';
+    ktoPoprzednio = kto;
+    const firma = kto === 'firma';
+    const tryb = val('tryb') as TrybOprocentowania;
+    const naped = val('naped') as Naped;
+    const brutto = val('typ') === 'brutto';
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== tryb));
+    form.querySelector<HTMLElement>('[data-firma]')!.hidden = !firma;
+    form.querySelector<HTMLElement>('[data-osobowy]')!.hidden = naped === 'ciezarowy' || !el('vatowiec').checked;
+    $('ls-rata-et').textContent = `Rata z oferty (${brutto ? 'brutto' : 'netto'})`;
+
+    const w = obliczLeasing({
+      kto, cena: liczba(val('cena')), brutto, wplata: liczba(val('wplata')), okres: +val('okres'), wykup: liczba(val('wykup')),
+      tryb, stopa: liczba(val('stopa')), rata: liczba(val('rata')), suma: liczba(val('suma')),
+      naped, vatowiec: el('vatowiec').checked, tylkoFirma: el('firmowe').checked, podatek: val('podatek') as Opodatkowanie,
+      eksploatacja: liczba(val('eksploatacja')), wykupDoFirmy: el('wykupfirma').checked,
+    });
+    const m = firma ? 1 : 1 + VAT; // osoba prywatna widzi kwoty z VAT
+    document.querySelectorAll<HTMLElement>('.paragon [data-f]').forEach((x) => (x.hidden = !firma));
+    ustawKwote($('ls-rata-n'), w.rata);
+    ustawKwote($('ls-rata-b'), w.rataBrutto);
+    ustawKwote($('ls-wpl'), w.wplata * m);
+    ustawKwote($('ls-wyk'), w.wykup * m);
+    ustawKwote($('ls-sum'), w.sumaOplat * m);
+    $('ls-suma-proc').textContent = pr(w.sumaProc, 1);
+    ustawKwote($('ls-koszt'), w.kosztFinansowania * m);
+    $('ls-opr').textContent = Number.isFinite(w.stopa) ? pr(w.stopa) : '–';
+    ustawKwote($('ls-vat'), w.vatOdliczony);
+    ustawKwote($('ls-kup'), w.kup);
+    ustawKwote($('ls-osz'), w.oszczednosc);
+    ustawKwote($('ls-real'), w.kosztRealny);
+    const g = $('ls-wynik');
+    const et = firma ? 'Rata po VAT i podatkach' : 'Rata miesięczna';
+    $('ls-glowny-et').textContent = et; g.dataset.glowny = et;
+    ustawKwote(g, firma ? w.rataPoPodatkach : w.rataBrutto);
+    $('ls-stopka').textContent = firma ? `policzalnia.pl · netto · VAT ${Math.round(w.vatOdl * 100)}% do odliczenia · mniej podatku = PIT/CIT + zdrowotna` : 'policzalnia.pl · kwoty z VAT';
+    const ul = $('ls-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const kr = $('ls-kredyt');
+    kr.hidden = !w.kredyt;
+    if (w.kredyt) kr.innerHTML = `Kredyt na tę samą kwotę i tym samym oprocentowaniu (bez wykupu na końcu): rata <strong>${zl(w.kredyt.rata)}</strong>, łącznie ${zl(w.kredyt.suma)}. `
+      + (w.kredyt.roznica > 0 ? `Leasing ma niższą ratę, ale kosztuje o ${zl(w.kredyt.roznica)} więcej, bo wykup spłacasz dopiero na końcu.` : `Leasing wychodzi o ${zl(-w.kredyt.roznica)} taniej.`);
+
+    $('ls-formy').hidden = !firma;
+    $('ls-formy-t').innerHTML = w.porownanie.map((x) => `<tr${x.podatek === val('podatek') ? ' class="aktywny"' : ''}><td>${x.nazwa.replace('spółka – ', '')}</td><td>${zl(x.rataPoPodatkach)}</td><td>${zl(x.oszczednosc)}</td><td>${zl(x.kosztRealny)}</td></tr>`).join('');
+    $('ls-lata').hidden = !firma;
+    $('ls-lata-t').innerHTML = w.lata.map((l) => `<tr><td>${l.rok}.</td><td>${zl(l.oplaty)}</td><td>${zl(l.odsetki)}</td><td>${zl(l.kup)}</td><td>${zl(l.vat)}</td><td>${zl(l.oszczednosc)}</td></tr>`).join('');
+
+    const r = Number.isFinite(w.stopa) ? w.stopa / 1200 : 0;
+    const F = w.finansowanie;
+    $('ls-siatka-t').innerHTML = [24, 36, 48, 60, 72, 84].map((n) => `<tr${n === +val('okres') ? ' class="aktywny"' : ''}><td>${n} mies.</td>${[1, 10, 20, 30]
+      .map((k) => `<td>${zl(rataAnnuitetowa(F, (w.netto * k) / 100, n, r) * (firma ? 1 : 1 + VAT))}</td>`).join('')}</tr>`).join('');
+    $('ls-siatka-pod').textContent = `Raty ${firma ? 'netto' : 'brutto'} przy opłacie wstępnej ${pr(liczba(val('wplata')), 0)} i oprocentowaniu ${Number.isFinite(w.stopa) ? pr(w.stopa) : '–'}. Wyższy wykup obniża ratę, ale podnosi sumę odsetek.`;
+    $('ls-harm-t').innerHTML = w.harmonogram.map((h) => `<tr><td>${h.nr}</td><td>${zl(h.rata * m)}</td><td>${zl(h.odsetki * m)}</td><td>${zl(h.kapital * m)}</td><td>${zl(h.saldo * m)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

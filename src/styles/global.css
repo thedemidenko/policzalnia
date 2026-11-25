@@ -334,3 +334,6 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
   .paragon-cien { filter: none; }
   h1 { font-size: 1.4rem; }
 }
+.rozbicie tr.aktywny td { background: color-mix(in srgb, var(--kolor, var(--tusz)) 12%, var(--papier)); font-weight: 600; }
+.kalkulator #ls-kredyt { grid-column: 1 / -1; margin: 0; }
+#ls-formy td:first-child, #ls-siatka td:first-child { white-space: nowrap; }
