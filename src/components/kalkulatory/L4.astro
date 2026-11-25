@@ -1,0 +1,88 @@
+---
+import stawki from '../../data/stawki.json';
+const rok = String(new Date().getFullYear()) as keyof typeof stawki.lata;
+const minJdg = Math.round((stawki.lata[rok] ?? stawki.lata['2026']).prognozowane_przecietne.wartosc * 0.6 * 100) / 100;
+const formy: [string, string][] = [['uop', 'umowa o pracę'], ['zlecenie', 'zlecenie'], ['jdg', 'działalność']];
+const przyczyny: [string, string][] = [['choroba', 'choroba (80%)'], ['ciaza', 'ciąża (100%)'], ['wypadek', 'wypadek w drodze do/z pracy (100%)'], ['dawca', 'dawca narządów, szpiku (100%)']];
+---
+<form id="k-l4" class="pola" autocomplete="off" data-min-jdg={minJdg}>
+  <fieldset class="segmenty">
+    <legend>Pracujesz na</legend>
+    {formy.map(([k, e], i) => <label><input type="radio" name="forma" value={k} checked={i === 0} /><span>{e}</span></label>)}
+  </fieldset>
+  <div class="pole">
+    <label for="l-brutto" id="l-brutto-et">Średnie wynagrodzenie brutto z 12 miesięcy</label>
+    <div class="kwota" data-jedn="zł"><input id="l-brutto" name="brutto" type="text" inputmode="decimal" value="7000" /></div>
+    <small id="l-brutto-pod"></small>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="l-dni">Dni zwolnienia</label>
+      <div class="kwota" data-jedn="dni"><input id="l-dni" name="dni" type="text" inputmode="numeric" value="14" /></div>
+    </div>
+    <div class="pole">
+      <label for="l-wcz">L4 wcześniej w tym roku</label>
+      <div class="kwota" data-jedn="dni"><input id="l-wcz" name="wczesniej" type="text" inputmode="numeric" placeholder="0" /></div>
+    </div>
+  </div>
+  <div class="pole">
+    <label for="l-przyczyna">Przyczyna</label>
+    <select id="l-przyczyna" name="przyczyna">{przyczyny.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    <small>Pobyt w szpitalu jest płatny tak samo – 80% (stawkę 70% zniesiono w 2022 r.).</small>
+  </div>
+  <label class="przelacznik" data-tylko="uop"><input type="checkbox" name="po50" value="1" /> Skończyłem 50 lat przed tym rokiem (pracodawca płaci tylko 14 dni)</label>
+  <label class="przelacznik"><input type="checkbox" name="krotko" value="1" /> <span>Ubezpieczenie chorobowe trwa krócej niż <b data-wyczekiwanie>30</b> dni</span></label>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Podstawa</dt><dd id="l-podstawa"></dd>
+    <dt>Za 1 dzień</dt><dd id="l-dzien"></dd>
+    <dt data-u>Pracodawca</dt><dd data-u id="l-prac"></dd>
+    <dt>ZUS</dt><dd id="l-zus"></dd>
+    <dt>Na rękę (min.)</dt><dd id="l-netto"></dd>
+    <dt data-u>Mniej niż pensja</dt><dd data-u id="l-mniej"></dd>
+  </dl>
+  <ul class="uwagi" id="l-uwagi" hidden></ul>
+  <p class="blad" id="l-blad" hidden></p>
+  <div class="suma"><span>Za L4 brutto</span><strong id="l-razem" data-glowny="Za L4 brutto"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · bez składek ZUS i zdrowotnej</div>
+</div></div>
+<script>
+  import { obliczL4, type Forma, type Przyczyna } from '../../lib/l4';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-l4') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const minJdg = +form.dataset.minJdg!;
+  let forma: string | null = null;
+
+  const przelicz = () => {
+    const f = val('forma') as Forma;
+    if (forma !== null && f !== forma) el('brutto').value = f === 'jdg' ? String(minJdg).replace('.', ',') : f === 'zlecenie' ? '5000' : '7000';
+    forma = f;
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== f));
+    form.querySelector('[data-wyczekiwanie]')!.textContent = f === 'uop' ? '30' : '90';
+    $('l-brutto-et').textContent = f === 'jdg' ? 'Podstawa składki chorobowej (średnia z 12 miesięcy)' : f === 'zlecenie' ? 'Średni przychód ze zlecenia z 12 miesięcy' : 'Średnie wynagrodzenie brutto z 12 miesięcy';
+    $('l-brutto-pod').textContent = f === 'jdg' ? `Najniższa podstawa w ${new Date().getFullYear()} r.: ${zl(minJdg)}.` : 'Kalkulator odejmie 13,71% składek społecznych.';
+    const w = obliczL4({
+      forma: f, brutto: liczba(val('brutto')), dni: liczba(val('dni')), przyczyna: val('przyczyna') as Przyczyna,
+      po50: f === 'uop' && el('po50').checked, wczesniej: liczba(val('wczesniej')), krotko: el('krotko').checked,
+    });
+    const blad = $('l-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('l-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    ustawKwote($('l-podstawa'), w.podstawa);
+    ustawKwote($('l-dzien'), w.stawkaDzienna);
+    document.querySelectorAll<HTMLElement>('.paragon [data-u]').forEach((x) => (x.hidden = f !== 'uop'));
+    $('l-prac').textContent = `${w.dniPracodawca} dni · ${zl(w.kwotaPracodawca)}`;
+    $('l-zus').textContent = `${w.dniZus} dni · ${zl(w.kwotaZus)}`;
+    ustawKwote($('l-netto'), w.nettoMin);
+    ustawKwote($('l-mniej'), w.mniejNizPensja ?? 0);
+    ustawKwote($('l-razem'), w.razem);
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
