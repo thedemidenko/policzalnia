@@ -1,0 +1,108 @@
+---
+import { NAZWY_MIESIECY } from '../../lib/dni-robocze';
+const teraz = new Date();
+const lata = [teraz.getFullYear() - 1, teraz.getFullYear(), teraz.getFullYear() + 1];
+---
+<form id="k-nadgodziny" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Wynagrodzenie</legend>
+    <label><input type="radio" name="tryb" value="miesieczna" checked /><span>pensja miesięczna</span></label>
+    <label><input type="radio" name="tryb" value="godzinowa" /><span>stawka godzinowa</span></label>
+  </fieldset>
+  <div class="pole" data-tylko="miesieczna">
+    <label for="n-pensja">Pensja zasadnicza brutto</label>
+    <div class="kwota" data-jedn="zł"><input id="n-pensja" name="pensja" type="text" inputmode="decimal" value="7000" /></div>
+  </div>
+  <div class="pole" data-tylko="godzinowa" hidden>
+    <label for="n-stawka">Stawka za godzinę brutto</label>
+    <div class="kwota" data-jedn="zł"><input id="n-stawka" name="stawka" type="text" inputmode="decimal" value="40" /></div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="n-miesiac">Miesiąc</label>
+      <select id="n-miesiac" name="miesiac">{NAZWY_MIESIECY.map((m, i) => <option value={String(i + 1)} selected={i === teraz.getMonth()}>{m}</option>)}</select>
+    </div>
+    <div class="pole">
+      <label for="n-rok">Rok</label>
+      <select id="n-rok" name="rok">{lata.map((r) => <option value={String(r)} selected={r === teraz.getFullYear()}>{r}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole">
+    <span class="nazwa">Nadgodziny w miesiącu</span>
+    <div class="trojka">
+      <label>z dodatkiem 50%<div class="kwota" data-jedn="h"><input name="h50" type="text" inputmode="decimal" value="10" /></div></label>
+      <label>z dodatkiem 100%<div class="kwota" data-jedn="h"><input name="h100" type="text" inputmode="decimal" placeholder="0" /></div></label>
+      <label>w tym w nocy<div class="kwota" data-jedn="h"><input name="hNoc" type="text" inputmode="decimal" placeholder="0" /></div></label>
+    </div>
+    <small>100% – w nocy (21–7), w niedziele i święta wolne od pracy, w dniu wolnym za niedzielę lub święto i za przekroczenie normy tygodniowej. 50% – w pozostałe dni.</small>
+  </div>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole" data-tylko="miesieczna">
+      <label for="n-dodatki">Stałe dodatki (stażowy, funkcyjny)</label>
+      <div class="kwota" data-jedn="zł"><input id="n-dodatki" name="dodatki" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <label class="przelacznik" data-tylko="miesieczna"><input type="checkbox" name="bez60" value="1" /> W umowie jest tylko kwota łączna, bez stawki zaszeregowania (dodatek od 60%)</label>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="n-etat">Etat</label>
+        <select id="n-etat" name="etat"><option value="1">pełny</option><option value="0.75">3/4</option><option value="0.5">1/2</option></select>
+      </div>
+      <div class="pole">
+        <label for="n-wczesniej">Nadgodziny wcześniej w roku</label>
+        <div class="kwota" data-jedn="h"><input id="n-wczesniej" name="wczesniej" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Wymiar miesiąca</dt><dd id="n-wymiar"></dd>
+    <dt>Stawka za godzinę</dt><dd id="n-st"></dd>
+    <dt>Normalne wynagr.</dt><dd id="n-norm"></dd>
+    <dt>Dodatek 50%</dt><dd id="n-d50"></dd>
+    <dt>Dodatek 100%</dt><dd id="n-d100"></dd>
+    <dt data-noc hidden>Dodatek nocny</dt><dd data-noc hidden id="n-dnoc"></dd>
+    <dt>Albo czas wolny</dt><dd id="n-wolne"></dd>
+  </dl>
+  <ul class="uwagi" id="n-uwagi" hidden></ul>
+  <p class="blad" id="n-blad" hidden></p>
+  <div class="suma"><span>Za nadgodziny</span><strong id="n-razem" data-glowny="Za nadgodziny brutto"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · kwoty brutto</div>
+</div></div>
+<script>
+  import { obliczNadgodziny } from '../../lib/nadgodziny';
+  import { liczba } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-nadgodziny') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const n2 = (x: number) => x.toLocaleString('pl-PL', { maximumFractionDigits: 2 });
+  const p = new URLSearchParams(location.search);
+  if (p.has('dodatki') || p.has('wczesniej')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+
+  const przelicz = () => {
+    const tryb = val('tryb') as 'miesieczna' | 'godzinowa';
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => (x.hidden = x.dataset.tylko !== tryb));
+    const w = obliczNadgodziny({
+      rok: +val('rok'), miesiac: +val('miesiac'), tryb, pensja: liczba(val('pensja')), dodatki: liczba(val('dodatki')), stawka: liczba(val('stawka')),
+      bez60: el('bez60').checked, etat: +val('etat'), h50: liczba(val('h50')), h100: liczba(val('h100')), hNoc: liczba(val('hNoc')), wczesniejWRoku: liczba(val('wczesniej')),
+    });
+    const blad = $('n-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('n-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    $('n-wymiar').textContent = w.blad ? '–' : `${n2(w.wymiarGodzin)} h`;
+    ustawKwote($('n-st'), w.stawkaNormalna);
+    ustawKwote($('n-norm'), w.normalne);
+    ustawKwote($('n-d50'), w.dodatek50);
+    ustawKwote($('n-d100'), w.dodatek100);
+    document.querySelectorAll<HTMLElement>('.paragon [data-noc]').forEach((x) => (x.hidden = w.dodatekNocny === 0));
+    ustawKwote($('n-dnoc'), w.dodatekNocny);
+    $('n-wolne').textContent = w.blad ? '–' : `${n2(w.wolne1do1)} h / ${n2(w.wolneBezWniosku)} h`;
+    ustawKwote($('n-razem'), w.razem);
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
