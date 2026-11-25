@@ -18,6 +18,7 @@ import Lokaty from './kalkulatory/Lokaty.astro';
 import Nadplata from './kalkulatory/Nadplata.astro';
 import Ppk from './kalkulatory/Ppk.astro';
 import ProcentSkladany from './kalkulatory/ProcentSkladany.astro';
+import Obligacje from './kalkulatory/Obligacje.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -38,6 +39,7 @@ const KOMPONENTY = {
   nadplata: Nadplata,
   ppk: Ppk,
   'procent-skladany': ProcentSkladany,
+  obligacje: Obligacje,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

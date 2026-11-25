@@ -1,0 +1,150 @@
+---
+import { OFERTA, SYMBOLE, TYPY } from '../../lib/obligacje';
+import stopy from '../../data/stopy-nbp.json';
+const ref = String(stopy.zmiany.at(-1)!.ref).replace('.', ',');
+const pl = (x: number) => x.toFixed(2).replace('.', ',') + '%';
+const opis = (s: (typeof SYMBOLE)[number]) => {
+  const t = TYPY[s];
+  const dalej = t.oprocentowanie === 'stale' ? 'stałe' : t.oprocentowanie === 'ref' ? `→ NBP${t.marza ? ' + ' + pl(t.marza) : ''}` : `→ inflacja + ${pl(t.marza)}`;
+  const okres = t.mies < 12 ? `${t.mies} mies.` : t.mies === 12 ? '1 rok' : `${t.mies / 12} ${t.mies / 12 < 5 ? 'lata' : 'lat'}`;
+  return `${s} · ${okres} · ${pl(t.pierwsza)} ${dalej}`;
+};
+---
+<form id="k-obligacje" class="pola" autocomplete="off">
+  <div class="pole">
+    <label for="ob-sym">Obligacje</label>
+    <select id="ob-sym" name="sym">{SYMBOLE.map((s) => <option value={s} selected={s === 'EDO'} data-rodzinne={TYPY[s].rodzinne ? '1' : undefined}>{opis(s)}</option>)}</select>
+    <small>Oferta MF: {OFERTA}. Oprocentowanie w 1. okresie i marże z listów emisyjnych.</small>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ob-kwota">Kwota</label>
+      <div class="kwota" data-jedn="zł"><input id="ob-kwota" name="kwota" type="text" inputmode="decimal" value="10000" /></div>
+    </div>
+    <div class="pole">
+      <label for="ob-lata">Na ile lat</label>
+      <div class="kwota" data-jedn="lat"><input id="ob-lata" name="lata" type="text" inputmode="decimal" value="10" /></div>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ob-inf">Inflacja w kolejnych latach</label>
+      <div class="kwota" data-jedn="%"><input id="ob-inf" name="inflacja" type="text" inputmode="decimal" value="3" aria-describedby="ob-inf-pod" /></div>
+    </div>
+    <div class="pole">
+      <label for="ob-ref">Stopa NBP</label>
+      <div class="kwota" data-jedn="%"><input id="ob-ref" name="ref" type="text" inputmode="decimal" value={ref} /></div>
+    </div>
+  </div>
+  <small id="ob-inf-pod">Jedna liczba albo kilka po średniku dla kolejnych lat, np. „3,5; 3; 2,5” – ostatnia obowiązuje dalej. Stopa NBP dotyczy ROR i DOR.</small>
+  <label class="przelacznik"><input type="checkbox" name="ike" value="1" /> Kupuję w IKE / IKZE (bez podatku Belki)</label>
+  <label class="przelacznik"><input type="checkbox" name="r800" value="1" /> Mam 800+ – pokaż obligacje rodzinne ROS i ROD</label>
+  <details class="wplaty" data-wiecej>
+    <summary>Dokupuję co miesiąc</summary>
+    <div class="pole">
+      <label for="ob-mies">Co miesiąc dokupuję za</label>
+      <div class="kwota" data-jedn="zł"><input id="ob-mies" name="miesiecznie" type="text" inputmode="decimal" placeholder="0" /></div>
+      <small>Każdego miesiąca kupujesz nową serię za tę kwotę (po 100 zł za sztukę) – na koniec okresu każda seria jest wykupywana w terminie albo przed terminem.</small>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Wpłacasz</dt><dd id="ob-wpl"></dd>
+    <dt>Odsetki brutto</dt><dd id="ob-ods"></dd>
+    <dt data-op>Opłaty za wykup</dt><dd data-op id="ob-op"></dd>
+    <dt>Podatek Belki</dt><dd id="ob-pod"></dd>
+    <dt>Zysk na czysto</dt><dd id="ob-zysk"></dd>
+    <dt>Rocznie netto</dt><dd id="ob-irr"></dd>
+    <dt>Realnie (dziś)</dt><dd id="ob-real"></dd>
+  </dl>
+  <ul class="uwagi" id="ob-uwagi" hidden></ul>
+  <div class="suma"><span id="ob-et">Na koniec masz</span><strong id="ob-wynik" data-glowny="Na koniec masz"></strong></div>
+  <div class="stopka-paragonu" id="ob-stopka">policzalnia.pl</div>
+</div></div>
+<details class="rozbicie" id="ob-por" open>
+  <summary id="ob-por-sum">Które obligacje dadzą najwięcej?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Obligacje</th><th>Na koniec</th><th>Zysk</th><th>Rocznie</th></tr></thead>
+    <tbody id="ob-por-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Ta sama kwota i te same założenia. Krótsze obligacje po wykupie zamieniamy na nową serię po 99,90 zł, dłuższe – wykupujemy przed terminem z opłatą.</p>
+</details>
+<details class="rozbicie" id="ob-lata-d">
+  <summary id="ob-lata-sum">Gdybyś wykupił po kolejnych latach</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Po roku</th><th>Oprocentowanie</th><th>1 obligacja netto</th><th>Twoje obligacje</th></tr></thead>
+    <tbody id="ob-lata-t"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="ob-prz">
+  <summary>Wypłaty, wykup i zamiany</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Kiedy</th><th>Co</th><th>Odsetki</th><th>Podatek</th><th>Na konto</th></tr></thead>
+    <tbody id="ob-prz-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { oblicz, parsujInflacje, porownaj, TYPY, wykupPoLatach, type Symbol } from '../../lib/obligacje';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-obligacje') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pr = (x: number) => (Number.isFinite(x) ? (x * 100).toFixed(2).replace('.', ',') + '%' : '–');
+  if (new URLSearchParams(location.search).has('miesiecznie')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const lat = (n: number) => (n === 1 ? 'roku' : 'latach');
+  const kiedy = (m: number) => (m % 12 === 0 ? `po ${m / 12} ${m === 12 ? 'roku' : 'latach'}` : m < 12 ? `po ${m} mies.` : `po ${Math.floor(m / 12)} l. ${m % 12} mies.`);
+
+  const przelicz = () => {
+    const r800 = el('r800').checked;
+    const sel = el('sym') as unknown as HTMLSelectElement;
+    sel.querySelectorAll<HTMLOptionElement>('option[data-rodzinne]').forEach((o) => (o.hidden = o.disabled = !r800));
+    if (!r800 && TYPY[sel.value as Symbol].rodzinne) sel.value = 'EDO';
+    const sym = sel.value as Symbol;
+    const z = { inflacja: parsujInflacje(val('inflacja')), ref: liczba(val('ref')), ike: el('ike').checked };
+    const H = Math.max(1, Math.round(liczba(val('lata')) * 12));
+    const d = { kwota: liczba(val('kwota')), H, miesiecznie: liczba(val('miesiecznie')), z };
+    const w = oblicz({ ...d, sym });
+    ustawKwote($('ob-wpl'), w.wplaty); ustawKwote($('ob-ods'), w.odsetki); ustawKwote($('ob-op'), w.oplaty);
+    ustawKwote($('ob-pod'), w.podatek); ustawKwote($('ob-zysk'), w.zysk); ustawKwote($('ob-real'), w.realnie);
+    document.querySelectorAll<HTMLElement>('.paragon [data-op]').forEach((x) => (x.hidden = w.oplaty === 0));
+    $('ob-irr').textContent = pr(w.stopaNetto);
+    const l = Math.round((H / 12) * 100) / 100;
+    const et = `${sym}: po ${String(l).replace('.', ',')} ${lat(l)} masz`;
+    $('ob-et').textContent = et; $('ob-wynik').dataset.glowny = et;
+    ustawKwote($('ob-wynik'), w.koniec);
+    $('ob-stopka').textContent = `policzalnia.pl · ${w.kupiono} szt. · ${z.ike ? 'bez podatku (IKE)' : 'po podatku Belki 19%'}`;
+    const ul = $('ob-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const por = porownaj(d, r800);
+    $('ob-por-sum').textContent = `Które obligacje dadzą najwięcej w ${String(l).replace('.', ',')} ${l === 1 ? 'rok' : 'lat'}?`;
+    $('ob-por-t').innerHTML = por.map((x, i) => {
+      const t = TYPY[x.sym as Symbol];
+      const dop = H < t.mies && t.oplataTyp !== 'bezOdsetek' ? ' · wykup przed terminem' : H > t.mies && t.zamiana ? ' · z zamianą' : '';
+      return `<tr${x.sym === sym ? ' class="aktywny"' : ''}><td>${i === 0 ? '★ ' : ''}${x.sym} <small>${t.nazwa}${dop}</small></td><td>${zl(x.koniec)}</td><td>${zl(x.zysk)}</td><td>${pr(x.stopaNetto)}</td></tr>`;
+    }).join('');
+
+    const n = Math.floor(d.kwota / 100);
+    const t = TYPY[sym];
+    $('ob-lata-sum').textContent = `${sym}: gdybyś wykupił po kolejnych latach`;
+    $('ob-lata-d').hidden = t.mies < 12;
+    $('ob-lata-t').innerHTML = wykupPoLatach(sym, z).map((r) => `<tr${r.rok * 12 === Math.min(H, t.mies) ? ' class="aktywny"' : ''}><td>${r.rok}.${r.rok * 12 >= t.mies ? ' (wykup)' : ''}</td><td>${r.stopa.toFixed(2).replace('.', ',')}%</td><td>${zl(r.netto)}</td><td>${zl(r.netto * n)}</td></tr>`).join('');
+
+    // wypłaty odsetek sumujemy po latach, wykupy i zamiany – osobno
+    const wiersze: { klucz: string; mies: number; opis: string; odsetki: number; podatek: number; kwota: number }[] = [];
+    for (const p of w.przeplywy) {
+      const odsetkiRok = p.opis === 'odsetki';
+      const klucz = odsetkiRok ? 'o' + Math.ceil(p.mies / 12) : 'x' + p.mies + p.opis;
+      const ost = wiersze.find((x) => x.klucz === klucz);
+      if (ost) { ost.odsetki += p.odsetki; ost.podatek += p.podatek; ost.kwota += p.kwota; ost.mies = Math.max(ost.mies, p.mies); }
+      else wiersze.push({ klucz, mies: odsetkiRok ? Math.ceil(p.mies / 12) * 12 : p.mies, opis: odsetkiRok ? 'wypłaty odsetek w roku' : p.opis, odsetki: p.odsetki, podatek: p.podatek, kwota: p.kwota });
+    }
+    wiersze.sort((a, b) => a.mies - b.mies);
+    $('ob-prz-t').innerHTML = wiersze.map((p) => `<tr><td>${p.opis === 'wypłaty odsetek w roku' ? `${p.mies / 12}. rok` : kiedy(p.mies)}</td><td>${p.opis}</td><td>${p.odsetki ? zl(p.odsetki) : '–'}</td><td>${p.podatek ? zl(p.podatek) : '–'}</td><td>${zl(p.kwota)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

@@ -1,0 +1,15 @@
+{
+  "_opis": "Detaliczne obligacje skarbowe – oferta MF (listy emisyjne serii z listopada 2026; oferta grudniowa bez zmian). Aktualizować co miesiąc (MF ogłasza ofertę ok. 20.–25. dnia poprzedniego miesiąca, obligacjeskarbowe.pl). oplataTyp: 'doOdsetek' – opłata nie wyższa niż narosłe odsetki (WP ≥ 100 zł); 'pierwszyDoOdsetek' – w 1. okresie do wysokości odsetek, w kolejnych w pełnej wysokości z należności; 'bezOdsetek' – OTS: przy wcześniejszym wykupie bez odsetek i bez opłaty. zamiana: cena przy zamianie (null – brak zamiany).",
+  "oferta": "grudzień 2026",
+  "aktualizacja": "2026-11-25",
+  "typy": {
+    "OTS": { "nazwa": "3-miesięczne", "mies": 3, "pierwsza": 2.00, "marza": 0, "oprocentowanie": "stale", "wyplata": "wykup", "kapitalizacja": false, "oplata": 0, "oplataTyp": "bezOdsetek", "zamiana": 100.00, "rodzinne": false },
+    "ROR": { "nazwa": "roczne", "mies": 12, "pierwsza": 4.00, "marza": 0.00, "oprocentowanie": "ref", "wyplata": "miesiecznie", "kapitalizacja": false, "oplata": 0.50, "oplataTyp": "pierwszyDoOdsetek", "zamiana": 99.90, "rodzinne": false },
+    "DOR": { "nazwa": "2-letnie", "mies": 24, "pierwsza": 4.15, "marza": 0.15, "oprocentowanie": "ref", "wyplata": "miesiecznie", "kapitalizacja": false, "oplata": 0.70, "oplataTyp": "pierwszyDoOdsetek", "zamiana": 99.90, "rodzinne": false },
+    "TOS": { "nazwa": "3-letnie", "mies": 36, "pierwsza": 4.40, "marza": 0, "oprocentowanie": "stale", "wyplata": "wykup", "kapitalizacja": true, "oplata": 1.00, "oplataTyp": "doOdsetek", "zamiana": 99.90, "rodzinne": false },
+    "COI": { "nazwa": "4-letnie", "mies": 48, "pierwsza": 4.75, "marza": 1.50, "oprocentowanie": "inflacja", "wyplata": "rocznie", "kapitalizacja": false, "oplata": 2.00, "oplataTyp": "pierwszyDoOdsetek", "zamiana": 99.90, "rodzinne": false },
+    "EDO": { "nazwa": "10-letnie", "mies": 120, "pierwsza": 5.35, "marza": 2.00, "oprocentowanie": "inflacja", "wyplata": "wykup", "kapitalizacja": true, "oplata": 3.00, "oplataTyp": "doOdsetek", "zamiana": 99.90, "rodzinne": false },
+    "ROS": { "nazwa": "6-letnie rodzinne", "mies": 72, "pierwsza": 5.00, "marza": 2.00, "oprocentowanie": "inflacja", "wyplata": "wykup", "kapitalizacja": true, "oplata": 2.00, "oplataTyp": "doOdsetek", "zamiana": null, "rodzinne": true },
+    "ROD": { "nazwa": "12-letnie rodzinne", "mies": 144, "pierwsza": 5.60, "marza": 2.50, "oprocentowanie": "inflacja", "wyplata": "wykup", "kapitalizacja": true, "oplata": 3.00, "oplataTyp": "doOdsetek", "zamiana": null, "rodzinne": true }
+  }
+}
