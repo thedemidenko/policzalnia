@@ -352,3 +352,5 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .wykres-ps .lg-z { background: var(--oszczedzanie); }
 @media print { .wykres-ps svg { height: 150px; } }
 #ob-por td small { display: block; color: var(--olowek); font-size: .78em; white-space: nowrap; }
+.wykres-inf svg { height: 180px; border-bottom: 0; }
+.wykres-inf .os { stroke: var(--tusz); stroke-width: 1.5; }

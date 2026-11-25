@@ -1,0 +1,191 @@
+---
+import { LATA_ROCZNE, MIESIACE, OST_MIES, OST_ROK } from '../../lib/inflacja';
+const lata: number[] = [];
+for (let r = OST_ROK; r >= LATA_ROCZNE[0] - 1; r--) lata.push(r);
+const od = { id: 'in-od-m', name: 'odm' }, dd = { id: 'in-do-m', name: 'dom', wybrany: OST_MIES };
+---
+<form id="k-inflacja" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="wartosc" checked /><span>wartość pieniądza</span></label>
+    <label><input type="radio" name="tryb" value="pensja" /><span>pensja realnie</span></label>
+    <label><input type="radio" name="tryb" value="przyszlosc" /><span>w przyszłości</span></label>
+  </fieldset>
+  <div class="pole" data-tryb="wartosc">
+    <label for="in-kwota">Kwota</label>
+    <div class="kwota" data-jedn="zł"><input id="in-kwota" name="kwota" type="text" inputmode="decimal" value="100" /></div>
+  </div>
+  <div class="pole-para" data-tryb="pensja" hidden>
+    <div class="pole">
+      <label for="in-p1">Pensja wtedy</label>
+      <div class="kwota" data-jedn="zł"><input id="in-p1" name="p1" type="text" inputmode="decimal" value="6000" /></div>
+    </div>
+    <div class="pole">
+      <label for="in-p2">Pensja teraz</label>
+      <div class="kwota" data-jedn="zł"><input id="in-p2" name="p2" type="text" inputmode="decimal" value="8000" /></div>
+    </div>
+  </div>
+  <div data-daty class="opcje">
+    <div class="pole-para">
+      <div class="pole">
+        <label for="in-od">Od roku</label>
+        <select id="in-od" name="od">{lata.map((r) => <option value={String(r)} selected={r === 2020}>{r}</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for={od.id}>Miesiąc</label>
+        <select id={od.id} name={od.name}><option value="">średnio w roku</option>{MIESIACE.map((m, i) => <option value={String(i + 1)}>{m}</option>)}</select>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="in-do">Do roku</label>
+        <select id="in-do" name="do">{lata.map((r) => <option value={String(r)} selected={r === OST_ROK}>{r}</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for={dd.id}>Miesiąc</label>
+        <select id={dd.id} name={dd.name}><option value="">średnio w roku</option>{MIESIACE.map((m, i) => <option value={String(i + 1)} selected={i + 1 === dd.wybrany}>{m}</option>)}</select>
+      </div>
+    </div>
+    <label class="przelacznik" data-stare hidden><input type="checkbox" name="stare" value="1" checked /> Kwoty sprzed 1995 r. w starych złotych (10 000 starych zł = 1 zł)</label>
+  </div>
+  <div data-tryb="przyszlosc" class="opcje" hidden>
+    <div class="pole">
+      <label for="in-fk">Kwota dziś</label>
+      <div class="kwota" data-jedn="zł"><input id="in-fk" name="fk" type="text" inputmode="decimal" value="100000" /></div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="in-fl">Za ile lat</label>
+        <div class="kwota" data-jedn="lat"><input id="in-fl" name="fl" type="text" inputmode="decimal" value="20" /></div>
+      </div>
+      <div class="pole">
+        <label for="in-fi">Inflacja rocznie</label>
+        <div class="kwota" data-jedn="%"><input id="in-fi" name="fi" type="text" inputmode="decimal" value="3" /></div>
+      </div>
+    </div>
+    <small>Cel inflacyjny NBP to 2,5% (± 1 pkt proc.). Średnio w latach 2000–2025 ceny rosły o ok. 3,5% rocznie.</small>
+  </div>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl data-w="wartosc">
+    <dt>Inflacja w okresie</dt><dd id="in-skum"></dd>
+    <dt>Średnio rocznie</dt><dd id="in-sr"></dd>
+    <dt id="in-sila-et" data-sila>Siła nabywcza</dt><dd id="in-sila" data-sila></dd>
+    <dt>Pieniądz stracił</dt><dd id="in-spadek"></dd>
+  </dl>
+  <dl data-w="pensja" hidden>
+    <dt>Inflacja w okresie</dt><dd id="in-p-inf"></dd>
+    <dt>Podwyżka nominalnie</dt><dd id="in-p-nom"></dd>
+    <dt>Żeby nadążyć</dt><dd id="in-p-pot"></dd>
+    <dt id="in-p-roz-et">Różnica</dt><dd id="in-p-roz"></dd>
+  </dl>
+  <dl data-w="przyszlosc" hidden>
+    <dt>Żeby mieć tę samą siłę</dt><dd id="in-f-pot"></dd>
+    <dt>Pieniądz straci</dt><dd id="in-f-sp"></dd>
+  </dl>
+  <p class="blad" id="in-blad" hidden></p>
+  <div class="suma"><span id="in-et">Wynik</span><strong id="in-wynik" data-glowny="Wynik"></strong></div>
+  <div class="stopka-paragonu" id="in-stopka">policzalnia.pl · dane GUS</div>
+</div></div>
+<figure class="wykres-ps wykres-inf" id="in-wykres">
+  <svg id="in-svg" role="img" aria-labelledby="in-wykres-opis" viewBox="0 0 640 220" preserveAspectRatio="none"></svg>
+  <figcaption id="in-wykres-opis"></figcaption>
+</figure>
+<details class="rozbicie" id="in-tab">
+  <summary>Inflacja w Polsce rok po roku (GUS)</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Rok</th><th>Inflacja</th><th>Rok</th><th>Inflacja</th><th>Rok</th><th>Inflacja</th></tr></thead>
+    <tbody id="in-tab-t"></tbody>
+  </table></div>
+  <p class="podpowiedz" id="in-tab-pod"></p>
+</details>
+<script>
+  import { DENOMINACJA, inflacjaRoczna, inflacjaRr, LATA_ROCZNE, MIESIACE, OST_MIES, OST_ROK, przelicz, przyszlosc, realnaZmiana, dostepny, type Data } from '../../lib/inflacja';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-inflacja') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pr = (x: number, m = 2) => (x * 100).toFixed(m).replace('.', ',') + '%';
+  const DOP = ['ze stycznia', 'z lutego', 'z marca', 'z kwietnia', 'z maja', 'z czerwca', 'z lipca', 'z sierpnia', 'z września', 'z października', 'z listopada', 'z grudnia'];
+  const MSC = ['styczniu', 'lutym', 'marcu', 'kwietniu', 'maju', 'czerwcu', 'lipcu', 'sierpniu', 'wrześniu', 'październiku', 'listopadzie', 'grudniu'];
+  const opis = (d: Data) => (d.mies ? `${MIESIACE[d.mies - 1]} ${d.rok}` : `${d.rok} r.`);
+  const zDaty = (d: Data) => (d.mies ? `${DOP[d.mies - 1]} ${d.rok}` : `z ${d.rok} r.`);
+  const wDacie = (d: Data) => (d.mies ? `w ${MSC[d.mies - 1]} ${d.rok}` : `w ${d.rok} r.`);
+  const kr = (d: Data) => (d.mies ? `${String(d.mies).padStart(2, '0')}.${d.rok}` : `${d.rok}`);
+
+  // wykres: inflacja średnioroczna od 2000 + ostatni odczyt r/r
+  (function wykres() {
+    const dane = LATA_ROCZNE.filter((r) => r >= 2000).map((r) => ({ et: String(r), v: inflacjaRoczna(r)! }));
+    dane.push({ et: `${MIESIACE[OST_MIES - 1].slice(0, 3)} ${OST_ROK}`, v: inflacjaRr(OST_ROK, OST_MIES)! });
+    const max = Math.max(...dane.map((d) => d.v)), min = Math.min(0, ...dane.map((d) => d.v));
+    const W = 640, H = 200, gap = 3, bw = (W - gap * (dane.length - 1)) / dane.length, skala = H / (max - min), zero = 10 + max * skala;
+    $('in-svg').innerHTML = dane.map((d, i) => {
+      const x = i * (bw + gap), h = Math.abs(d.v) * skala, y = d.v >= 0 ? zero - h : zero;
+      const ost = i === dane.length - 1;
+      return `<rect class="${ost ? 's-w' : 's-z'}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1, h).toFixed(1)}"><title>${d.et}: ${d.v.toFixed(1).replace('.', ',')}%</title></rect>`;
+    }).join('') + `<line x1="0" x2="${W}" y1="${zero}" y2="${zero}" class="os"/>`;
+    const szczyt = dane.reduce((a, b) => (b.v > a.v ? b : a));
+    $('in-wykres-opis').textContent = `Inflacja średnioroczna 2000–${LATA_ROCZNE.at(-1)} (GUS) i ostatni odczyt rok do roku (szary). Najwyżej: ${szczyt.v.toFixed(1).replace('.', ',')}% w ${szczyt.et} r.`;
+    // tabela 3 kolumny
+    const lata = [...LATA_ROCZNE].reverse();
+    const n = Math.ceil(lata.length / 3);
+    const w: string[] = [];
+    for (let i = 0; i < n; i++) w.push('<tr>' + [0, 1, 2].map((k) => { const r = lata[i + k * n]; return r ? `<td>${r}</td><td>${inflacjaRoczna(r)!.toFixed(1).replace('.', ',')}%</td>` : '<td></td><td></td>'; }).join('') + '</tr>');
+    $('in-tab-t').innerHTML = w.join('');
+    const ost12: string[] = [];
+    for (let i = 11; i >= 0; i--) { let m = OST_MIES - i, r = OST_ROK; if (m < 1) { m += 12; r--; } const v = inflacjaRr(r, m); if (v != null) ost12.push(`${MIESIACE[m - 1].slice(0, 3)} ${r}: ${v.toFixed(1).replace('.', ',')}%`); }
+    $('in-tab-pod').textContent = `Inflacja średnioroczna (rok poprzedni = 100). Ostatnie 12 miesięcy, rok do roku: ${ost12.join(' · ')}.`;
+  })();
+
+  const przelicz_ = () => {
+    const tryb = val('tryb');
+    form.querySelectorAll<HTMLElement>('[data-tryb]').forEach((x) => (x.hidden = x.dataset.tryb !== tryb));
+    form.querySelector<HTMLElement>('[data-daty]')!.hidden = tryb === 'przyszlosc';
+    document.querySelectorAll<HTMLElement>('.paragon [data-w]').forEach((x) => (x.hidden = x.dataset.w !== tryb));
+    const od: Data = { rok: +val('od'), mies: +val('odm') || undefined };
+    const d: Data = { rok: +val('do'), mies: +val('dom') || undefined };
+    form.querySelector<HTMLElement>('[data-stare]')!.hidden = !(tryb === 'wartosc' && (od.rok < DENOMINACJA || d.rok < DENOMINACJA));
+    const g = $('in-wynik'), et = (t: string) => { $('in-et').textContent = t; g.dataset.glowny = t; };
+    const blad = $('in-blad');
+    blad.hidden = true;
+
+    if (tryb === 'przyszlosc') {
+      const k = liczba(val('fk')), l = liczba(val('fl')), f = przyszlosc(k, l, liczba(val('fi')));
+      ustawKwote($('in-f-pot'), f.potrzebna); $('in-f-sp').textContent = pr(f.spadek, 1);
+      et(`${zl(k)} za ${String(l).replace('.', ',')} lat będzie warte`); ustawKwote(g, f.realnie);
+      $('in-stopka').textContent = `policzalnia.pl · inflacja ${val('fi')}% rocznie`;
+      return;
+    }
+    const brak = [od, d].find((x) => !dostepny(x));
+    if (brak) { blad.hidden = false; blad.textContent = `Brak danych GUS dla: ${opis(brak)}. Ostatnie dane: ${MIESIACE[OST_MIES - 1]} ${OST_ROK}.`; g.textContent = '–'; return; }
+
+    if (tryb === 'pensja') {
+      const p1 = liczba(val('p1')), p2 = liczba(val('p2'));
+      const r = realnaZmiana(p1, p2, od, d);
+      if (!r) return;
+      $('in-p-inf').textContent = pr(r.inflacja, 1); $('in-p-nom').textContent = pr(r.nominalna, 1);
+      ustawKwote($('in-p-pot'), r.potrzebna);
+      $('in-p-roz-et').textContent = r.roznica >= 0 ? 'Masz więcej o' : 'Brakuje';
+      ustawKwote($('in-p-roz'), Math.abs(r.roznica));
+      et(`Realna zmiana pensji (${kr(od)} → ${kr(d)})`);
+      g.textContent = (r.realna >= 0 ? '+' : '') + pr(r.realna, 1);
+      $('in-stopka').textContent = 'policzalnia.pl · pensja realna = nominalna ÷ wzrost cen (GUS)';
+      return;
+    }
+    const k = liczba(val('kwota'));
+    const w = przelicz({ kwota: k, od, do: d, stareZlote: el('stare').checked })!;
+    $('in-skum').textContent = pr(w.skumulowana, w.skumulowana > 100 ? 0 : 2);
+    $('in-sr').textContent = pr(w.sredniorocznie);
+    $('in-sila-et').textContent = `Ta kwota w ${kr(od)}`;
+    ustawKwote($('in-sila'), w.silaNabywcza);
+    document.querySelectorAll<HTMLElement>('.paragon [data-sila]').forEach((x) => (x.hidden = w.denominacja));
+    $('in-spadek').textContent = w.wspolczynnik >= 1 ? pr(w.spadekSily, 1) : '–';
+    et(`${zl(k)} ${zDaty(od)} to ${wDacie(d)}`);
+    ustawKwote(g, w.wartosc);
+    $('in-stopka').textContent = w.denominacja ? 'policzalnia.pl · z uwzględnieniem denominacji 1995 r.' : `policzalnia.pl · wskaźniki cen GUS${od.mies && d.mies ? ', miesięczne' : ', średnioroczne'}`;
+  };
+  podlaczKalkulator(form, przelicz_);
+</script>
