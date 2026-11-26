@@ -24,6 +24,7 @@ import Inflacja from './kalkulatory/Inflacja.astro';
 import Inwestycje from './kalkulatory/Inwestycje.astro';
 import Ikze from './kalkulatory/Ikze.astro';
 import UmowyTerminowe from './kalkulatory/UmowyTerminowe.astro';
+import OdsetkiZus from './kalkulatory/OdsetkiZus.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -49,7 +50,7 @@ const KOMPONENTY = {
   inflacja: Inflacja,
   inwestycje: Inwestycje,
   ikze: Ikze,
-  'umowy-terminowe': UmowyTerminowe,
+  'umowy-terminowe': UmowyTerminowe, 'odsetki-zus': OdsetkiZus,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }

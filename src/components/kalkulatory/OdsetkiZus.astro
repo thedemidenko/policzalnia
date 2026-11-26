@@ -1,0 +1,309 @@
+---
+import { PLATNICY } from '../../lib/odsetki-zus';
+const platnicy = Object.entries(PLATNICY);
+const kwoty: [string, string, boolean][] = [['s', 'Społeczne', false], ['z', 'Zdrowotna', false], ['f', 'FP i FS', false], ['g', 'FGŚP', true], ['e', 'FEP', true]];
+---
+<form id="k-odsetki-zus" class="pola" autocomplete="off">
+  <div class="pole">
+    <label for="oz-platnik">Kto płaci składki</label>
+    <select id="oz-platnik" name="platnik">{platnicy.map(([k, n]) => <option value={k}>{n}</option>)}</select>
+    <small id="oz-termin-info">Termin: 20. dzień następnego miesiąca.</small>
+  </div>
+  <div class="pole">
+    <span class="nazwa" id="oz-mies-nazwa">Nieopłacone składki</span>
+    <div data-mies-lista role="group" aria-labelledby="oz-mies-nazwa">
+      <div class="zus-mies">
+        <div class="zus-gora">
+          <input type="month" name="m1" aria-label="Miesiąc, za który są składki 1" />
+          <input type="date" name="t1" aria-label="Termin płatności 1" data-reczny hidden />
+          <span class="zus-termin" data-termin></span>
+          <button type="button" class="usun" aria-label="Usuń miesiąc">×</button>
+        </div>
+        <div class="zus-kwoty">
+          {kwoty.map(([p, n, prac]) => <label data-prac={prac ? '' : undefined} hidden={prac}><span>{n}</span><span class="kwota" data-jedn="zł"><input type="text" name={`${p}1`} inputmode="decimal" placeholder="0" /></span></label>)}
+        </div>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj-mies>+ Dodaj kolejny miesiąc</button>
+    <small>Wpisz kwoty z deklaracji (DRA) albo z eZUS. Odsetki liczy się osobno od każdego miesiąca i funduszu – tak jak w kalkulatorze ZUS.</small>
+    <div class="zus-wzor">
+      <label for="oz-wzor">Szybko wpisz składki przedsiębiorcy (2026):</label>
+      <select id="oz-wzor" data-wzor>
+        <option value="">– wybierz –</option>
+        <option value="pelny">pełny ZUS z chorobowym – 1788,29 + FP 138,47 zł</option>
+        <option value="bezchor">pełny ZUS bez chorobowego – 1649,82 + FP 138,47 zł</option>
+        <option value="pref">preferencyjny z chorobowym – 456,18 zł</option>
+        <option value="prefbez">preferencyjny bez chorobowego – 420,86 zł</option>
+      </select>
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="prac" value="1" /> Składki za pracowników – pokaż FGŚP i FEP</label>
+  <label class="przelacznik"><input type="checkbox" name="reczne" value="1" /> Wpiszę terminy płatności ręcznie (np. roczna składka zdrowotna, decyzja ZUS)</label>
+  <div class="pole">
+    <label for="oz-zaplata">Data zapłaty</label>
+    <input id="oz-zaplata" name="zaplata" type="date" />
+    <small>Dzień, w którym pieniądze wpłyną do ZUS (obciążenie rachunku przy przelewie).</small>
+  </div>
+  <details class="wplaty" data-wplaty>
+    <summary>Wpłaty częściowe <span data-wplaty-licznik></span></summary>
+    <p class="podpowiedz">ZUS dzieli każdą wpłatę proporcjonalnie na fundusze według ostatniej deklaracji, a w funduszu zalicza ją na najstarszy dług – proporcjonalnie na składkę i odsetki.</p>
+    <div data-wplaty-lista></div>
+    <button type="button" class="przycisk maly" data-dodaj-wplate>+ Dodaj wpłatę</button>
+  </details>
+  <details class="wplaty" data-raty>
+    <summary>Wniosek o rozłożenie na raty</summary>
+    <div class="pole">
+      <label for="oz-raty">Data złożenia wniosku</label>
+      <input id="oz-raty" name="raty" type="date" />
+      <small>Jeśli ZUS zawrze z tobą umowę ratalną, od składek objętych układem nie nalicza się odsetek od dnia po wpływie wniosku (art. 29 ust. 2 ustawy o sus).</small>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt id="oz-skl-et">Składki</dt><dd id="oz-skladki-wej"></dd>
+    <dt>Dni zwłoki</dt><dd id="oz-dni"></dd>
+    <dt>Stawka roczna</dt><dd id="oz-stawka"></dd>
+    <dt>ZUS pobiera odsetki od</dt><dd id="oz-min"></dd>
+    <dt data-w hidden>Wpłacono</dt><dd data-w hidden id="oz-wplacono"></dd>
+    <dt data-w hidden>Składki pozostałe</dt><dd data-w hidden id="oz-skladki"></dd>
+    <dt>Do zapłaty razem</dt><dd id="oz-razem"></dd>
+    <dt data-p>Odsetki rosną o</dt><dd data-p id="oz-przyrost"></dd>
+  </dl>
+  <ul class="uwagi" id="oz-uwagi" hidden></ul>
+  <p class="blad" id="oz-blad" hidden></p>
+  <div class="suma"><span>Odsetki</span><strong id="oz-odsetki" data-glowny="Odsetki"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · osobno dla miesięcy i funduszy, do pełnych złotych</div>
+</div></div>
+<details class="rozbicie" id="oz-tab-mies" open>
+  <summary>Odsetki za każdy miesiąc</summary>
+  <div class="tabela-przewijana"><table id="oz-mies">
+    <thead><tr><th>Składki za</th><th>Dni</th><th>Odsetki</th><th>Bez odsetek do</th></tr></thead>
+    <tbody id="oz-mies-t"></tbody>
+  </table></div>
+  <p class="podpis-tabeli">„Bez odsetek do” – ostatni dzień, w którym zapłata całej składki za ten miesiąc nie wymaga odsetek (w każdym funduszu są poniżej progu).</p>
+</details>
+<details class="rozbicie" id="oz-tab-kiedy" open>
+  <summary>Ile zapłacisz, jeśli zapłacisz później?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Zapłata</th><th>Odsetki</th><th>Razem z odsetkami</th></tr></thead>
+    <tbody id="oz-kiedy"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="oz-tab-fund">
+  <summary>Odsetki w funduszach i okresy stawek</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Fundusz</th><th>Składka</th><th>Dni</th><th>Stawka</th><th>Odsetki</th></tr></thead>
+    <tbody id="oz-fund"></tbody>
+  </table></div>
+  <div class="tabela-przewijana" id="oz-tab-wplat" hidden><table>
+    <thead><tr><th>Wpłata</th><th>Kwota</th><th>Na składkę</th><th>Na odsetki</th></tr></thead>
+    <tbody id="oz-wplaty"></tbody>
+  </table></div>
+</details>
+<template id="oz-wiersz-mies">
+  <div class="zus-mies">
+    <div class="zus-gora">
+      <input type="month" aria-label="Miesiąc, za który są składki" />
+      <input type="date" aria-label="Termin płatności" data-reczny hidden />
+      <span class="zus-termin" data-termin></span>
+      <button type="button" class="usun" aria-label="Usuń miesiąc">×</button>
+    </div>
+    <div class="zus-kwoty">
+      {kwoty.map(([p, n, prac]) => <label data-prac={prac ? '' : undefined} hidden={prac}><span>{n}</span><span class="kwota" data-jedn="zł"><input type="text" data-p={p} inputmode="decimal" placeholder="0" /></span></label>)}
+    </div>
+  </div>
+</template>
+<template id="oz-wiersz-wplaty">
+  <div class="wplata">
+    <input type="date" aria-label="Data wpłaty" />
+    <div class="kwota" data-jedn="zł"><input type="text" inputmode="decimal" aria-label="Kwota wpłaty" placeholder="0" /></div>
+    <button type="button" class="usun" aria-label="Usuń wpłatę">×</button>
+  </div>
+</template>
+<script>
+  import { FUNDUSZE, obliczOdsetkiZus, terminSkladek, terminUstawowy, type Fundusz, type Platnik, type PozycjaZus } from '../../lib/odsetki-zus';
+  import { dodajDni, NAZWY_DNI, dzienTygodnia } from '../../lib/kalendarz';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-odsetki-zus') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const MIES = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+  const plM = (m: string) => `${MIES[+m.slice(5, 7) - 1]} ${m.slice(0, 4)}`;
+  const proc = (n: number) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+  const zlote = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const params = new URLSearchParams(location.search);
+  const POLA: [string, Fundusz][] = [['s', 'fus'], ['z', 'fuz'], ['f', 'fp'], ['g', 'fgsp'], ['e', 'fep']];
+  const plusMies = (m: string, n: number) => { const d = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7) - 1 + n, 1)); return d.toISOString().slice(0, 7); };
+
+  // --- miesiące składek: m1/t1/s1/z1/f1/g1/e1, m2… (nazwy trafiają do „Linku do wyliczenia”)
+  const lista = form.querySelector<HTMLElement>('[data-mies-lista]')!;
+  const wzor = document.getElementById('oz-wiersz-mies') as HTMLTemplateElement;
+  const przenumeruj = () => {
+    lista.querySelectorAll('.zus-mies').forEach((w, i) => {
+      const [m, t] = w.querySelectorAll<HTMLInputElement>('.zus-gora input');
+      m.name = `m${i + 1}`; t.name = `t${i + 1}`;
+      m.setAttribute('aria-label', `Miesiąc, za który są składki ${i + 1}`);
+      w.querySelectorAll<HTMLInputElement>('.zus-kwoty input').forEach((x, j) => (x.name = `${POLA[j][0]}${i + 1}`));
+    });
+    lista.classList.toggle('jeden', lista.children.length === 1);
+  };
+  const dodaj = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); widocznosc(); };
+  const widocznosc = () => {
+    const prac = el('prac').checked, reczne = el('reczne').checked;
+    form.querySelectorAll<HTMLElement>('[data-prac]').forEach((x) => (x.hidden = !prac));
+    lista.querySelectorAll<HTMLElement>('[data-reczny]').forEach((x) => (x.hidden = !reczne));
+    lista.querySelectorAll<HTMLElement>('.zus-gora input[type=month]').forEach((x) => (x.hidden = reczne));
+  };
+  form.querySelector('[data-dodaj-mies]')!.addEventListener('click', () => {
+    const ost = lista.lastElementChild as HTMLElement | null;
+    const wart = ost ? [...ost.querySelectorAll<HTMLInputElement>('input')].map((x) => x.value) : [];
+    dodaj();
+    const nowe = [...(lista.lastElementChild as HTMLElement).querySelectorAll<HTMLInputElement>('input')];
+    if (wart.length) {
+      nowe[0].value = wart[0] ? plusMies(wart[0], 1) : '';
+      if (wart[1]) { const d = new Date(`${wart[1]}T00:00:00Z`); d.setUTCMonth(d.getUTCMonth() + 1); nowe[1].value = d.toISOString().slice(0, 10); }
+      nowe.slice(2).forEach((x, i) => (x.value = wart[i + 2] ?? ''));
+    }
+    (el('reczne').checked ? nowe[1] : nowe[0]).focus();
+    form.dispatchEvent(new Event('input'));
+  });
+  lista.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('.usun');
+    if (!b) return;
+    b.closest('.zus-mies')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input'));
+  });
+  przenumeruj();
+
+  // --- wpłaty częściowe wd1/wk1…
+  const wplLista = form.querySelector<HTMLElement>('[data-wplaty-lista]')!;
+  const wzorW = document.getElementById('oz-wiersz-wplaty') as HTMLTemplateElement;
+  const przenumerujW = () => {
+    wplLista.querySelectorAll('.wplata').forEach((w, i) => { const [d, k] = w.querySelectorAll('input'); d.name = `wd${i + 1}`; k.name = `wk${i + 1}`; });
+    form.querySelector('[data-wplaty-licznik]')!.textContent = wplLista.children.length ? `(${wplLista.children.length})` : '';
+  };
+  const dodajWplate = () => { wplLista.append(wzorW.content.cloneNode(true)); przenumerujW(); };
+  form.querySelector('[data-dodaj-wplate]')!.addEventListener('click', () => { dodajWplate(); (wplLista.lastElementChild?.querySelector('input') as HTMLInputElement)?.focus(); });
+  wplLista.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('.usun');
+    if (!b) return;
+    b.closest('.wplata')!.remove(); przenumerujW(); form.dispatchEvent(new Event('input'));
+  });
+
+  // --- odtworzenie z linku albo przykład: trzy miesiące składek przedsiębiorcy (pełny ZUS 2026)
+  for (let i = 2; params.has(`m${i}`) || params.has(`t${i}`); i++) dodaj();
+  for (let i = 1; params.has(`wd${i}`); i++) dodajWplate();
+  if (wplLista.children.length) (form.querySelector('[data-wplaty]') as HTMLDetailsElement).open = true;
+  if (params.get('raty')) (form.querySelector('[data-raty]') as HTMLDetailsElement).open = true;
+  if (!params.has('m1') && !params.has('t1')) {
+    dodaj(); dodaj();
+    const teraz = lokalnie(new Date()).slice(0, 7);
+    lista.querySelectorAll('.zus-mies').forEach((w, i) => {
+      const inp = w.querySelectorAll<HTMLInputElement>('input');
+      inp[0].value = plusMies(teraz, i - 4);
+      inp[2].value = '1788,29'; inp[3].value = '432,54'; inp[4].value = '138,47';
+    });
+  }
+  if (!el('zaplata').value) el('zaplata').value = lokalnie(new Date());
+  widocznosc();
+
+  const WZORY: Record<string, [string, string]> = { pelny: ['1788,29', '138,47'], bezchor: ['1649,82', '138,47'], pref: ['456,18', ''], prefbez: ['420,86', ''] };
+  const wzorSel = form.querySelector<HTMLSelectElement>('[data-wzor]')!;
+  wzorSel.addEventListener('change', () => {
+    const w = WZORY[wzorSel.value];
+    if (!w) return;
+    lista.querySelectorAll('.zus-mies').forEach((m) => { const inp = m.querySelectorAll<HTMLInputElement>('.zus-kwoty input'); inp[0].value = w[0]; inp[2].value = w[1]; });
+    wzorSel.value = '';
+    form.dispatchEvent(new Event('input'));
+  });
+
+  const INFO: Record<Platnik, string> = {
+    sam: 'Termin: 20. dzień następnego miesiąca (za miesiące przed 2022 r. – 10.).',
+    pozostali: 'Także spółka cywilna, jawna, komandytowa. Termin: 20. dzień następnego miesiąca (przed 2022 r. – 15.).',
+    prawna: 'Także fundacja, stowarzyszenie. Termin: 15. dzień następnego miesiąca.',
+    budzetowa: 'Termin: 5. dzień następnego miesiąca.',
+  };
+
+  const przelicz = () => {
+    widocznosc();
+    const platnik = (el('platnik').value || 'sam') as Platnik;
+    $('oz-termin-info').textContent = INFO[platnik];
+    const reczne = el('reczne').checked, prac = el('prac').checked;
+    const wiersze = [...lista.querySelectorAll<HTMLElement>('.zus-mies')];
+    const pozycje: PozycjaZus[] = wiersze.map((w) => {
+      const inp = w.querySelectorAll<HTMLInputElement>('input');
+      const kwoty: PozycjaZus['kwoty'] = {};
+      POLA.forEach(([, f], j) => { if (j < 3 || prac) kwoty[f] = liczba(inp[j + 2].value); });
+      const okres = inp[0].value;
+      const info = w.querySelector<HTMLElement>('[data-termin]')!;
+      if (!reczne && /^\d{4}-\d{2}$/.test(okres)) {
+        const t = terminSkladek(okres, platnik), tu = terminUstawowy(okres, platnik);
+        info.textContent = `płatne do ${pl(t)}${t !== tu ? ` (${NAZWY_DNI[dzienTygodnia(t)]})` : ''}`;
+      } else info.textContent = '';
+      return reczne ? { termin: inp[1].value, kwoty } : { okres, kwoty };
+    });
+    const wplaty = [...wplLista.querySelectorAll('.wplata')].map((w) => { const [d, k] = w.querySelectorAll('input'); return { data: d.value, kwota: liczba(k.value) }; });
+    const opcje = { platnik, wplaty, wniosekRaty: el('raty').value || undefined };
+    const zaplata = el('zaplata').value;
+    const w = obliczOdsetkiZus(pozycje, zaplata, opcje);
+
+    const blad = $('oz-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('oz-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    const ok = w.pozycje.filter((p) => !p.blad);
+    $('oz-skl-et').textContent = ok.length > 1 ? `Składki (${ok.length} mies.)` : 'Składki';
+    ustawKwote($('oz-skladki-wej'), w.kwota);
+    const dni = ok.map((p) => p.dni);
+    $('oz-dni').textContent = !dni.length ? '–' : Math.min(...dni) === Math.max(...dni) ? String(dni[0]) : `${Math.min(...dni)}–${Math.max(...dni)}`;
+    $('oz-stawka').textContent = w.stawka ? proc(w.stawka) : '–';
+    $('oz-min').textContent = w.minimalne ? `${w.minimalne} zł` : '–';
+    document.querySelectorAll<HTMLElement>('.paragon [data-w]').forEach((x) => (x.hidden = w.wplacono === 0));
+    ustawKwote($('oz-wplacono'), w.wplacono);
+    ustawKwote($('oz-skladki'), w.skladki);
+    ustawKwote($('oz-razem'), w.razem);
+    document.querySelectorAll<HTMLElement>('.paragon [data-p]').forEach((x) => (x.hidden = !(w.przyrostDzienny > 0 && w.skladki > 0)));
+    $('oz-przyrost').textContent = `${zl(w.przyrostDzienny)} dziennie`;
+    ustawKwote($('oz-odsetki'), w.odsetki, zlote);
+
+    // tabela miesięcy
+    $('oz-tab-mies').hidden = ok.length === 0;
+    $('oz-mies-t').innerHTML = ok.map((p) => {
+      const nazwa = p.okres ? plM(p.okres) : `pozycja ${p.nr}`;
+      const bez = !p.bezOdsetekDo ? '–' : p.bezOdsetekDo < zaplata ? `<span class="szary">${pl(p.bezOdsetekDo)}</span>` : `<strong>${pl(p.bezOdsetekDo)}</strong>`;
+      const ods = p.odsetki > 0 ? zlote(p.odsetki) : p.fundusze.some((f) => f.ponizejProgu) ? '0 zł<br><small>poniżej progu</small>' : '0 zł';
+      return `<tr><td>${nazwa}<br><small>termin ${pl(p.termin)}</small></td><td>${p.dni}</td><td>${ods}</td><td>${bez}</td></tr>`;
+    }).join('') + (ok.length > 1 ? `<tr class="razem"><td>Razem</td><td></td><td>${zlote(w.odsetki)}</td><td></td></tr>` : '');
+
+    // gdy zapłacisz później
+    const kiedy = /^\d{4}-\d{2}-\d{2}$/.test(zaplata) && !w.blad;
+    $('oz-tab-kiedy').hidden = !kiedy;
+    if (kiedy) {
+      $('oz-kiedy').innerHTML = [0, 7, 14, 30, 60, 90].map((n, i) => {
+        const d = dodajDni(zaplata, n);
+        const x = obliczOdsetkiZus(pozycje, d, opcje);
+        return `<tr${i === 0 ? ' class="aktywny"' : ''}><td>${pl(d)}${n ? ` <small>(+${n} dni)</small>` : ''}</td><td>${zlote(x.odsetki)}</td><td>${zl(x.razem)}</td></tr>`;
+      }).join('');
+    }
+
+    // fundusze i okresy stawek
+    const fundHtml = ok.map((p) => {
+      const glowa = `<tr class="grupa"><td colspan="5">${p.okres ? `Składki za ${plM(p.okres)}` : `Pozycja ${p.nr}`}, termin ${pl(p.termin)}</td></tr>`;
+      return glowa + p.fundusze.map((f) => {
+        const okr = f.okresy.map((o) => `<tr><td><small>${pl(o.od)} – ${pl(o.do)}</small></td><td>${zl(o.kwota)}</td><td>${o.dni}</td><td>${proc(o.stawka)}</td><td>${zl(o.odsetki)}</td></tr>`).join('');
+        return `<tr><td><strong>${FUNDUSZE[f.fundusz]}</strong></td><td>${zl(f.kwota)}</td><td></td><td></td><td><strong>${f.odsetki ? zlote(f.odsetki) : f.ponizejProgu ? `0 zł <small>(${zl(f.odsetkiPrzedZaokr)} – poniżej progu)</small>` : '0 zł'}</strong></td></tr>` + okr;
+      }).join('');
+    }).join('');
+    $('oz-tab-fund').hidden = fundHtml === '';
+    $('oz-fund').innerHTML = fundHtml;
+    const wpl = ok.flatMap((p) => p.fundusze.flatMap((f) => f.wplaty.map((x) => ({ ...x, f: f.fundusz, p }))));
+    $('oz-tab-wplat').hidden = wpl.length === 0;
+    $('oz-wplaty').innerHTML = wpl.sort((a, b) => a.data.localeCompare(b.data) || a.p.nr - b.p.nr)
+      .map((x) => `<tr><td>${pl(x.data)} <small>→ ${x.p.okres ? plM(x.p.okres) : `poz. ${x.p.nr}`}, ${FUNDUSZE[x.f]}</small></td><td>${zl(x.kwota)}</td><td>${zl(x.naSkladke)}</td><td>${zl(x.naOdsetki)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

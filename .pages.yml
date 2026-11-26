@@ -66,6 +66,7 @@ content:
             - { value: inwestycje, label: Kalkulator inwestycyjny }
             - { value: ikze, label: IKZE }
             - { value: umowy-terminowe, label: Umowy na czas określony }
+            - { value: odsetki-zus, label: Odsetki od zaległości ZUS }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }

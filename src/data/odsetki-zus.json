@@ -1,0 +1,18 @@
+{
+  "_opis": "Próg odsetek od składek ZUS (art. 23 ust. 1a ustawy o sus): odsetek nie nalicza się, jeżeli nie przekraczałyby 1% minimalnego wynagrodzenia – od 18.09.2021 (Dz.U. 2021 poz. 1621). Wcześniej kwota wprost: 6,60 zł. Płaca minimalna w dniu zapłaty. 2026–2027 muszą się zgadzać ze stawki.json (pilnuje test).",
+  "prog_1proc_od": "2021-09-18",
+  "prog_wczesniej": 6.6,
+  "placa_minimalna": [
+    { "od": "2021-01-01", "kwota": 2800 },
+    { "od": "2022-01-01", "kwota": 3010 },
+    { "od": "2023-01-01", "kwota": 3490 },
+    { "od": "2023-07-01", "kwota": 3600 },
+    { "od": "2024-01-01", "kwota": 4242 },
+    { "od": "2024-07-01", "kwota": 4300 },
+    { "od": "2025-01-01", "kwota": 4666 },
+    { "od": "2026-01-01", "kwota": 4806 },
+    { "od": "2027-01-01", "kwota": 4950 }
+  ],
+  "_terminy": "Art. 47 ust. 1 ustawy o sus. Od składek za styczeń 2022 r.: 5. dzień (jednostki budżetowe), 15. (osoby prawne), 20. (pozostali). Wcześniej: 5. (budżetowe), 10. (osoby fizyczne opłacające składki wyłącznie za siebie), 15. (pozostali) – komunikat ZUS z 4.02.2022.",
+  "nowe_terminy_od_okresu": "2022-01"
+}
