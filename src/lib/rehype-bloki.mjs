@@ -13,7 +13,7 @@
 
 const fmt = (n, jedn = '') => {
   const s = n.toLocaleString('pl-PL', { maximumFractionDigits: 2, useGrouping: true }).replace(/ /g, ' ');
-  return jedn ? `${s} ${jedn}` : s;
+  return jedn ? (jedn === '%' ? `${s}%` : `${s}\u00a0${jedn}`) : s;
 };
 const liczba = (t) => parseFloat(String(t).replace(/[\s ]/g, '').replace(',', '.'));
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -42,7 +42,11 @@ function linia({ meta, wiersze }) {
   const os = (meta.os ?? '').split(',').map((x) => x.trim()).filter(Boolean);
   const serie = wiersze.map(([n, v]) => ({ n, v: v.split(',').map(liczba) }));
   const wszystkie = serie.flatMap((s) => s.v).filter((x) => !Number.isNaN(x));
-  const max = Math.max(...wszystkie, 1), min = Math.min(0, ...wszystkie);
+  const max = Math.max(...wszystkie, 1);
+  // oś od zera, chyba że wszystkie wartości są wysoko (np. 10 000–15 000 zł) – wtedy od „okrągłej” wartości pod minimum
+  const najm = Math.min(...wszystkie);
+  const kr0 = Math.pow(10, Math.floor(Math.log10(Math.max(1, max - najm))));
+  const min = meta.od !== undefined ? liczba(meta.od) : najm > 0.4 * max ? Math.floor(najm / kr0) * kr0 : Math.min(0, najm);
   const W = 640, H = 300, L = 56, R = 16, T = 16, B = 34;
   const x = (i) => L + (i * (W - L - R)) / Math.max(1, os.length - 1);
   const y = (v) => T + (1 - (v - min) / (max - min || 1)) * (H - T - B);
