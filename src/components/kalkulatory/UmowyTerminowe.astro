@@ -1,0 +1,180 @@
+---
+import { TYPY } from '../../lib/umowy-terminowe';
+const typy = Object.entries(TYPY);
+---
+<form id="k-umowy" class="pola" autocomplete="off">
+  <div class="pole">
+    <span class="nazwa" id="ut-nazwa">Umowy z tym pracodawcą</span>
+    <div class="naglowki-wierszy okres-naglowki" aria-hidden="true"><span>Od</span><span>Do</span><span></span></div>
+    <div data-okresy role="group" aria-labelledby="ut-nazwa">
+      <div class="okres">
+        <input type="date" name="o1" aria-label="Początek umowy 1" />
+        <input type="date" name="d1" aria-label="Koniec umowy 1" />
+        <button type="button" class="usun" aria-label="Usuń umowę">×</button>
+        <select name="t1" aria-label="Rodzaj umowy 1">{typy.map(([k, n]) => <option value={k}>{n}</option>)}</select>
+      </div>
+      <div class="okres">
+        <input type="date" name="o2" aria-label="Początek umowy 2" />
+        <input type="date" name="d2" aria-label="Koniec umowy 2" />
+        <button type="button" class="usun" aria-label="Usuń umowę">×</button>
+        <select name="t2" aria-label="Rodzaj umowy 2">{typy.map(([k, n]) => <option value={k}>{n}</option>)}</select>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj-okres>+ Dodaj umowę</button>
+    <small>Wpisz wszystkie umowy o pracę z tym samym pracodawcą, także dawne – przerwy nie zerują limitu. Aneks przedłużający umowę wpisz jako osobną umowę.</small>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="ut-dzien">Stan na dzień</label>
+      <input id="ut-dzien" name="dzien" type="date" />
+    </div>
+    <div class="pole">
+      <label for="ut-nast">Następna umowa od</label>
+      <input id="ut-nast" name="nast" type="date" />
+    </div>
+  </div>
+  <details class="wplaty" data-wyp>
+    <summary>Kiedy skończy się umowa po wypowiedzeniu?</summary>
+    <div class="pole">
+      <label for="ut-wyp">Wypowiedzenie złożone dnia</label>
+      <input id="ut-wyp" name="wyp" type="date" />
+      <small>Okres wypowiedzenia liczony w tygodniach kończy się w sobotę, a w miesiącach – ostatniego dnia miesiąca (art. 30 § 2¹ KP).</small>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Umów w limicie</dt><dd id="ut-liczba"></dd>
+    <dt>Łącznie</dt><dd id="ut-laczny"></dd>
+    <dt id="ut-br-et">Do 33 miesięcy</dt><dd id="ut-br"></dd>
+    <dt data-33>33 miesiące mijają</dt><dd data-33 id="ut-33"></dd>
+    <dt data-max hidden>Następna maks. do</dt><dd data-max hidden id="ut-max"></dd>
+    <dt>Wypowiedzenie</dt><dd id="ut-okres"></dd>
+    <dt data-k hidden>Umowa ustaje</dt><dd data-k hidden id="ut-koniec"></dd>
+  </dl>
+  <p class="blad" id="ut-blad" hidden></p>
+  <ul class="uwagi" id="ut-uwagi" hidden></ul>
+  <div class="suma"><span id="ut-et">Status</span><strong id="ut-wynik" data-glowny="Status" class="tekstowy"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · art. 25¹, 30, 36 Kodeksu pracy</div>
+</div></div>
+<details class="rozbicie" id="ut-tab" open>
+  <summary>Twoje umowy</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Nr</th><th>Okres</th><th>Długość</th><th>Limit</th></tr></thead>
+    <tbody id="ut-tab-t"></tbody>
+  </table></div>
+</details>
+<template id="ut-wiersz">
+  <div class="okres">
+    <input type="date" aria-label="Początek umowy" />
+    <input type="date" aria-label="Koniec umowy" />
+    <button type="button" class="usun" aria-label="Usuń umowę">×</button>
+    <select aria-label="Rodzaj umowy">{typy.map(([k, n]) => <option value={k}>{n}</option>)}</select>
+  </div>
+</template>
+<script>
+  import { analiza, koniecWypowiedzenia, opis, type TypUmowy, type Umowa } from '../../lib/umowy-terminowe';
+  import { roznica } from '../../lib/staz';
+  import { dodajDni } from '../../lib/kalendarz';
+  import { podlaczKalkulator } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-umowy') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (iso: string) => iso.split('-').reverse().join('.');
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const params = new URLSearchParams(location.search);
+
+  const lista = form.querySelector<HTMLElement>('[data-okresy]')!;
+  const wzor = document.getElementById('ut-wiersz') as HTMLTemplateElement;
+  const przenumeruj = () => {
+    lista.querySelectorAll('.okres').forEach((w, i) => {
+      const [o, d] = w.querySelectorAll('input'); const t = w.querySelector('select')!;
+      o.name = `o${i + 1}`; d.name = `d${i + 1}`; t.name = `t${i + 1}`;
+    });
+    lista.classList.toggle('jeden', lista.children.length === 1);
+  };
+  const dodaj = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); };
+  form.querySelector('[data-dodaj-okres]')!.addEventListener('click', () => {
+    const ost = [...lista.querySelectorAll<HTMLInputElement>('.okres input[name^="d"]')].at(-1)?.value;
+    dodaj();
+    const nowy = lista.lastElementChild!.querySelector('input') as HTMLInputElement;
+    if (ost) nowy.value = dodajDni(ost, 1);
+    nowy.focus(); form.dispatchEvent(new Event('input'));
+  });
+  lista.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('.usun');
+    if (!b) return;
+    b.closest('.okres')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input'));
+  });
+  przenumeruj();
+  for (let i = 3; params.has(`o${i}`); i++) dodaj();
+  if (params.get('wyp')) (form.querySelector('[data-wyp]') as HTMLDetailsElement).open = true;
+  // przykład: dwie umowy po roku, druga trwa
+  const r = new Date().getFullYear();
+  if (!params.has('o1')) { el('o1').value = `${r - 1}-01-01`; el('d1').value = `${r - 1}-12-31`; el('o2').value = `${r}-01-01`; el('d2').value = `${r}-12-31`; }
+  if (!el('dzien').value) el('dzien').value = lokalnie(new Date());
+
+  const przelicz = () => {
+    const umowy: Umowa[] = [...lista.querySelectorAll('.okres')].map((w) => {
+      const [o, d] = w.querySelectorAll('input');
+      return { od: o.value, do: d.value || undefined, typ: w.querySelector('select')!.value as TypUmowy };
+    }).filter((u) => u.od);
+    const blad = $('ut-blad');
+    const zle = umowy.find((u) => u.typ !== 'nieokreslony' && !u.do);
+    const odwrotne = umowy.find((u) => u.do && u.do < u.od);
+    blad.hidden = !(zle || odwrotne);
+    blad.textContent = odwrotne ? 'Koniec umowy jest wcześniej niż początek.' : zle ? 'Podaj datę końca każdej umowy terminowej (puste tylko przy czasie nieokreślonym).' : '';
+    // domyślny start następnej umowy – dzień po ostatniej terminowej
+    const terminowe = umowy.filter((u) => u.typ === 'okreslony' && u.do).sort((a, b) => a.od.localeCompare(b.od));
+    const nast = el('nast');
+    if (!nast.value && terminowe.length) nast.placeholder = '';
+    const startNast = nast.value || (terminowe.length ? dodajDni(terminowe.at(-1)!.do!, 1) : undefined);
+    const a = analiza(umowy, el('dzien').value, startNast);
+
+    $('ut-liczba').textContent = `${a.liczba} z 3`;
+    $('ut-laczny').textContent = opis(a.laczny);
+    $('ut-br-et').textContent = a.brakuje ? 'Do 33 miesięcy' : 'Ponad 33 miesiące';
+    $('ut-br').textContent = a.brakuje ? opis({ lata: Math.floor(a.brakuje.miesiace / 12), miesiace: a.brakuje.miesiace % 12, dni: a.brakuje.dni }) : 'przekroczone';
+    document.querySelectorAll<HTMLElement>('.paragon [data-33]').forEach((x) => (x.hidden = !a.d33));
+    if (a.d33) $('ut-33').textContent = pl(a.d33);
+    document.querySelectorAll<HTMLElement>('.paragon [data-max]').forEach((x) => (x.hidden = !a.maksKoniec));
+    if (a.maksKoniec) $('ut-max').textContent = pl(a.maksKoniec);
+    $('ut-okres').textContent = a.okresWyp.opis;
+    const wyp = el('wyp').value;
+    let koniec: string | null = null;
+    if (wyp) {
+      const naWyp = analiza(umowy, wyp).okresWyp; // okres wypowiedzenia według stażu w dniu złożenia
+      $('ut-okres').textContent = naWyp.opis;
+      koniec = koniecWypowiedzenia(wyp, naWyp);
+      const biezaca = umowy.filter((u) => u.od <= wyp && (!u.do || u.do >= wyp)).sort((x, y) => y.od.localeCompare(x.od))[0];
+      if (biezaca?.do && biezaca.do < koniec && biezaca.typ !== 'nieokreslony' && !(a.nieokreslonyOd && a.nieokreslonyOd <= wyp)) koniec = biezaca.do;
+    }
+    document.querySelectorAll<HTMLElement>('.paragon [data-k]').forEach((x) => (x.hidden = !koniec));
+    if (koniec) $('ut-koniec').textContent = pl(koniec);
+
+    const g = $('ut-wynik'), et = $('ut-et');
+    if (a.nieokreslonyOd) {
+      et.textContent = a.powod === 'liczba' ? 'Czwarta umowa – czas nieokreślony od' : 'Przekroczone 33 miesiące – czas nieokreślony od';
+      g.textContent = pl(a.nieokreslonyOd);
+    } else {
+      et.textContent = 'W limicie – możesz jeszcze zawrzeć';
+      g.textContent = a.pozostaloUmow === 0 ? 'żadnej umowy terminowej' : `${a.pozostaloUmow} ${a.pozostaloUmow === 1 ? 'umowę' : 'umowy'}`;
+    }
+    g.dataset.glowny = et.textContent;
+    const uwagi = [...a.uwagi];
+    if (a.od1mies) uwagi.push(`Okres wypowiedzenia wydłuży się do 1 miesiąca od ${pl(dodajDni(a.od1mies, 1))} (6 miesięcy zatrudnienia).`);
+    if (a.od3mies) uwagi.push(`Okres wypowiedzenia wydłuży się do 3 miesięcy od ${pl(dodajDni(a.od3mies, 1))} (3 lata zatrudnienia).`);
+    if (!a.nieokreslonyOd && a.pozostaloUmow === 0) uwagi.push('Wykorzystano 3 umowy – kolejna umowa terminowa z tym pracodawcą będzie z mocy prawa umową na czas nieokreślony.');
+    const ul = $('ut-uwagi');
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    let nr = 0;
+    $('ut-tab-t').innerHTML = umowy.filter((u) => u.od).sort((x, y) => x.od.localeCompare(y.od)).map((u) => {
+      const wLimicie = u.typ === 'okreslony';
+      if (wLimicie) nr++;
+      return `<tr${a.nieokreslonyOd && u.do && u.do >= a.nieokreslonyOd && u.od <= a.nieokreslonyOd ? ' class="aktywny"' : ''}><td>${wLimicie ? nr + '.' : '–'}</td><td>${pl(u.od)} – ${u.do ? pl(u.do) : 'nadal'}</td><td>${u.do ? opis(roznica(u.od, u.do)) : '–'}</td><td>${wLimicie ? (nr > 3 ? 'ponad limit' : 'tak') : u.typ === 'probny' ? 'nie (próbna)' : u.typ === 'wyjatek' ? 'nie (wyjątek)' : 'nie'}</td></tr>`;
+    }).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

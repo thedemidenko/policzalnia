@@ -23,6 +23,7 @@ import Ike from './kalkulatory/Ike.astro';
 import Inflacja from './kalkulatory/Inflacja.astro';
 import Inwestycje from './kalkulatory/Inwestycje.astro';
 import Ikze from './kalkulatory/Ikze.astro';
+import UmowyTerminowe from './kalkulatory/UmowyTerminowe.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -48,6 +49,7 @@ const KOMPONENTY = {
   inflacja: Inflacja,
   inwestycje: Inwestycje,
   ikze: Ikze,
+  'umowy-terminowe': UmowyTerminowe,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }
