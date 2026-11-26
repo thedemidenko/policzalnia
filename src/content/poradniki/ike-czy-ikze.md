@@ -39,6 +39,7 @@ zrodla:
     url: https://www.analizy.pl/tylko-u-nas/39385/ike-i-ikze-podsumowanie-2025
 autor: redakcja
 date: 2026-11-26
+updated: 2026-11-26
 draft: false
 ---
 
@@ -168,6 +169,33 @@ Od **1 stycznia 2027 r.** działają Osobiste Konta Inwestycyjne. Zyski na OKI n
 
 OKI nie zastępuje IKE i IKZE – na emeryturę są one korzystniejsze, bo nie mają podatku od wartości i dają ulgę (IKZE). OKI przyda się na pieniądze, których możesz potrzebować wcześniej, i na kwoty ponad limity IKE i IKZE.
 
+## Gdzie założyć IKE i IKZE?
+
+Konto zakładasz w jednej instytucji – i od niej zależy, w co możesz inwestować i ile zapłacisz za prowadzenie. To często ważniejsza decyzja niż wybór między IKE a IKZE:
+
+| Rodzaj konta | W co inwestujesz | Koszty | Dla kogo |
+| --- | --- | --- | --- |
+| Rachunek maklerski (dom maklerski) | akcje, ETF-y, obligacje skarbowe i korporacyjne | niskie – prowizje od transakcji, często 0 zł za prowadzenie | samodzielnie inwestujących, długi horyzont |
+| Fundusze inwestycyjne (TFI) | jednostki funduszy akcji, obligacji, mieszanych | opłata za zarządzanie, często 1–2% rocznie | chcących, by ktoś zarządzał pieniędzmi |
+| Obligacje skarbowe (IKE-Obligacje, IKZE-Obligacje w PKO BP) | detaliczne obligacje skarbowe, np. EDO | brak opłaty za prowadzenie; opłata za wcześniejszy wykup obligacji | szukających bezpieczeństwa i ochrony przed inflacją |
+| Konto bankowe (lokata) | oszczędności na oprocentowanym rachunku | zwykle bez opłat | najbardziej ostrożnych, krótko przed emeryturą |
+| Ubezpieczenie (polisa) | ubezpieczeniowe fundusze kapitałowe | często najwyższe opłaty | rzadko najlepszy wybór – czytaj tabelę opłat |
+| Dobrowolny fundusz emerytalny (DFE) | portfel zarządzany przez PTE | opłata za zarządzanie | chcących gotowego rozwiązania |
+
+W 2025 r. najwięcej nowych kont otwierały domy maklerskie – praktycznie co drugie nowe IKE i IKZE, a najczęściej kupowano na nich ETF-y. Przy wyborze sprawdź: **opłatę za prowadzenie**, **prowizje** od zakupu i sprzedaży, **opłatę za wypłatę transferową** (przeniesienie do innej instytucji) i to, czy konto pozwala kupować interesujące cię instrumenty.
+
+## Kiedy w roku wpłacać na IKE i IKZE?
+
+Limit dotyczy roku kalendarzowego – wpłaty muszą trafić na konto **do 31 grudnia**, a niewykorzystanej części nie przeniesiesz na następny rok. Na IKZE to szczególnie ważne: odliczysz w zeznaniu tylko wpłaty zaksięgowane w danym roku. Przelew zlecony 31 grudnia może dojść dopiero w styczniu.
+
+Im wcześniej w roku wpłacisz, tym dłużej pieniądze pracują – przy 6% rocznie wpłata w styczniu zamiast w grudniu to w skali 20 lat kilka procent więcej na koncie. Jeśli nie masz całej kwoty na początku roku, ustaw stałe przelewy co miesiąc: 2355 zł miesięcznie wypełnia limit IKE w 2026 r., a 942 zł – limit IKZE.
+
+Wpłata przekroczyła limit? Instytucja zwraca nadwyżkę – nie tracisz pieniędzy, ale nadwyżki nie odliczysz od podatku i nie korzysta ona ze zwolnień.
+
+## Czy można przenieść IKE albo IKZE do innej instytucji?
+
+Tak – przez **wypłatę transferową**. Pieniądze przechodzą z jednego IKE na IKE w innej instytucji (albo z IKZE na IKZE) bez podatku i bez utraty historii wpłat, więc warunek 5 lat liczy się dalej. Instytucja może pobrać opłatę za transfer – zwykle zależną od tego, jak długo konto było prowadzone. Transfer opłaca się, gdy obecne konto ma wysokie opłaty albo nie pozwala inwestować tak, jak chcesz.
+
 ## W jakiej kolejności wpłacać?
 
 1. **PPK** – jeśli jesteś na etacie, zostań w PPK: dopłaty pracodawcy i państwa to darmowe pieniądze.
@@ -175,6 +203,15 @@ OKI nie zastępuje IKE i IKZE – na emeryturę są one korzystniejsze, bo nie m
 3. **Zwrot podatku z IKZE** – wpłać na IKE, zamiast go wydawać.
 4. **IKE** – kolejne oszczędności emerytalne, do limitu.
 5. **OKI** – od 2027 r. pieniądze ponad limity albo na wcześniejsze cele.
+
+## Jakie błędy popełnia się najczęściej?
+
+1. **Wydawanie zwrotu podatku z IKZE.** Bez reinwestowania zwrotu IKZE wychodzi gorzej niż IKE – i nawet gorzej niż zwykłe konto przy długim oszczędzaniu.
+2. **IKZE przy niskim dochodzie albo ryczałcie 8,5% i niższym.** Jeśli nie płacisz podatku (kwota wolna, ulga dla młodych) albo płacisz go niską stawką, ulga jest mniejsza niż późniejsze 10%.
+3. **Konto z wysokimi opłatami.** 2–3% opłaty rocznie potrafi „zjeść” większość korzyści podatkowej – na koncie maklerskim z ETF-ami koszty są zwykle kilkakrotnie niższe.
+4. **Pieniądze potrzebne wcześniej na IKZE.** Wypłata przed 65. rokiem życia oznacza podatek od całej kwoty według twojej stawki.
+5. **Wpłata w ostatniej chwili.** Przelew zlecony 31 grudnia może zostać zaksięgowany w styczniu – i nie wejdzie do limitu ani do ulgi za dany rok.
+6. **Zbyt bezpieczne inwestycje przy długim horyzoncie.** Konto emerytalne na lokacie przez 30 lat zwykle ledwo nadąża za inflacją. Przy wielu latach do emerytury warto rozważyć część w akcjach lub ETF-ach.
 
 ## Ile Polacy oszczędzają na IKE i IKZE?
 

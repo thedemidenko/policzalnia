@@ -42,6 +42,7 @@ zrodla:
     url: https://direct.money.pl/artykuly/porady/nbp-pokazal-dane-o-lokatach-90-mld-zl-wplat-i-wyhamowanie-spadku-stawek
 autor: redakcja
 date: 2026-11-26
+updated: 2026-11-26
 draft: false
 ---
 
@@ -106,6 +107,15 @@ Lokata wygrywa do 2 lat – ale tylko wtedy, gdy przez cały ten czas utrzymasz 
 
 ![Kobieta sprawdza oszczędności w aplikacji banku na telefonie](../../assets/poradniki/obligacje-czy-lokata/lokata-online.jpg)
 
+## A może konto oszczędnościowe?
+
+Konto oszczędnościowe to trzecia opcja – pieniądze wypłacasz w każdej chwili bez utraty odsetek, a gwarancja BFG jest taka sama jak przy lokacie. Ma jednak dwie wady:
+
+- **oprocentowanie jest zmienne** – bank może je obniżyć w dowolnym momencie, zwykle szybko po obniżce stóp NBP,
+- **wysokie oprocentowanie bywa promocyjne** – tylko dla nowych środków, do określonej kwoty i przez kilka miesięcy; potem spada do stawki standardowej, często o połowę i więcej.
+
+Konto oszczędnościowe najlepiej sprawdza się jako **poduszka finansowa** – pieniądze na nieprzewidziane wydatki, zwykle 3–6 miesięcy kosztów życia. Nadwyżkę ponad poduszkę opłaca się przenieść na lokatę albo do obligacji.
+
 ## Jak inflacja zmienia wynik?
 
 Obligacje EDO i COI od drugiego roku są oprocentowane inflacją plus marżą – im wyższa inflacja, tym więcej zarabiasz. Lokata ma stałe oprocentowanie, więc przy wyższej inflacji realnie traci.
@@ -145,6 +155,20 @@ lokata: 4.15
 inflacja: 3
 ```
 
+## Co się stanie, gdy NBP obniży stopy procentowe?
+
+Stopy procentowe NBP wpływają na oszczędności różnie, zależnie od tego, gdzie trzymasz pieniądze:
+
+| Gdzie | Co się dzieje po obniżce stóp |
+| --- | --- |
+| Lokata założona wcześniej | oprocentowanie zostaje do końca okresu lokaty, ale kolejna będzie niższa |
+| Konto oszczędnościowe | bank zwykle obniża oprocentowanie od razu |
+| Obligacje ROR i DOR | od 2. miesiąca oprocentowanie spada razem ze stopą referencyjną NBP |
+| Obligacje OTS i TOS | oprocentowanie stałe – obniżka ich nie dotyczy |
+| Obligacje COI i EDO | od 2. roku zależą od inflacji, a nie od stóp NBP |
+
+Jeśli spodziewasz się obniżek stóp, korzystniej jest zablokować oprocentowanie na dłużej – w obligacjach TOS (stałe 4,40% przez 3 lata) albo na dłuższej lokacie. Przy wzroście stóp lepiej wypadają ROR i DOR, które podążają za stopą NBP. Najbliższe posiedzenie Rady Polityki Pieniężnej odbywa się 1–2 grudnia 2026 r.
+
 ## Co jest bezpieczniejsze – lokata czy obligacje?
 
 Oba rozwiązania są bezpieczne, ale gwarancje się różnią:
@@ -172,6 +196,20 @@ Przy oszczędnościach wyższych niż ok. 400 000 zł warto rozłożyć lokaty n
 
 Przykład: 10 000 zł w EDO oddane po roku to 100 obligacji × 3 zł = 300 zł opłaty – po roku przy 5,35% narosło 535 zł odsetek, więc po opłacie i podatku zostaje ok. 190 zł zysku. Pieniądze, których możesz potrzebować w ciągu roku, lepiej trzymać na lokacie albo koncie oszczędnościowym.
 
+## Jak kupić obligacje skarbowe krok po kroku?
+
+1. **Załóż rachunek rejestrowy** w PKO BP albo w Banku Pekao – to darmowy rachunek, na którym zapisywane są obligacje. Klient PKO BP może założyć go w bankowości internetowej.
+2. **Wybierz serię** – w serwisie obligacjeskarbowe.pl, w iPKO, w Pekao24, w oddziale albo przez telefon. Każdego miesiąca sprzedawane są nowe serie z oprocentowaniem ogłoszonym przez Ministerstwo Finansów.
+3. **Wpłać pieniądze** – jedna obligacja kosztuje 100 zł. Kupujesz dowolną liczbę, bez górnego limitu (poza obligacjami rodzinnymi).
+4. **Odbieraj odsetki** – w ROR i DOR co miesiąc, w COI co rok, a w TOS i EDO razem z wykupem. Pieniądze trafiają na wskazane konto.
+5. **Przy wykupie zamień obligacje na nowe** – jeśli chcesz oszczędzać dalej, możesz zamienić wykupywane obligacje na nową serię po 99,90 zł zamiast 100 zł.
+
+## Jak opodatkowane są odsetki z lokat i obligacji?
+
+Od odsetek z lokaty i z obligacji płacisz **19% podatku Belki**, ale nie musisz go sam rozliczać. Bank pobiera podatek przy kapitalizacji lub wypłacie odsetek z lokaty, a przy obligacjach – bank prowadzący rachunek rejestrowy przy wypłacie odsetek lub wykupie. Tych dochodów **nie wykazujesz w zeznaniu PIT**.
+
+Podatek zaokrągla się do pełnych groszy w górę od każdej wypłaty odsetek – dlatego przy małych kwotach lokata z kapitalizacją dzienną nie omija podatku, jak twierdzą niektóre reklamy. Bez podatku Belki można oszczędzać tylko na IKE, IKZE i – od 2027 r. – na OKI.
+
 ## Obligacje i lokaty na OKI od 2027 roku
 
 Od **1 stycznia 2027 r.** lokaty i obligacje skarbowe można trzymać na **Osobistym Koncie Inwestycyjnym**. Odsetki są wtedy **zwolnione z podatku Belki**, a zamiast niego od średniej wartości oszczędności **ponad 25 000 zł** płaci się w 2027 r. **0,85%** rocznie.
@@ -191,6 +229,28 @@ Do 25 000 zł oszczędności na OKI nie płacisz żadnego podatku. Jak to wychod
 - **2–3 lata** – TOS (stałe 4,40% przez 3 lata) albo seria dobrych lokat; obligacje DOR, jeśli chcesz odsetek co miesiąc.
 - **4 lata i dłużej** – EDO albo COI: ochrona przed inflacją i wyższa marża. Na emeryturę – EDO na IKE, bez podatku Belki.
 - **Rodziny z 800+** – obligacje rodzinne ROS i ROD mają wyższą marżę niż EDO, ale kupisz je tylko do wysokości otrzymanego świadczenia.
+
+## Jak rozłożyć oszczędności między lokatę a obligacje?
+
+Nie trzeba wybierać jednego. Przy większej kwocie dobrze działa **drabinka** – podział oszczędności według tego, kiedy mogą być potrzebne. Przykład dla 40 000 zł:
+
+| Część | Gdzie | Po co |
+| --- | --- | --- |
+| 10 000 zł | konto oszczędnościowe | poduszka finansowa – dostęp od ręki |
+| 10 000 zł | lokata 6–12 miesięcy albo obligacje ROR | wydatki w ciągu roku |
+| 10 000 zł | obligacje TOS (3 lata, stałe 4,40%) | plany za 2–3 lata, ochrona przed spadkiem stóp |
+| 10 000 zł | obligacje EDO (10 lat) | długi termin, ochrona przed inflacją |
+
+Co roku możesz dokupować kolejną serię obligacji – wtedy co roku część oszczędności „dojrzewa” i jest dostępna bez opłat za wcześniejszy wykup. To połączenie płynności lokaty z wyższym oprocentowaniem obligacji.
+
+## Jakie błędy popełnia się najczęściej?
+
+1. **Patrzenie tylko na oprocentowanie promocyjne.** Lokata na 6% przez 3 miesiące do 10 000 zł daje tylko ok. 120 zł zysku na czysto. Licz zysk w złotych, nie w procentach.
+2. **Automatyczne odnawianie lokaty.** Po końcu promocji bank odnawia lokatę często na standardowych warunkach – nawet o połowę niższych. Ustaw przypomnienie przed końcem okresu.
+3. **Kupno EDO na krótko.** Przy wykupie po roku opłata 3 zł od obligacji zabiera ponad połowę odsetek. EDO kupuj na co najmniej 3–4 lata.
+4. **Pomijanie inflacji.** Lokata na 2,9% przy inflacji 3,5% to realna strata – mimo że na koncie przybywa złotówek.
+5. **Wszystko w jednym banku.** Gwarancja BFG obejmuje do 100 000 euro na osobę w jednym banku – większe kwoty warto rozdzielić.
+6. **Brak poduszki finansowej.** Gdy wszystkie oszczędności są w obligacjach długoterminowych, nagły wydatek oznacza opłaty za wcześniejszy wykup.
 
 ![Słoik z monetami i rosnącą rośliną – oszczędności na lata](../../assets/poradniki/obligacje-czy-lokata/oszczednosci.jpg)
 
