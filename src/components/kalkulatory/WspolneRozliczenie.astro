@@ -1,0 +1,167 @@
+---
+const lata = [2025, 2026, 2027];
+const osoby: [string, string][] = [['a', 'Pierwsza osoba'], ['b', 'Druga osoba']];
+---
+<form id="k-wspolne" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>PIT za rok</legend>
+    {lata.map((r) => <label><input type="radio" name="rok" value={String(r)} checked={r === 2026} /><span>{r}</span></label>)}
+  </fieldset>
+  <fieldset class="segmenty">
+    <legend>Rozliczenie</legend>
+    <label><input type="radio" name="tryb" value="malzonkowie" checked /><span>z małżonkiem</span></label>
+    <label><input type="radio" name="tryb" value="samotny" /><span>samotny rodzic</span></label>
+  </fieldset>
+  {osoby.map(([p, n]) => (
+    <div class="wr-osoba" data-osoba={p}>
+      <div class="wr-glowa"><span class="nazwa" data-nazwa>{n}</span><button type="button" class="przycisk maly" data-etat={p}>etat – uzupełnij z przychodu</button></div>
+      <div class="pole-para">
+        <div class="pole">
+          <label for={`wr-${p}-p`}>Przychód</label>
+          <div class="kwota" data-jedn="zł"><input id={`wr-${p}-p`} name={`${p}p`} type="text" inputmode="decimal" placeholder="0" value={p === 'a' ? '150000' : ''} /></div>
+        </div>
+        <div class="pole">
+          <label for={`wr-${p}-k`}>Koszty</label>
+          <div class="kwota" data-jedn="zł"><input id={`wr-${p}-k`} name={`${p}k`} type="text" inputmode="decimal" placeholder="0" value={p === 'a' ? '3000' : ''} /></div>
+        </div>
+      </div>
+      <div class="pole-para">
+        <div class="pole">
+          <label for={`wr-${p}-s`}>Składki społeczne</label>
+          <div class="kwota" data-jedn="zł"><input id={`wr-${p}-s`} name={`${p}s`} type="text" inputmode="decimal" placeholder="0" value={p === 'a' ? '20565' : ''} /></div>
+        </div>
+        <div class="pole">
+          <label for={`wr-${p}-z`}>Zaliczki pobrane</label>
+          <div class="kwota" data-jedn="zł"><input id={`wr-${p}-z`} name={`${p}z`} type="text" inputmode="decimal" placeholder="0" /></div>
+        </div>
+      </div>
+      <div class="pole-para">
+        <div class="pole">
+          <label for={`wr-${p}-o`}>Ulgi od dochodu</label>
+          <div class="kwota" data-jedn="zł"><input id={`wr-${p}-o`} name={`${p}o`} type="text" inputmode="decimal" placeholder="0" /></div>
+        </div>
+        <div class="pole">
+          <label for={`wr-${p}-h`}>Składka zdrowotna</label>
+          <div class="kwota" data-jedn="zł"><input id={`wr-${p}-h`} name={`${p}h`} type="text" inputmode="decimal" placeholder="0" /></div>
+        </div>
+      </div>
+    </div>
+  ))}
+  <small class="wr-podp">Kwoty z PIT-11 (pracodawca, zleceniodawca), PIT-40A (emerytura) albo z działalności na skali – sumy z całego roku. Ulgi od dochodu: IKZE, internet, darowizny, rehabilitacyjna. Składka zdrowotna jest potrzebna tylko do zwrotu ulgi na dzieci.</small>
+  <div class="pole">
+    <label for="wr-dzieci">Dzieci (do ulgi prorodzinnej)</label>
+    <input id="wr-dzieci" name="dzieci" type="text" inputmode="numeric" placeholder="0" />
+  </div>
+  <details class="wplaty" data-warunki>
+    <summary>Warunki wspólnego rozliczenia</summary>
+    <label class="przelacznik" data-tylko-m><input type="checkbox" name="slub" value="1" /> Ślub w trakcie roku (rozliczenie możliwe, inny limit ulgi na jedno dziecko)</label>
+    <label class="przelacznik" data-tylko-m><input type="checkbox" name="rozdz" value="1" /> Rozdzielność majątkowa w roku podatkowym</label>
+    <label class="przelacznik"><input type="checkbox" name="lr" value="1" /> Działalność na podatku liniowym lub ryczałcie (nie dotyczy ryczałtu od najmu prywatnego)</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <p class="status-wyniku" id="wr-status"></p>
+  <dl>
+    <dt data-nazwa-a>Podstawa (1)</dt><dd id="wr-pa"></dd>
+    <dt data-b>Podstawa (2)</dt><dd data-b id="wr-pb"></dd>
+    <dt>Podatek osobno</dt><dd id="wr-osobno"></dd>
+    <dt id="wr-razem-et">Podatek wspólnie</dt><dd id="wr-razem"></dd>
+    <dt data-u hidden>Ulga na dzieci</dt><dd data-u hidden id="wr-ulga"></dd>
+    <dt data-s hidden id="wr-so-et">Wynik osobno</dt><dd data-s hidden id="wr-so"></dd>
+    <dt data-s hidden id="wr-sr-et">Wynik wspólnie</dt><dd data-s hidden id="wr-sr"></dd>
+  </dl>
+  <ul class="uwagi" id="wr-uwagi" hidden></ul>
+  <div class="suma"><span id="wr-suma-et">Zyskujecie</span><strong id="wr-suma" data-glowny="Korzyść ze wspólnego rozliczenia"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · art. 6 i 27f ustawy o PIT · skala <span id="wr-skala"></span></div>
+</div></div>
+<details class="rozbicie" id="wr-tab" open>
+  <summary>Rozliczenie krok po kroku</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th></th><th id="wr-th-o">Osobno</th><th id="wr-th-r">Wspólnie</th></tr></thead>
+    <tbody id="wr-tab-t"></tbody>
+  </table></div>
+</details>
+<script>
+  import { obliczWspolne, type Osoba, type Tryb } from '../../lib/wspolne-rozliczenie';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+  import stawki from '../../data/stawki.json';
+
+  const form = document.getElementById('k-wspolne') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const zl0 = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
+  const params = new URLSearchParams(location.search);
+  if (['slub', 'rozdz', 'lr'].some((k) => params.get(k))) (form.querySelector('[data-warunki]') as HTMLDetailsElement).open = true;
+
+  // etat: koszty 3000 zł, składki 13,71% (emerytalna i rentowe do limitu 30-krotności), zdrowotna 9%
+  form.querySelectorAll<HTMLButtonElement>('[data-etat]').forEach((b) => b.addEventListener('click', () => {
+    const p = b.dataset.etat!, rok = val('rok');
+    const przychod = liczba(val(`${p}p`));
+    if (!(przychod > 0)) { el(`${p}p`).focus(); return; }
+    const lata = stawki.lata as Record<string, { limit_30_krotnosci?: { wartosc: number } }>;
+    const limit = lata[rok]?.limit_30_krotnosci?.wartosc ?? 282600;
+    const spol = Math.round((0.1126 * Math.min(przychod, limit) + 0.0245 * przychod) * 100) / 100;
+    const zdr = Math.round(0.09 * (przychod - spol) * 100) / 100;
+    el(`${p}k`).value = '3000'; el(`${p}s`).value = String(spol).replace('.', ','); el(`${p}h`).value = String(zdr).replace('.', ',');
+    form.dispatchEvent(new Event('input'));
+  }));
+
+  const osoba = (p: string): Osoba => ({ przychod: liczba(val(`${p}p`)), koszty: liczba(val(`${p}k`)), spoleczne: liczba(val(`${p}s`)), zdrowotna: liczba(val(`${p}h`)), odliczenia: liczba(val(`${p}o`)), zaliczki: liczba(val(`${p}z`)) });
+  const saldo = (n: number) => (n >= 0 ? `zwrot ${zl(n)}` : `dopłata ${zl(-n)}`);
+
+  const przelicz = () => {
+    const tryb = val('tryb') as Tryb, samotny = tryb === 'samotny', rok = +val('rok');
+    (form.querySelector('[data-osoba="b"]') as HTMLElement).hidden = samotny;
+    form.querySelectorAll<HTMLElement>('[data-tylko-m]').forEach((x) => (x.hidden = samotny));
+    (form.querySelector('[data-osoba="a"] [data-nazwa]') as HTMLElement).textContent = samotny ? 'Rodzic' : 'Pierwsza osoba';
+    const w = obliczWspolne({ rok, tryb, a: osoba('a'), b: samotny ? undefined : osoba('b'), dzieci: liczba(val('dzieci')), slubWTrakcie: el('slub').checked, rozdzielnosc: el('rozdz').checked, liniowyRyczalt: el('lr').checked });
+
+    const st = $('wr-status');
+    st.className = `status-wyniku ${w.mozna ? 'ok' : 'nie'}`;
+    st.textContent = !w.mozna ? (samotny ? 'Rozliczenie z dzieckiem nie przysługuje.' : 'Wspólne rozliczenie nie przysługuje.')
+      : w.oszczednosc > 0 ? (samotny ? 'Rozliczenie z dzieckiem się opłaca.' : 'Wspólne rozliczenie się opłaca.') : (samotny ? 'Rozliczenie z dzieckiem nic nie zmienia.' : 'Wspólne rozliczenie nic nie zmienia.');
+    const uwagi = [...w.powody, ...w.uwagi];
+    if (w.niepewne) uwagi.unshift(`Skala na ${rok} r. nie jest jeszcze ostatecznie przesądzona – liczymy według obecnej (12% i 32%, próg 120 000 zł).`);
+    const ul = $('wr-uwagi');
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    (document.querySelector('.paragon [data-nazwa-a]') as HTMLElement).textContent = samotny ? 'Podstawa' : 'Podstawa (1)';
+    document.querySelectorAll<HTMLElement>('.paragon [data-b]').forEach((x) => (x.hidden = samotny));
+    $('wr-pa').textContent = zl0(w.osoby[0].podstawa);
+    if (!samotny && w.osoby[1]) $('wr-pb').textContent = zl0(w.osoby[1].podstawa);
+    $('wr-osobno').textContent = zl0(w.osobno.podatekPrzedUlga);
+    $('wr-razem-et').textContent = samotny ? 'Podatek z dzieckiem' : 'Podatek wspólnie';
+    $('wr-razem').textContent = zl0(w.razem.podatekPrzedUlga);
+    document.querySelectorAll<HTMLElement>('.paragon [data-u]').forEach((x) => (x.hidden = w.ulga === 0));
+    $('wr-ulga').textContent = zl(w.ulga);
+    const zal = w.osobno.zaliczki > 0 || w.ulga > 0;
+    document.querySelectorAll<HTMLElement>('.paragon [data-s]').forEach((x) => (x.hidden = !zal));
+    const et = (n: number, k: string) => `${n >= 0 ? 'Zwrot' : 'Dopłata'} ${k}`;
+    $('wr-so-et').textContent = et(w.osobno.saldo, samotny ? 'sam' : 'osobno');
+    $('wr-sr-et').textContent = et(w.razem.saldo, samotny ? 'z dzieckiem' : 'wspólnie');
+    $('wr-so').textContent = zl(Math.abs(w.osobno.saldo));
+    $('wr-sr').textContent = zl(Math.abs(w.razem.saldo));
+    $('wr-suma-et').textContent = w.mozna ? (samotny ? 'Zyskujesz' : 'Zyskujecie') : 'Korzyść';
+    ustawKwote($('wr-suma'), w.mozna ? Math.max(0, w.oszczednosc) : 0, zl);
+    const pr = (stawki.lata as Record<string, { pit?: { progi?: { do: number | null }[] } }>)[String(rok)]?.pit?.progi;
+    $('wr-skala').textContent = pr ? `12/32%, próg ${(pr[0].do ?? 120000).toLocaleString('pl-PL')} zł` : '12/32%';
+
+    // tabela
+    $('wr-th-o').textContent = samotny ? 'Sam' : 'Osobno';
+    $('wr-th-r').textContent = samotny ? 'Z dzieckiem' : 'Wspólnie';
+    const podst = w.osoby.reduce((a, o) => a + o.podstawa, 0);
+    const r = (n: string, a: string, b: string, kl = '') => `<tr${kl ? ` class="${kl}"` : ''}><td>${n}</td><td>${a}</td><td>${b}</td></tr>`;
+    $('wr-tab-t').innerHTML = [
+      r('Podstawa', w.osoby.map((o) => zl0(o.podstawa)).join('<br>+ '), `${zl0(podst)}<br><small>połowa ${zl0(podst / 2)}</small>`),
+      r('Podatek ze skali', w.osoby.length > 1 ? `${w.osoby.map((o) => zl0(o.podatek)).join('<br>+ ')}<br>= ${zl0(w.osobno.podatekPrzedUlga)}` : zl0(w.osobno.podatekPrzedUlga), `2 × podatek od połowy<br>= ${zl0(w.razem.podatekPrzedUlga)}`),
+      w.ulga > 0 ? r('Ulga odliczona', zl(w.osobno.ulgaOdliczona), zl(w.razem.ulgaOdliczona)) : '',
+      r('Podatek należny', zl(w.osobno.podatek), zl(w.razem.podatek), 'razem'),
+      w.osobno.zaliczki > 0 ? r('Zaliczki pobrane', zl(w.osobno.zaliczki), zl(w.razem.zaliczki)) : '',
+      w.ulga > 0 ? r('Zwrot ulgi', zl(w.osobno.ulgaZwrot), zl(w.razem.ulgaZwrot)) : '',
+      zal ? r('Wynik', saldo(w.osobno.saldo).replace(' ', '<br>'), saldo(w.razem.saldo).replace(' ', '<br>'), 'aktywny') : '',
+    ].join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

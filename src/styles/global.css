@@ -318,6 +318,15 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .okres select { grid-column: 1 / 3; }
 .kalkulator .okres input, .kalkulator .okres select { font-size: .92rem; padding: 8px 6px; min-height: 44px; letter-spacing: -.03em; }
 .okres .usun { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--papier); color: var(--tusz); font-size: 1.2rem; cursor: pointer; }
+/* wspólne rozliczenie – karta osoby */
+.wr-osoba { padding: 12px 0; border-bottom: 1px dashed var(--linia); display: grid; gap: 8px; }
+.wr-osoba[hidden] { display: none; }
+.wr-glowa { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wr-glowa .nazwa { font-weight: 700; }
+.wr-osoba .pole { margin: 0; }
+.wr-podp { display: block; font-size: .8rem; color: var(--olowek); }
+.wplaty [data-tylko-m][hidden] { display: none; }
+#wr-tab td { white-space: normal; }
 /* status w paragonie (np. Mały ZUS Plus – czy można skorzystać) */
 .paragon .status-wyniku { margin: 0 0 12px; padding: 8px 10px; border-left: 4px solid var(--oszczedzanie); font-weight: 650; font-size: .9rem; line-height: 1.35; }
 .paragon .status-wyniku.nie { border-left-color: var(--blad, #b42318); }
