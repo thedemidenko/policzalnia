@@ -1,7 +1,7 @@
 {
-  "_opis": "Parametry kalkulatora lokat. Podatek Belki: art. 30a ust. 1 pkt 3 ustawy o PIT; zaokrąglenie podstawy i podatku do groszy w górę: art. 63 § 1a Ordynacji. OKI: ustawa z 3.07.2026 (Dz.U. 2026 poz. 1098) – stawka = 19% stopy referencyjnej NBP z 31.10 roku poprzedniego, zaokrąglona w dół do 0,01 pkt, min. 0,1%; MF ogłasza do 30.11 (sprawdzić obwieszczenie w Monitorze Polskim). Inflacja – ostatni odczyt GUS r/r (podpowiedź). Kurs EUR – do progu gwarancji BFG.",
+  "_opis": "Parametry kalkulatora lokat. Podatek Belki: art. 30a ust. 1 pkt 3 ustawy o PIT; zaokrąglenie podstawy i podatku do groszy w górę: art. 63 § 1a Ordynacji. OKI: ustawa z 3.07.2026 (Dz.U. 2026 poz. 1098) – w 2027 r. stawka 0,85% (art. 43, przepis epizodyczny); od 2028 r. 19% stopy referencyjnej NBP z 31.10 roku poprzedniego, zaokrąglona w dół, min. 0,1% (art. 25), MF ogłasza do 30.11. Inflacja – ostatni odczyt GUS r/r (podpowiedź). Kurs EUR – do progu gwarancji BFG.",
   "belka": 19,
-  "oki": { "od": "2027-01-01", "stawka": 0.71, "limitOszczednosci": 25000, "limitLaczny": 100000, "zrodloStawki": "19% × 3,75% (stopa referencyjna NBP 31.10.2026)" },
+  "oki": { "od": "2027-01-01", "stawka": 0.85, "limitOszczednosci": 25000, "limitLaczny": 100000, "zrodloStawki": "art. 43 ustawy o OKI – stawka epizodyczna 0,85% na 2027 r.; od 2028 r. 19% stopy referencyjnej NBP z 31.10 roku poprzedniego (art. 25)" },
   "inflacja": { "wartosc": 3.5, "okres": "październik 2026" },
   "bfg": { "euro": 100000, "kurs": 4.4809, "data": "2026-11-25" }
 }

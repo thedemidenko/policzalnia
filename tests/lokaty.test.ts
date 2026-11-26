@@ -56,9 +56,9 @@ describe('lokata – kapitalizacja, odnawianie, rentierska', () => {
 });
 
 describe('lokata – podatki, inflacja, cel', () => {
-  it('OKI: zamiast Belki 0,71% od nadwyżki ponad 25 000 zł', () => {
+  it('OKI 2027: zamiast Belki 0,85% (art. 43 ustawy o OKI) od nadwyżki ponad 25 000 zł', () => {
     const w = obliczLokate({ kwota: 100000, stopa: 6, okres: 12, jednostka: 'miesiace', podatek: 'oki' });
-    expect([w.podatek, w.podatekOki, w.zysk, w.belkaGdyby]).toEqual([0, 532.5, 5467.5, 1140]);
+    expect([w.podatek, w.podatekOki, w.zysk, w.belkaGdyby]).toEqual([0, 637.5, 5362.5, 1140]);
   });
   it('OKI do 25 000 zł – zysk bez podatku', () => {
     expect(obliczLokate({ kwota: 20000, stopa: 5, okres: 6, jednostka: 'miesiace', podatek: 'oki' }).zysk).toBe(500);

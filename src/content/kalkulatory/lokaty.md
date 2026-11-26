@@ -15,7 +15,7 @@ faq:
   - pytanie: Ile wynosi podatek Belki od lokaty w 2026 roku?
     odpowiedz: 19% od odsetek. Bank pobiera go sam przy wypłacie albo kapitalizacji odsetek, więc nie musisz go rozliczać w PIT. Podatek zaokrągla się w górę do pełnego grosza.
   - pytanie: Czy podatek Belki zostanie zniesiony?
-    odpowiedz: Nie. Od 1 stycznia 2027 r. działa jednak OKI (Osobiste Konto Inwestycyjne) – lokaty i rachunki prowadzone na OKI są zwolnione z podatku Belki. Zamiast niego płaci się 0,71% rocznie od średniej wartości oszczędności ponad 25 000 zł.
+    odpowiedz: Nie. Od 1 stycznia 2027 r. działa jednak OKI (Osobiste Konto Inwestycyjne) – lokaty i rachunki prowadzone na OKI są zwolnione z podatku Belki. Zamiast niego płaci się w 2027 r. 0,85% rocznie od średniej wartości oszczędności ponad 25 000 zł.
   - pytanie: Czy kapitalizacja dzienna pozwala ominąć podatek Belki?
     odpowiedz: Nie. Podatek zaokrągla się w górę do pełnego grosza, więc od każdej dziennej porcji odsetek bank pobiera co najmniej 1 grosz. Przy małych kwotach kapitalizacja dzienna może dać nawet mniej niż miesięczna.
   - pytanie: Ile trzeba mieć na lokacie, żeby dostawać 1000 zł miesięcznie?
@@ -43,7 +43,7 @@ zrodla:
   - nazwa: GUS – wskaźniki cen towarów i usług konsumpcyjnych
     url: https://stat.gov.pl/obszary-tematyczne/ceny-handel/wskazniki-cen/
 autor: redakcja
-updated: 2026-11-25
+updated: 2026-11-26
 draft: false
 ---
 
@@ -113,7 +113,7 @@ Kapitalizacja dzienna daje najwięcej odsetek, ale przy kwocie 10 000 zł zysk n
 Od **1 stycznia 2027 r.** działają Osobiste Konta Inwestycyjne (ustawa z 3 lipca 2026 r., Dz.U. poz. 1098). Lokaty i rachunki bankowe w złotych prowadzone w ramach OKI są **zwolnione z podatku Belki**. Zamiast niego płaci się **podatek od wartości aktywów**:
 
 - zwolnienie dla oszczędności (lokaty, rachunki, obligacje skarbowe) do **25 000 zł średniej wartości w roku** – w ramach łącznego limitu 100 000 zł dla całego OKI,
-- od nadwyżki – **19% stopy referencyjnej NBP** z 31 października poprzedniego roku, zaokrąglone w dół. Na 2027 r. to 19% × 3,75% = **0,71%** (w mediach krąży jeszcze 0,85% – to wyliczenie przy dawnej stopie 4,5%),
+- od nadwyżki – w 2027 r. **0,85%** rocznie (stawka wpisana wprost w ustawę, art. 43), a od 2028 r. **19% stopy referencyjnej NBP** z 31 października poprzedniego roku, zaokrąglone w dół (przy dzisiejszej stopie 3,75% byłoby to 0,71%),
 - podatek rozlicza się w zeznaniu w e-Urzędzie Skarbowym od 15 marca do 31 maja następnego roku.
 
 Lokata na rok na 5% – podatek Belki czy OKI:
@@ -121,11 +121,11 @@ Lokata na rok na 5% – podatek Belki czy OKI:
 | Kwota | Podatek Belki | Podatek OKI | Zysk z OKI |
 | --- | --- | --- | --- |
 | 25 000 zł | 237,50 zł | 0 zł | 1250 zł |
-| 50 000 zł | 475 zł | 177,50 zł | 2322,50 zł |
-| 100 000 zł | 950 zł | 532,50 zł | 4467,50 zł |
-| 200 000 zł | 1900 zł | 1242,50 zł | 8757,50 zł |
+| 50 000 zł | 475 zł | 212,50 zł | 2287,50 zł |
+| 100 000 zł | 950 zł | 637,50 zł | 4362,50 zł |
+| 200 000 zł | 1900 zł | 1487,50 zł | 8512,50 zł |
 
-Ponieważ stawka OKI to 19% stopy referencyjnej, a podatek Belki to 19% odsetek, OKI wychodzi taniej zawsze, gdy lokata ma oprocentowanie wyższe od stopy referencyjnej NBP (dziś 3,75%) – a dzięki zwolnieniu 25 000 zł często także przy niższym. Kalkulator zakłada, że pieniądze leżą na OKI tylko przez czas lokaty.
+Od kwoty ponad 25 000 zł OKI wychodzi w 2027 r. taniej niż podatek Belki, gdy lokata ma oprocentowanie wyższe niż ok. 4,47% (0,85% ÷ 19%) – a dzięki zwolnieniu 25 000 zł często także przy niższym. Od 2028 r. ten próg zrówna się ze stopą referencyjną NBP. Kalkulator zakłada, że pieniądze leżą na OKI tylko przez czas lokaty.
 
 ## Ile trzeba wpłacić na lokatę?
 
