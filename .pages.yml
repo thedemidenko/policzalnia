@@ -68,6 +68,7 @@ content:
             - { value: umowy-terminowe, label: Umowy na czas określony }
             - { value: odsetki-zus, label: Odsetki od zaległości ZUS }
             - { value: dieta-zagraniczna, label: Dieta zagraniczna }
+            - { value: maly-zus, label: Mały ZUS Plus }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }

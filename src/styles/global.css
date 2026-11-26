@@ -318,6 +318,12 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .okres select { grid-column: 1 / 3; }
 .kalkulator .okres input, .kalkulator .okres select { font-size: .92rem; padding: 8px 6px; min-height: 44px; letter-spacing: -.03em; }
 .okres .usun { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--papier); color: var(--tusz); font-size: 1.2rem; cursor: pointer; }
+/* status w paragonie (np. Mały ZUS Plus – czy można skorzystać) */
+.paragon .status-wyniku { margin: 0 0 12px; padding: 8px 10px; border-left: 4px solid var(--oszczedzanie); font-weight: 650; font-size: .9rem; line-height: 1.35; }
+.paragon .status-wyniku.nie { border-left-color: var(--blad, #b42318); }
+.paragon .status-wyniku:empty { display: none; }
+#mz-okres .pole-para, #mz-okres > .pole { margin: 10px 0; }
+.mz-oszcz { font-size: .85rem; margin: 8px 0 0; line-height: 1.45; }
 /* dieta zagraniczna – etap (państwo) z posiłkami i noclegiem */
 .etap { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--linia); display: grid; gap: 8px; }
 .etap-gora { display: grid; grid-template-columns: minmax(0, 1fr) 40px; gap: 8px; align-items: center; }

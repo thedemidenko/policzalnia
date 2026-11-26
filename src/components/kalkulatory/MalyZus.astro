@@ -1,0 +1,225 @@
+---
+import { FORMY, LATA } from '../../lib/maly-zus';
+const stawkiRyczaltu = [17, 15, 14, 12.5, 12, 10, 8.5, 5.5, 3, 2];
+---
+<form id="k-maly-zus" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Składki na rok</legend>
+    {LATA.map((r) => <label><input type="radio" name="rok" value={String(r)} /><span>{r}</span></label>)}
+  </fieldset>
+  <div class="pole">
+    <label for="mz-forma" id="mz-forma-et">Forma opodatkowania w poprzednim roku</label>
+    <select id="mz-forma" name="forma">{Object.entries(FORMY).map(([k, n]) => <option value={k}>{n}</option>)}</select>
+  </div>
+  <div class="opcje" data-tylko="ogolne">
+    <div class="pole-para">
+      <div class="pole">
+        <label for="mz-po">Przychód <span data-pop-rok></span></label>
+        <div class="kwota" data-jedn="zł"><input id="mz-po" name="po" type="text" inputmode="decimal" value="100000" /></div>
+      </div>
+      <div class="pole">
+        <label for="mz-do">Dochód <span data-pop-rok></span></label>
+        <div class="kwota" data-jedn="zł"><input id="mz-do" name="do" type="text" inputmode="decimal" value="67500" /></div>
+      </div>
+    </div>
+    <small>Dochód = przychód minus koszty, przed odliczeniem składek społecznych. Strata – wpisz z minusem.</small>
+  </div>
+  <div class="opcje" data-tylko="ryczalt">
+    <div class="pole-para">
+      <div class="pole">
+        <label for="mz-pr">Przychód na ryczałcie</label>
+        <div class="kwota" data-jedn="zł"><input id="mz-pr" name="pr" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="mz-sr">Stawka ryczałtu</label>
+        <select id="mz-sr" name="sr">{stawkiRyczaltu.map((s) => <option value={String(s)} selected={s === 12}>{String(s).replace('.', ',')}%</option>)}</select>
+      </div>
+    </div>
+    <small>Na ryczałcie dochodem do Małego ZUS Plus jest połowa przychodu.</small>
+  </div>
+  <div class="opcje" data-tylko="karta">
+    <div class="pole">
+      <label for="mz-pk">Sprzedaż opodatkowana VAT (bez VAT) – karta podatkowa</label>
+      <div class="kwota" data-jedn="zł"><input id="mz-pk" name="pk" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="kv" value="1" /> Na karcie podatkowej było zwolnienie z VAT</label>
+  </div>
+  <div class="pole">
+    <label class="przelacznik"><input type="checkbox" name="caly" value="1" checked /> Działalność przez cały <span data-pop-rok></span> rok (bez zawieszenia)</label>
+    <div class="opcje" data-dni hidden>
+      <label for="mz-dni">Dni prowadzenia działalności w <span data-pop-rok></span> r.</label>
+      <input id="mz-dni" name="dni" type="text" inputmode="numeric" placeholder="np. 200" />
+      <small>Bez dni zawieszenia. Gdy firma działała krócej, limit 120 000 zł zmniejsza się proporcjonalnie.</small>
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="chor" value="1" checked /> Dobrowolne ubezpieczenie chorobowe (2,45%)</label>
+  <details class="wplaty" data-szczegoly>
+    <summary>Warunki i szczegóły</summary>
+    <p class="podpowiedz">Zaznacz, jeśli któraś sytuacja cię dotyczy – każda wyklucza Mały ZUS Plus.</p>
+    <label class="przelacznik"><input type="checkbox" name="pref" value="1" /> Preferencyjne składki (pierwsze 24 miesiące działalności)</label>
+    <label class="przelacznik"><input type="checkbox" name="bp" value="1" /> Działalność dla byłego pracodawcy (te same czynności co na etacie w tym lub poprzednim roku)</label>
+    <label class="przelacznik"><input type="checkbox" name="inna" value="1" /> W poprzednim roku także inna działalność: wspólnik spółki jawnej lub partnerskiej, twórca, artysta</label>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="mz-wyp">Stopa wypadkowa</label>
+        <div class="kwota" data-jedn="%"><input id="mz-wyp" name="wyp" type="text" inputmode="decimal" placeholder="1,67" /></div>
+      </div>
+      <div class="pole" data-tylko="ogolne">
+        <label for="mz-sk">Składki w kosztach</label>
+        <div class="kwota" data-jedn="zł"><input id="mz-sk" name="sk" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="bezfp" value="1" /> Wiek 55+ (kobiety) lub 60+ (mężczyźni) – bez Funduszu Pracy</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <p class="status-wyniku" id="mz-status"></p>
+  <dl>
+    <dt>Przychód</dt><dd id="mz-przychod"></dd>
+    <dt>Limit</dt><dd id="mz-limit"></dd>
+    <dt>Dochód / mies.</dt><dd id="mz-przec"></dd>
+    <dt>Podstawa</dt><dd id="mz-podst"></dd>
+    <dt>Emerytalna</dt><dd id="mz-em"></dd>
+    <dt>Rentowe</dt><dd id="mz-ren"></dd>
+    <dt data-chor>Chorobowe</dt><dd data-chor id="mz-chor"></dd>
+    <dt id="mz-wyp-et">Wypadkowe</dt><dd id="mz-wyp-w"></dd>
+    <dt>Fundusz Pracy</dt><dd id="mz-fp"></dd>
+    <dt data-zdr>Zdrowotna*</dt><dd data-zdr id="mz-zdr"></dd>
+    <dt data-zdr>Ze zdrowotną</dt><dd data-zdr id="mz-razem-zdr"></dd>
+  </dl>
+  <ul class="uwagi" id="mz-uwagi" hidden></ul>
+  <p class="blad" id="mz-blad" hidden></p>
+  <div class="suma"><span id="mz-suma-et">Składki ZUS / mies.</span><strong id="mz-suma" data-glowny="Składki ZUS miesięcznie"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · art. 18c ustawy o sus · suma bez zdrowotnej · *szacunek</div>
+</div></div>
+<details class="rozbicie" id="mz-por" open>
+  <summary>Mały ZUS Plus a pełny ZUS</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th></th><th>Mały ZUS Plus</th><th>Pełny ZUS</th></tr></thead>
+    <tbody id="mz-por-t"></tbody>
+  </table></div>
+  <p class="mz-oszcz" id="mz-oszcz"></p>
+</details>
+<details class="rozbicie" id="mz-okres">
+  <summary>Do kiedy Mały ZUS Plus? Licznik 36 miesięcy</summary>
+  <div class="pole-para mz-okres-pola">
+    <div class="pole">
+      <label for="mz-od">Pierwszy miesiąc ulgi (od 2026 r.)</label>
+      <input id="mz-od" form="k-maly-zus" name="od" type="month" min="2026-01" />
+    </div>
+    <div class="pole">
+      <label for="mz-zaw">Miesiące zawieszenia</label>
+      <input id="mz-zaw" form="k-maly-zus" name="zaw" type="text" inputmode="numeric" placeholder="0" />
+    </div>
+  </div>
+  <div class="pole">
+    <label for="mz-bu">Miesiące działalności bez ulgi (np. rok z przychodem ponad limit)</label>
+    <input id="mz-bu" form="k-maly-zus" name="bu" type="text" inputmode="numeric" placeholder="0" />
+  </div>
+  <div class="tabela-przewijana"><table>
+    <tbody id="mz-okres-t"></tbody>
+  </table></div>
+  <p class="podpis-tabeli">Od 2026 r. ulga przysługuje przez 36 miesięcy w każdym okresie 60 miesięcy prowadzenia działalności – miesięcy wykorzystanych przed 2026 r. się nie liczy. Każdy miesiąc z choćby jednym dniem działalności liczy się w całości. Warunki (m.in. limit przychodu) trzeba spełniać co roku.</p>
+</details>
+<script>
+  import { obliczMalyZus, okresUlgi, type Forma, type WynikMZP } from '../../lib/maly-zus';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-maly-zus') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const mies = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+  const plM = (m: string) => `${mies[+m.slice(5, 7) - 1]} ${m.slice(0, 4)}`;
+  const params = new URLSearchParams(location.search);
+
+  // domyślnie: bieżący rok, w grudniu – następny
+  if (!params.has('rok')) {
+    const d = new Date(), r = String(d.getMonth() === 11 ? d.getFullYear() + 1 : d.getFullYear());
+    const radio = form.querySelector<HTMLInputElement>(`input[name=rok][value="${r}"]`) ?? form.querySelector<HTMLInputElement>('input[name=rok]')!;
+    radio.checked = true;
+  }
+  if (!el('od').value) el('od').value = '2026-01';
+  if (['pref', 'bp', 'inna', 'wyp', 'sk', 'bezfp'].some((k) => params.get(k))) (form.querySelector('[data-szczegoly]') as HTMLDetailsElement).open = true;
+  if (params.get('od') || params.get('zaw') || params.get('bu')) ($('mz-okres') as HTMLDetailsElement).open = true;
+  // pola licznika są poza formularzem (atrybut form) – nasłuchujemy osobno
+  document.querySelectorAll<HTMLInputElement>('#mz-okres input').forEach((x) => x.addEventListener('input', () => przelicz()));
+
+  const wiersz = (n: string, a: string, b: string, kl = '') => `<tr${kl ? ` class="${kl}"` : ''}><td>${n}</td><td>${a}</td><td>${b}</td></tr>`;
+
+  const przelicz = () => {
+    const rok = +val('rok');
+    const forma = val('forma') as Forma;
+    document.querySelectorAll<HTMLElement>('[data-pop-rok]').forEach((x) => (x.textContent = String(rok - 1)));
+    $('mz-forma-et').textContent = `Forma opodatkowania w ${rok - 1} r.`;
+    form.querySelectorAll<HTMLElement>('[data-tylko]').forEach((x) => {
+      const t = x.dataset.tylko!;
+      x.hidden = !(t === 'ogolne' ? ['skala', 'liniowy', 'mieszana'].includes(forma) : forma === t || forma === 'mieszana');
+    });
+    (form.querySelector('[data-dni]') as HTMLElement).hidden = el('caly').checked;
+    const wyp = val('wyp').trim() === '' ? 1.67 : liczba(val('wyp'));
+    const chor = el('chor').checked;
+
+    const w = obliczMalyZus({
+      rok, forma, przychodOgolne: liczba(val('po')), dochodOgolne: liczba(val('do')), przychodRyczalt: liczba(val('pr')), przychodKarta: liczba(val('pk')),
+      kartaZwolnionaVat: el('kv').checked, skladkiWKosztach: liczba(val('sk')), dni: el('caly').checked ? undefined : liczba(val('dni')),
+      chorobowe: chor, wypadkowa: wyp, bezFP: el('bezfp').checked, preferencyjny: el('pref').checked, bylyPracodawca: el('bp').checked,
+      innaDzialalnosc: el('inna').checked, stawkaRyczaltu: liczba(val('sr')),
+    });
+    const blad = $('mz-blad');
+    if ('blad' in w && !('maly' in w)) { blad.hidden = false; blad.textContent = w.blad; return; }
+    blad.hidden = true;
+    const x = w as WynikMZP;
+    const st = $('mz-status');
+    st.className = `status-wyniku ${x.mozna ? 'ok' : 'nie'}`;
+    st.textContent = x.mozna
+      ? (x.podstawaWyliczona >= x.max ? `Możesz skorzystać, ale przy tym dochodzie ulga nic nie daje.` : `Możesz płacić Mały ZUS Plus w ${rok} r.`)
+      : `Nie możesz skorzystać z Małego ZUS Plus w ${rok} r.`;
+    const ul = $('mz-uwagi');
+    const uwagi = x.mozna ? x.uwagi : x.powody;
+    const sk = x.mozna ? x.maly : x.pelny;
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+    $('mz-przychod').textContent = zl(x.przychod).replace(',00', '');
+    $('mz-limit').textContent = zl(x.limit).replace(',00', '');
+    $('mz-przec').textContent = zl(x.przecietny);
+    $('mz-podst').textContent = zl(sk.podstawa);
+    $('mz-em').textContent = zl(sk.emerytalna);
+    $('mz-ren').textContent = zl(sk.rentowa);
+    document.querySelectorAll<HTMLElement>('.paragon [data-chor]').forEach((e) => (e.hidden = !chor));
+    $('mz-chor').textContent = zl(sk.chorobowa);
+    $('mz-wyp-et').textContent = 'Wypadkowe';
+    $('mz-wyp-w').textContent = zl(sk.wypadkowa);
+    $('mz-fp').textContent = sk.fp ? zl(sk.fp) : 'nie płacisz';
+    document.querySelectorAll<HTMLElement>('.paragon [data-zdr]').forEach((e) => (e.hidden = x.zdrowotna === null));
+    if (x.zdrowotna !== null) { $('mz-zdr').textContent = zl(x.zdrowotna); $('mz-razem-zdr').textContent = zl(Math.round((sk.razem + x.zdrowotna) * 100) / 100); }
+    $('mz-suma-et').textContent = x.mozna ? 'Mały ZUS Plus / mies.' : 'Pełny ZUS / mies.';
+    ustawKwote($('mz-suma'), x.mozna ? x.maly.razem : x.pelny.razem);
+
+    // porównanie
+    const m = x.maly, p = x.pelny, z = (n: number) => zl(n);
+    $('mz-por-t').innerHTML = [
+      wiersz('Podstawa', z(m.podstawa), z(p.podstawa)),
+      wiersz('Emerytalna', z(m.emerytalna), z(p.emerytalna)),
+      wiersz('Rentowe', z(m.rentowa), z(p.rentowa)),
+      chor ? wiersz('Chorobowe', z(m.chorobowa), z(p.chorobowa)) : '',
+      wiersz('Wypadkowe', z(m.wypadkowa), z(p.wypadkowa)),
+      wiersz('Fundusz Pracy', m.fp ? z(m.fp) : '–', p.fp ? z(p.fp) : '–'),
+      wiersz('Razem / mies.', z(m.razem), z(p.razem), 'razem'),
+      wiersz('Rocznie', z(Math.round(m.razem * 1200) / 100), z(Math.round(p.razem * 1200) / 100)),
+      chor ? wiersz('Zasiłek / mies.', z(x.zasilekMaly), z(x.zasilekPelny)) : '',
+      wiersz('Emerytura / rok', z(Math.round(m.emerytalna * 1200) / 100), z(Math.round(p.emerytalna * 1200) / 100)),
+    ].join('');
+    $('mz-oszcz').innerHTML = (x.mozna ? '' : 'Ulga nie przysługuje – dla porównania tyle dałaby przy spełnieniu warunków. ') + (x.oszczednoscMies > 0
+      ? `<strong>Oszczędność: ${z(x.oszczednoscMies)} miesięcznie, ${z(x.oszczednoscRok)} rocznie.</strong> Po uwzględnieniu podatku (mniejsze składki to mniejsze odliczenie, stawka ${String(x.stawkaPodatku).replace('.', ',')}%) realnie ok. ${z(x.oszczednoscPoPodatku)} rocznie. „Zasiłek” to zasiłek chorobowy (80%) za pełny miesiąc, „Emerytura” – składki emerytalne zapisane na koncie w ZUS.`
+      : 'Przy tym dochodzie składki na Małym ZUS Plus są takie same jak na pełnym ZUS.');
+
+    // licznik okresu
+    const o = okresUlgi(el('od').value, liczba(el('zaw').value), liczba(el('bu').value));
+    const w2 = (a: string, b: string) => `<tr><td>${a}</td><td>${b}</td></tr>`;
+    $('mz-okres-t').innerHTML = o
+      ? w2('Ostatni miesiąc ulgi (36.)', `<strong>${plM(o.koniecUlgi)}</strong>`) + w2('Koniec okresu 60 miesięcy', plM(o.koniecOkresu)) + w2('Kolejna ulga od', plM(o.kolejnyOd))
+      : '';
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
