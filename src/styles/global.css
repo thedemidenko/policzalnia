@@ -318,6 +318,21 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .okres select { grid-column: 1 / 3; }
 .kalkulator .okres input, .kalkulator .okres select { font-size: .92rem; padding: 8px 6px; min-height: 44px; letter-spacing: -.03em; }
 .okres .usun { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--papier); color: var(--tusz); font-size: 1.2rem; cursor: pointer; }
+/* ryczałt – wyszukiwarka stawki i wiersze przychodów */
+.ry-szukaj { margin-bottom: 16px; padding: 12px; border: 1.5px dashed var(--linia); border-radius: 10px; display: grid; gap: 6px; }
+.ry-szukaj label { font-weight: 650; font-size: .95rem; }
+.ry-szukaj input { font: inherit; font-size: 1rem; padding: 10px 12px; min-height: 44px; border: 1.5px solid var(--tusz); border-radius: 10px; background: var(--papier); color: inherit; width: 100%; box-sizing: border-box; }
+.ry-wyniki { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.ry-wyniki[hidden] { display: none; }
+.ry-wyniki button { width: 100%; text-align: left; background: var(--papier); border: 1px solid var(--linia); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: .88rem; cursor: pointer; color: inherit; }
+.ry-wyniki button:hover { border-color: var(--tusz); }
+.ry-wyniki strong { display: inline-block; min-width: 3.6em; }
+.ry-wyniki small { display: block; color: var(--olowek); font-size: .75rem; }
+.ry-brak { font-size: .85rem; color: var(--olowek); }
+.ry-wiersz { display: grid; grid-template-columns: minmax(0, 1fr) 40px; gap: 6px 8px; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--linia); }
+.ry-wiersz select { grid-column: 1 / -1; }
+.kalkulator .ry-wiersz select { font-size: .92rem; padding: 8px 6px; min-height: 44px; }
+.ry-wiersz .usun { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--papier); color: var(--tusz); font-size: 1.2rem; cursor: pointer; }
 /* wspólne rozliczenie – karta osoby */
 .wr-osoba { padding: 12px 0; border-bottom: 1px dashed var(--linia); display: grid; gap: 8px; }
 .wr-osoba[hidden] { display: none; }
@@ -367,7 +382,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 /* ===== Wydruk: sam kalkulator z wynikiem ===== */
 @media print {
   body { background: #fff !important; color: #000; }
-  header, footer, .okruszki, .etykieta, .lead, .tresc, .faq, .powiazane, .autor, .reklama, .sidebar, .akcje, .pasek-wyniku, .wplaty .podpowiedz, [data-dodaj-wplate], [data-dodaj-zal], [data-dodaj-okres], [data-dodaj-poz], .usun, .naglowki-wierszy + * + .przycisk + small, .zus-wzor, [data-dodaj-mies], [data-dodaj-etap] { display: none !important; }
+  header, footer, .okruszki, .etykieta, .lead, .tresc, .faq, .powiazane, .autor, .reklama, .sidebar, .akcje, .pasek-wyniku, .wplaty .podpowiedz, [data-dodaj-wplate], [data-dodaj-zal], [data-dodaj-okres], [data-dodaj-poz], .usun, .naglowki-wierszy + * + .przycisk + small, .zus-wzor, [data-dodaj-mies], [data-dodaj-etap], .ry-szukaj, [data-dodaj] { display: none !important; }
   .kalkulator { box-shadow: none; border: 1px solid #000; grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px; margin-top: 12px; }
   .kalkulator input, .kalkulator select { padding: 6px 8px !important; font-size: .9rem !important; min-height: 0 !important; }
   .segmenty span { padding: 4px 10px; font-size: .8rem; }

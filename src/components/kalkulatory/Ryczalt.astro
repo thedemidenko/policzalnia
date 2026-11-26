@@ -1,0 +1,181 @@
+---
+import { STAWKI, ZUS } from '../../lib/ryczalt';
+const opcjeStawek = STAWKI.map((s) => ({ id: s.id, n: s.nazwa }));
+---
+<div class="ry-szukaj">
+  <label for="ry-q">Jaka stawka ryczałtu? Wpisz, czym się zajmujesz</label>
+  <input id="ry-q" type="search" placeholder="np. programista, fryzjer, najem, grafik" autocomplete="off" />
+  <ul class="ry-wyniki" id="ry-wyniki" hidden></ul>
+</div>
+<form id="k-ryczalt" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Rok</legend>
+    <label><input type="radio" name="rok" value="2026" checked /><span>2026</span></label>
+    <label><input type="radio" name="rok" value="2027" /><span>2027</span></label>
+  </fieldset>
+  <fieldset class="segmenty">
+    <legend>Kwoty</legend>
+    <label><input type="radio" name="okres" value="m" checked /><span>miesięcznie</span></label>
+    <label><input type="radio" name="okres" value="r" /><span>rocznie</span></label>
+  </fieldset>
+  <div class="pole">
+    <span class="nazwa" id="ry-p-nazwa">Przychód i stawka</span>
+    <div data-lista role="group" aria-labelledby="ry-p-nazwa">
+      <div class="ry-wiersz">
+        <select name="s1" aria-label="Stawka ryczałtu 1">{opcjeStawek.map((o) => <option value={o.id} selected={o.id === '12'}>{o.n}</option>)}</select>
+        <div class="kwota" data-jedn="zł"><input name="k1" type="text" inputmode="decimal" value="15000" aria-label="Przychód 1" /></div>
+        <button type="button" class="usun" aria-label="Usuń przychód">×</button>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj>+ Przychód z inną stawką</button>
+    <small>Przychód netto z faktur (bez VAT), bez odliczania kosztów – ryczałt płaci się od przychodu.</small>
+  </div>
+  <div class="pole">
+    <label for="ry-zus">Składki ZUS</label>
+    <select id="ry-zus" name="zus">{Object.entries(ZUS).map(([k, n]) => <option value={k}>{n}</option>)}</select>
+  </div>
+  <div class="pole" data-wlasny hidden>
+    <label for="ry-zw">Składki społeczne miesięcznie</label>
+    <div class="kwota" data-jedn="zł"><input id="ry-zw" name="zw" type="text" inputmode="decimal" placeholder="np. 585,13" /></div>
+    <small>Np. z kalkulatora Mały ZUS Plus – bez składki zdrowotnej i Funduszu Pracy.</small>
+  </div>
+  <details class="wplaty" data-por>
+    <summary>Porównaj z podatkiem liniowym i skalą</summary>
+    <div class="pole">
+      <label for="ry-koszty" id="ry-koszty-et">Koszty firmy miesięcznie</label>
+      <div class="kwota" data-jedn="zł"><input id="ry-koszty" name="koszty" type="text" inputmode="decimal" placeholder="0" /></div>
+      <small>Koszty, które można by odliczyć na liniowym lub skali: sprzęt, leasing, paliwo, biuro, księgowa.</small>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Przychód</dt><dd id="ry-przychod"></dd>
+    <dt>Składki społeczne</dt><dd id="ry-spol"></dd>
+    <dt data-fp>Fundusz Pracy</dt><dd data-fp id="ry-fp"></dd>
+    <dt>Zdrowotna</dt><dd id="ry-zdr"></dd>
+    <dt>Podstawa</dt><dd id="ry-podst"></dd>
+    <dt id="ry-pod-et">Ryczałt</dt><dd id="ry-pod"></dd>
+    <dt>Obciążenie</dt><dd id="ry-obc"></dd>
+  </dl>
+  <ul class="uwagi" id="ry-uwagi" hidden></ul>
+  <div class="suma"><span id="ry-suma-et">Na rękę / mies.</span><strong id="ry-suma" data-glowny="Na rękę"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · ryczałt od przychodów ewidencjonowanych · <span id="ry-prog"></span></div>
+</div></div>
+<details class="rozbicie" id="ry-tab-st">
+  <summary>Podatek według stawek</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Stawka</th><th>Przychód</th><th>Ryczałt</th></tr></thead>
+    <tbody id="ry-st"></tbody>
+  </table></div>
+</details>
+<details class="rozbicie" id="ry-tab-por" open hidden>
+  <summary>Ryczałt, liniowy czy skala?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th></th><th>Podatek i zdrowotna</th><th>Na rękę</th></tr></thead>
+    <tbody id="ry-por"></tbody>
+  </table></div>
+  <p class="podpis-tabeli" id="ry-por-p"></p>
+</details>
+<template id="ry-wzor">
+  <div class="ry-wiersz">
+    <select aria-label="Stawka ryczałtu">{opcjeStawek.map((o) => <option value={o.id} selected={o.id === '8.5'}>{o.n}</option>)}</select>
+    <div class="kwota" data-jedn="zł"><input type="text" inputmode="decimal" placeholder="0" aria-label="Przychód" /></div>
+    <button type="button" class="usun" aria-label="Usuń przychód">×</button>
+  </div>
+</template>
+<script>
+  import { DZIALALNOSCI, obliczRyczalt, stawka, type Zus } from '../../lib/ryczalt';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-ryczalt') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const proc = (n: number) => `${n.toLocaleString('pl-PL', { maximumFractionDigits: 2 })}%`;
+  const params = new URLSearchParams(location.search);
+
+  // --- wiersze przychodów s1/k1, s2/k2…
+  const lista = form.querySelector<HTMLElement>('[data-lista]')!;
+  const wzor = document.getElementById('ry-wzor') as HTMLTemplateElement;
+  const przenumeruj = () => {
+    lista.querySelectorAll('.ry-wiersz').forEach((w, i) => {
+      (w.querySelector('select') as HTMLSelectElement).name = `s${i + 1}`;
+      (w.querySelector('input') as HTMLInputElement).name = `k${i + 1}`;
+    });
+    lista.classList.toggle('jeden', lista.children.length === 1);
+  };
+  const dodaj = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); };
+  form.querySelector('[data-dodaj]')!.addEventListener('click', () => { dodaj(); (lista.lastElementChild!.querySelector('input') as HTMLInputElement).focus(); form.dispatchEvent(new Event('input')); });
+  lista.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('.usun'); if (!b) return; b.closest('.ry-wiersz')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input')); });
+  przenumeruj();
+  for (let i = 2; params.has(`s${i}`); i++) dodaj();
+  if (params.get('koszty')) (form.querySelector('[data-por]') as HTMLDetailsElement).open = true;
+
+  // --- wyszukiwarka stawki
+  const q = document.getElementById('ry-q') as HTMLInputElement;
+  const wyn = $('ry-wyniki');
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+  q.addEventListener('input', () => {
+    const t = norm(q.value.trim());
+    if (t.length < 2) { wyn.hidden = true; return; }
+    const sl = t.split(/\s+/);
+    const traf = DZIALALNOSCI.filter((d) => sl.every((x) => norm(`${d.n} ${d.k}`).includes(x))).slice(0, 8);
+    wyn.hidden = false;
+    wyn.innerHTML = traf.length
+      ? traf.map((d) => `<li><button type="button" data-s="${d.s}"><strong>${stawka(d.s)!.id === 'najem' ? '8,5% / 12,5%' : proc(stawka(d.s)!.stawka)}</strong> ${d.n} <small>${d.k}</small></button></li>`).join('')
+      : '<li class="ry-brak">Nie znalazłem – większość usług to 8,5%, handel 3%, produkcja i budowlanka 5,5%. W razie wątpliwości sprawdź kod PKWiU usługi.</li>';
+  });
+  wyn.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button');
+    if (!b) return;
+    const sel = lista.querySelector('select') as HTMLSelectElement;
+    sel.value = b.dataset.s!;
+    wyn.hidden = true;
+    form.dispatchEvent(new Event('input'));
+    sel.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+
+  const przelicz = () => {
+    const rok = +val('rok'), m = val('okres') === 'm';
+    const k = m ? 12 : 1;
+    const zus = val('zus') as Zus;
+    (form.querySelector('[data-wlasny]') as HTMLElement).hidden = zus !== 'wlasny';
+    $('ry-koszty-et').textContent = m ? 'Koszty firmy miesięcznie' : 'Koszty firmy rocznie';
+    const przychody = [...lista.querySelectorAll('.ry-wiersz')].map((w) => ({ stawka: (w.querySelector('select') as HTMLSelectElement).value, kwota: liczba((w.querySelector('input') as HTMLInputElement).value) * k }));
+    const kosztyTxt = val('koszty').trim();
+    const w = obliczRyczalt({ rok, przychody, zus, zusWlasny: liczba(val('zw')), koszty: kosztyTxt === '' ? undefined : liczba(kosztyTxt) * k });
+    const d = (n: number) => zl(Math.round((n / k) * 100) / 100);
+    $('ry-przychod').textContent = d(w.przychod);
+    $('ry-spol').textContent = d(w.spoleczne);
+    document.querySelectorAll<HTMLElement>('.paragon [data-fp]').forEach((x) => (x.hidden = w.fp === 0));
+    $('ry-fp').textContent = d(w.fp);
+    $('ry-zdr').textContent = d(w.zdrowotna);
+    $('ry-podst').textContent = d(w.podstawa);
+    const st = [...new Set(w.pozycje.map((p) => p.stawka.id))];
+    $('ry-pod-et').textContent = st.length === 1 ? `Ryczałt ${stawka(st[0])!.id === 'najem' ? '8,5/12,5%' : proc(stawka(st[0])!.stawka)}` : 'Ryczałt';
+    $('ry-pod').textContent = d(w.podatek);
+    $('ry-obc').textContent = `${proc(w.obciazenie)} przychodu`;
+    $('ry-suma-et').textContent = m ? 'Na rękę / mies.' : 'Na rękę / rok';
+    ustawKwote($('ry-suma'), Math.round((w.naReke / k) * 100) / 100);
+    $('ry-prog').textContent = `zdrowotna – próg ${w.zdrowotnaProg}`;
+    const ul = $('ry-uwagi');
+    const uwagi = [...w.uwagi, 'Składka zdrowotna zależy od przychodu z całego roku – dlatego kalkulator liczy rok, a kwoty miesięczne to średnia.'];
+    ul.hidden = false; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const tabSt = $('ry-tab-st') as HTMLDetailsElement;
+    tabSt.hidden = w.pozycje.length < 2; tabSt.open = w.pozycje.length > 1;
+    $('ry-st').innerHTML = w.pozycje.map((p) => `<tr><td>${p.stawka.id === 'najem' ? '8,5/12,5%' : proc(p.stawka.stawka)}</td><td>${d(p.przychod)}<br><small>odliczenia ${d(p.odliczenia)}</small></td><td>${d(p.podatek)}</td></tr>`).join('');
+
+    const por = $('ry-tab-por');
+    por.hidden = !w.porownanie;
+    if (w.porownanie) {
+      const best = Math.max(...w.porownanie.map((f) => f.naReke));
+      $('ry-por').innerHTML = w.porownanie.map((f) => `<tr${f.naReke === best ? ' class="aktywny"' : ''}><td>${f.nazwa}</td><td>${d(f.podatek)}<br><small>+ ${d(f.zdrowotna)}</small></td><td>${d(f.naReke)}</td></tr>`).join('');
+      const naj = w.porownanie.find((f) => f.naReke === best)!;
+      const roznica = Math.round((best - Math.max(...w.porownanie.filter((f) => f !== naj).map((f) => f.naReke))) * 100) / 100;
+      $('ry-por-p').textContent = `Najkorzystniej: ${naj.nazwa.toLowerCase()} – o ${zl(roznica / (m ? 12 : 1))} ${m ? 'miesięcznie' : 'rocznie'} więcej niż kolejna forma. „Na rękę” po odjęciu kosztów, składek i podatku. Na skali nie uwzględniamy ulg (np. na dzieci) ani wspólnego rozliczenia z małżonkiem.`;
+    }
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

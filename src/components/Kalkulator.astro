@@ -28,6 +28,7 @@ import OdsetkiZus from './kalkulatory/OdsetkiZus.astro';
 import DietaZagraniczna from './kalkulatory/DietaZagraniczna.astro';
 import MalyZus from './kalkulatory/MalyZus.astro';
 import WspolneRozliczenie from './kalkulatory/WspolneRozliczenie.astro';
+import Ryczalt from './kalkulatory/Ryczalt.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -53,7 +54,7 @@ const KOMPONENTY = {
   inflacja: Inflacja,
   inwestycje: Inwestycje,
   ikze: Ikze,
-  'umowy-terminowe': UmowyTerminowe, 'odsetki-zus': OdsetkiZus, 'dieta-zagraniczna': DietaZagraniczna, 'maly-zus': MalyZus, 'wspolne-rozliczenie': WspolneRozliczenie,
+  'umowy-terminowe': UmowyTerminowe, 'odsetki-zus': OdsetkiZus, 'dieta-zagraniczna': DietaZagraniczna, 'maly-zus': MalyZus, 'wspolne-rozliczenie': WspolneRozliczenie, ryczalt: Ryczalt,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }
