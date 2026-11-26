@@ -1,0 +1,160 @@
+---
+import { LIMITY } from '../../lib/ike';
+const lata = Object.keys(LIMITY);
+const teraz = new Date().getFullYear();
+const ryczalty = ['2', '3', '5,5', '8,5', '10', '12', '14', '15', '17'];
+---
+<form id="k-ikze" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="zwrot" checked /><span>zwrot podatku</span></label>
+    <label><input type="radio" name="tryb" value="dlugo" /><span>ile uzbieram do 65 lat</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="iz-forma">Jak płacisz podatek</label>
+      <select id="iz-forma" name="forma">
+        <option value="skala">etat / zlecenie (skala)</option>
+        <option value="skala-jdg">firma – skala</option>
+        <option value="liniowy">firma – liniowy 19%</option>
+        <option value="ryczalt">firma – ryczałt</option>
+      </select>
+    </div>
+    <div class="pole">
+      <label for="iz-rok">Wpłaty w roku</label>
+      <select id="iz-rok" name="rok">{lata.map((r) => <option value={r} selected={+r === teraz}>{r}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="iz-doch" id="iz-doch-et">Dochód roczny</label>
+      <div class="kwota" data-jedn="zł"><input id="iz-doch" name="dochod" type="text" inputmode="decimal" value="90000" aria-describedby="iz-doch-pod" /></div>
+    </div>
+    <div class="pole" data-ryczalt hidden>
+      <label for="iz-st">Stawka ryczałtu</label>
+      <select id="iz-st" name="stawka">{ryczalty.map((s) => <option value={s} selected={s === '12'}>{s}%</option>)}</select>
+    </div>
+  </div>
+  <small id="iz-doch-pod">Dochód po kosztach i składkach ZUS – na etacie to „dochód” z PIT-11 minus składki, w firmie – przychód minus koszty i ZUS.</small>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="iz-wpl">Wpłata na IKZE w roku</label>
+      <div class="kwota" data-jedn="zł"><input id="iz-wpl" name="wplata" type="text" inputmode="decimal" value="11304" /></div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="max" value="1" checked /> pełny limit</label>
+  </div>
+  <div data-tryb="dlugo" class="opcje" hidden>
+    <div class="trojka">
+      <div class="pole">
+        <label for="iz-wiek">Wiek</label>
+        <div class="kwota" data-jedn="lat"><input id="iz-wiek" name="wiek" type="text" inputmode="numeric" value="35" /></div>
+      </div>
+      <div class="pole">
+        <label for="iz-stopa">Zwrot</label>
+        <div class="kwota" data-jedn="%"><input id="iz-stopa" name="stopa" type="text" inputmode="decimal" value="6" /></div>
+      </div>
+      <div class="pole">
+        <label for="iz-ww">Wypłata</label>
+        <div class="kwota" data-jedn="lat"><input id="iz-ww" name="ww" type="text" inputmode="numeric" value="65" /></div>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="iz-co">Co robisz ze zwrotem podatku</label>
+      <select id="iz-co" name="co"><option value="ike">wpłacam na IKE</option><option value="konto">inwestuję poza IKE</option><option value="wydaje">wydaję</option></select>
+    </div>
+  </div>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl data-w="zwrot">
+    <dt>Limit IKZE</dt><dd id="iz-lim"></dd>
+    <dt>Odliczysz</dt><dd id="iz-odl"></dd>
+    <dt>Zwrot / wpłata</dt><dd id="iz-ef"></dd>
+    <dt data-nad hidden>Ponad limit</dt><dd data-nad hidden id="iz-nad"></dd>
+  </dl>
+  <dl data-w="dlugo" hidden>
+    <dt>Wpłacisz</dt><dd id="iz-d-wpl"></dd>
+    <dt>IKZE brutto</dt><dd id="iz-d-ikze"></dd>
+    <dt>Ryczałt 10%</dt><dd id="iz-d-ry"></dd>
+    <dt>Zwroty PIT</dt><dd id="iz-d-zw"></dd>
+    <dt>To samo na IKE</dt><dd id="iz-d-ike"></dd>
+    <dt>Zwrot przed 65</dt><dd id="iz-d-z65"></dd>
+  </dl>
+  <ul class="uwagi" id="iz-uwagi" hidden></ul>
+  <div class="suma"><span id="iz-et">Zwrot podatku</span><strong id="iz-wynik" data-glowny="Zwrot podatku"></strong></div>
+  <div class="stopka-paragonu" id="iz-stopka">policzalnia.pl</div>
+</div></div>
+<details class="rozbicie" id="iz-max" open>
+  <summary id="iz-max-sum">Maksymalny zwrot podatku</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Forma</th><th>Limit</th><th>Zwrot</th></tr></thead>
+    <tbody id="iz-max-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Przy dochodzie wystarczająco wysokim, żeby całe odliczenie mieściło się w danej stawce. Dokładny zwrot dla twojego dochodu – w kalkulatorze powyżej.</p>
+</details>
+<details class="rozbicie" id="iz-strat" hidden open>
+  <summary>IKZE, IKE czy zwykłe konto?</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Strategia</th><th>Na koniec, po podatku</th></tr></thead>
+    <tbody id="iz-strat-t"></tbody>
+  </table></div>
+  <p class="podpowiedz">Te same wpłaty co rok, ten sam zwrot z inwestycji. Zwrot podatku dostajesz rok po wpłacie, po rozliczeniu PIT.</p>
+</details>
+<script>
+  import { dlugoterminowo, zwrotPodatku, type CoZeZwrotem, type Forma } from '../../lib/ikze';
+  import { limit } from '../../lib/ike';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-ikze') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pr = (x: number) => (x * 100).toFixed(2).replace('.', ',') + '%';
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    form.querySelectorAll<HTMLElement>('[data-tryb]').forEach((x) => (x.hidden = x.dataset.tryb !== tryb));
+    document.querySelectorAll<HTMLElement>('.paragon [data-w]').forEach((x) => (x.hidden = x.dataset.w !== tryb));
+    $('iz-max').hidden = tryb !== 'zwrot'; $('iz-strat').hidden = tryb !== 'dlugo';
+    const f = val('forma');
+    const forma = (f === 'skala-jdg' ? 'skala' : f) as Forma;
+    const jdg = f !== 'skala';
+    const rok = +val('rok');
+    form.querySelector<HTMLElement>('[data-ryczalt]')!.hidden = forma !== 'ryczalt';
+    $('iz-doch-et').textContent = forma === 'ryczalt' ? 'Przychód roczny' : 'Dochód roczny';
+    const lim = limit(rok, jdg ? 'ikzeJdg' : 'ikze');
+    const wpl = el('wplata');
+    wpl.readOnly = el('max').checked;
+    if (el('max').checked) wpl.value = String(lim).replace('.', ',');
+    const z = zwrotPodatku({ rok, forma, podstawa: liczba(val('dochod')), wplata: liczba(wpl.value), dzialalnosc: jdg, stawkaRyczaltu: liczba(val('stawka')) });
+    const g = $('iz-wynik'), et = (t: string) => { $('iz-et').textContent = t; g.dataset.glowny = t; };
+    let uwagi = [...z.uwagi];
+
+    if (tryb === 'zwrot') {
+      ustawKwote($('iz-lim'), z.limit); ustawKwote($('iz-odl'), z.odliczenie); $('iz-ef').textContent = pr(z.stawkaEfektywna);
+      document.querySelectorAll<HTMLElement>('.paragon [data-nad]').forEach((x) => (x.hidden = z.nadwyzka === 0)); ustawKwote($('iz-nad'), z.nadwyzka);
+      et(`Zwrot podatku za ${rok} r.`); ustawKwote(g, z.zwrot);
+      $('iz-stopka').textContent = `policzalnia.pl · odliczenie w PIT za ${rok} r. (składany w ${rok + 1} r.), wpłata zaksięgowana do 31.12.`;
+      $('iz-max-sum').textContent = `Maksymalny zwrot podatku za ${rok} r.`;
+      const lz = limit(rok, 'ikze'), lj = limit(rok, 'ikzeJdg');
+      const w: [string, number, number][] = [['etat, skala 12%', lz, 0.12], ['etat, skala 32%', lz, 0.32], ['firma, skala 12%', lj, 0.12], ['firma, skala 32%', lj, 0.32], ['firma, liniowy 19%', lj, 0.19], ['ryczałt 8,5%', lj, 0.085], ['ryczałt 12%', lj, 0.12], ['ryczałt 15%', lj, 0.15]];
+      $('iz-max-t').innerHTML = w.map(([n, l, s]) => `<tr><td>${n}</td><td>${zl(l)}</td><td>${zl(Math.round(l * s * 100) / 100)}</td></tr>`).join('');
+    } else {
+      const wiek = Math.round(liczba(val('wiek'))), ww = Math.max(wiek + 1, Math.round(liczba(val('ww'))));
+      const d = dlugoterminowo({ wplata: z.odliczenie > 0 ? Math.min(liczba(wpl.value), z.limit) : Math.min(liczba(wpl.value), lim), lata: ww - wiek, stopa: liczba(val('stopa')), stawkaZwrotu: z.stawkaEfektywna, zwrot: val('co') as CoZeZwrotem, stawkaKrancowa: z.stawkaEfektywna > 0.2 ? 0.32 : 0.12 });
+      ustawKwote($('iz-d-wpl'), d.wplaty); ustawKwote($('iz-d-ikze'), d.ikze); ustawKwote($('iz-d-ry'), d.ryczalt); ustawKwote($('iz-d-zw'), d.zwroty);
+      ustawKwote($('iz-d-ike'), d.ike); ustawKwote($('iz-d-z65'), d.zwrotPrzed65);
+      et(`IKZE + zwroty w wieku ${ww} lat`); ustawKwote(g, d.razem);
+      $('iz-stopka').textContent = `policzalnia.pl · zwrot podatku ${pr(z.stawkaEfektywna)} wpłaty · ryczałt 10% przy wypłacie`;
+      if (ww < 65) uwagi.unshift('Z IKZE wypłacisz pieniądze z 10% podatkiem dopiero po 65. roku życia – wcześniej to zwrot: cała kwota staje się przychodem opodatkowanym według skali.');
+      if (ww - wiek < 5) uwagi.unshift('Do wypłaty z 10% ryczałtem trzeba wpłacać na IKZE w co najmniej 5 latach kalendarzowych.');
+      const st = (co: CoZeZwrotem) => dlugoterminowo({ wplata: Math.min(liczba(wpl.value), lim), lata: ww - wiek, stopa: liczba(val('stopa')), stawkaZwrotu: z.stawkaEfektywna, zwrot: co }).razem;
+      const rows: [string, number][] = [['IKZE, zwrot na IKE', st('ike')], ['IKZE, zwrot poza IKE', st('konto')], ['IKZE, zwrot wydany', st('wydaje')], ['tylko IKE', d.ike], ['zwykłe konto', d.kontoNetto]];
+      const max = Math.max(...rows.map((r) => r[1]));
+      $('iz-strat-t').innerHTML = rows.map(([n, v]) => `<tr${v === max ? ' class="aktywny"' : ''}><td>${n}</td><td>${zl(v)}</td></tr>`).join('');
+    }
+    const ul = $('iz-uwagi');
+    ul.hidden = uwagi.length === 0; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

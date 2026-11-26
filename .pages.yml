@@ -64,6 +64,7 @@ content:
             - { value: ike, label: IKE }
             - { value: inflacja, label: Inflacja }
             - { value: inwestycje, label: Kalkulator inwestycyjny }
+            - { value: ikze, label: IKZE }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }
