@@ -1,0 +1,968 @@
+{
+ "_opis": "Diety i limity na nocleg w podróży zagranicznej – załącznik do rozporządzenia MPiPS z 29.01.2013 (tekst jedn. Dz.U. 2023 poz. 2190), w brzmieniu Dz.U. 2022 poz. 2302, obowiązuje od 29.11.2022. Gibraltar = Wielka Brytania; Hongkong, Tajwan, Nowy Jork, Waszyngton – z uwag do załącznika.",
+ "od": "2022-11-29",
+ "zrodlo": "Dz.U. 2022 poz. 2302",
+ "projekt": {
+  "status": "PROJ",
+  "wersja": "projekt MRPiPS z 14.01.2026",
+  "uwagi": "stosować dopiero po ogłoszeniu w Dz.U.",
+  "zmiany": {
+   "bialorus": {
+    "dieta": 45,
+    "limit": 150
+   },
+   "czechy": {
+    "dieta": 45,
+    "limit": 150
+   },
+   "wielka-brytania": {
+    "dieta": 50,
+    "limit": 240
+   },
+   "gibraltar": {
+    "dieta": 50,
+    "limit": 240
+   },
+   "inne": {
+    "dieta": 45,
+    "limit": 160
+   },
+   "belgia": {
+    "limit": 250
+   },
+   "bosnia-i-hercegowina": {
+    "limit": 120
+   },
+   "chorwacja": {
+    "limit": 150
+   },
+   "francja": {
+    "limit": 250
+   },
+   "grecja": {
+    "limit": 200
+   },
+   "hiszpania": {
+    "limit": 250
+   },
+   "holandia": {
+    "limit": 200
+   },
+   "luksemburg": {
+    "limit": 250
+   },
+   "lotwa": {
+    "limit": 150
+   },
+   "malta": {
+    "limit": 200
+   },
+   "moldawia": {
+    "limit": 120
+   },
+   "niemcy": {
+    "limit": 220
+   },
+   "nowa-zelandia": {
+    "limit": 220
+   },
+   "portugalia": {
+    "limit": 200
+   },
+   "singapur": {
+    "limit": 250
+   },
+   "slowacja": {
+    "limit": 150
+   },
+   "slowenia": {
+    "limit": 150
+   },
+   "usa": {
+    "limit": 250
+   },
+   "usa-nowy-jork": {
+    "limit": 400
+   },
+   "usa-waszyngton": {
+    "limit": 350
+   },
+   "ukraina": {
+    "limit": 220
+   },
+   "watykan": {
+    "limit": 220
+   },
+   "wlochy": {
+    "limit": 220
+   },
+   "norwegia": {
+    "waluta": "EUR",
+    "dieta": 56,
+    "limit": 185
+   },
+   "szwecja": {
+    "waluta": "EUR",
+    "dieta": 64,
+    "limit": 319
+   },
+   "dania": {
+    "waluta": "EUR",
+    "dieta": 67,
+    "limit": 348
+   },
+   "australia": {
+    "waluta": "USD",
+    "dieta": 79,
+    "limit": 231
+   },
+   "kanada": {
+    "waluta": "USD",
+    "dieta": 61,
+    "limit": 215
+   }
+  }
+ },
+ "kraje": [
+  {
+   "id": "afganistan",
+   "nazwa": "Afganistan",
+   "waluta": "EUR",
+   "dieta": 47,
+   "limit": 140
+  },
+  {
+   "id": "albania",
+   "nazwa": "Albania",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 120
+  },
+  {
+   "id": "algieria",
+   "nazwa": "Algieria",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 200
+  },
+  {
+   "id": "andora",
+   "nazwa": "Andora",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 200
+  },
+  {
+   "id": "angola",
+   "nazwa": "Angola",
+   "waluta": "USD",
+   "dieta": 61,
+   "limit": 180
+  },
+  {
+   "id": "arabia-saudyjska",
+   "nazwa": "Arabia Saudyjska",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 200
+  },
+  {
+   "id": "argentyna",
+   "nazwa": "Argentyna",
+   "waluta": "USD",
+   "dieta": 50,
+   "limit": 150
+  },
+  {
+   "id": "armenia",
+   "nazwa": "Armenia",
+   "waluta": "EUR",
+   "dieta": 42,
+   "limit": 145
+  },
+  {
+   "id": "australia",
+   "nazwa": "Australia",
+   "waluta": "AUD",
+   "dieta": 95,
+   "limit": 270
+  },
+  {
+   "id": "austria",
+   "nazwa": "Austria",
+   "waluta": "EUR",
+   "dieta": 57,
+   "limit": 150
+  },
+  {
+   "id": "azerbejdzan",
+   "nazwa": "Azerbejdżan",
+   "waluta": "EUR",
+   "dieta": 43,
+   "limit": 150
+  },
+  {
+   "id": "bangladesz",
+   "nazwa": "Bangladesz",
+   "waluta": "USD",
+   "dieta": 50,
+   "limit": 120
+  },
+  {
+   "id": "belgia",
+   "nazwa": "Belgia",
+   "waluta": "EUR",
+   "dieta": 55,
+   "limit": 200
+  },
+  {
+   "id": "bialorus",
+   "nazwa": "Białoruś",
+   "waluta": "EUR",
+   "dieta": 42,
+   "limit": 130
+  },
+  {
+   "id": "bosnia-i-hercegowina",
+   "nazwa": "Bośnia i Hercegowina",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 100
+  },
+  {
+   "id": "brazylia",
+   "nazwa": "Brazylia",
+   "waluta": "EUR",
+   "dieta": 43,
+   "limit": 120
+  },
+  {
+   "id": "bulgaria",
+   "nazwa": "Bułgaria",
+   "waluta": "EUR",
+   "dieta": 40,
+   "limit": 120
+  },
+  {
+   "id": "chile",
+   "nazwa": "Chile",
+   "waluta": "USD",
+   "dieta": 60,
+   "limit": 120
+  },
+  {
+   "id": "chiny",
+   "nazwa": "Chiny",
+   "waluta": "EUR",
+   "dieta": 55,
+   "limit": 170
+  },
+  {
+   "id": "chorwacja",
+   "nazwa": "Chorwacja",
+   "waluta": "EUR",
+   "dieta": 42,
+   "limit": 125
+  },
+  {
+   "id": "cypr",
+   "nazwa": "Cypr",
+   "waluta": "EUR",
+   "dieta": 43,
+   "limit": 160
+  },
+  {
+   "id": "czarnogora",
+   "nazwa": "Czarnogóra",
+   "waluta": "EUR",
+   "dieta": 40,
+   "limit": 110
+  },
+  {
+   "id": "czechy",
+   "nazwa": "Czechy",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 120
+  },
+  {
+   "id": "dania",
+   "nazwa": "Dania",
+   "waluta": "DKK",
+   "dieta": 446,
+   "limit": 1430
+  },
+  {
+   "id": "demokratyczna-republika-konga",
+   "nazwa": "Demokratyczna Republika Konga",
+   "waluta": "USD",
+   "dieta": 66,
+   "limit": 220
+  },
+  {
+   "id": "egipt",
+   "nazwa": "Egipt",
+   "waluta": "USD",
+   "dieta": 55,
+   "limit": 150
+  },
+  {
+   "id": "ekwador",
+   "nazwa": "Ekwador",
+   "waluta": "USD",
+   "dieta": 44,
+   "limit": 110
+  },
+  {
+   "id": "estonia",
+   "nazwa": "Estonia",
+   "waluta": "EUR",
+   "dieta": 45,
+   "limit": 110
+  },
+  {
+   "id": "etiopia",
+   "nazwa": "Etiopia",
+   "waluta": "USD",
+   "dieta": 55,
+   "limit": 300
+  },
+  {
+   "id": "finlandia",
+   "nazwa": "Finlandia",
+   "waluta": "EUR",
+   "dieta": 53,
+   "limit": 180
+  },
+  {
+   "id": "francja",
+   "nazwa": "Francja",
+   "waluta": "EUR",
+   "dieta": 55,
+   "limit": 200
+  },
+  {
+   "id": "gibraltar",
+   "nazwa": "Gibraltar",
+   "waluta": "GBP",
+   "dieta": 45,
+   "limit": 220
+  },
+  {
+   "id": "grecja",
+   "nazwa": "Grecja",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 160
+  },
+  {
+   "id": "gruzja",
+   "nazwa": "Gruzja",
+   "waluta": "EUR",
+   "dieta": 48,
+   "limit": 160
+  },
+  {
+   "id": "hiszpania",
+   "nazwa": "Hiszpania",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 200
+  },
+  {
+   "id": "holandia",
+   "nazwa": "Holandia",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 150
+  },
+  {
+   "id": "hongkong",
+   "nazwa": "Hongkong",
+   "waluta": "USD",
+   "dieta": 55,
+   "limit": 250
+  },
+  {
+   "id": "indie",
+   "nazwa": "Indie",
+   "waluta": "EUR",
+   "dieta": 42,
+   "limit": 210
+  },
+  {
+   "id": "indonezja",
+   "nazwa": "Indonezja",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 110
+  },
+  {
+   "id": "irak",
+   "nazwa": "Irak",
+   "waluta": "USD",
+   "dieta": 60,
+   "limit": 120
+  },
+  {
+   "id": "iran",
+   "nazwa": "Iran",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 95
+  },
+  {
+   "id": "irlandia",
+   "nazwa": "Irlandia",
+   "waluta": "EUR",
+   "dieta": 52,
+   "limit": 160
+  },
+  {
+   "id": "islandia",
+   "nazwa": "Islandia",
+   "waluta": "EUR",
+   "dieta": 56,
+   "limit": 160
+  },
+  {
+   "id": "izrael",
+   "nazwa": "Izrael",
+   "waluta": "EUR",
+   "dieta": 70,
+   "limit": 200
+  },
+  {
+   "id": "japonia",
+   "nazwa": "Japonia",
+   "waluta": "JPY",
+   "dieta": 7532,
+   "limit": 22000
+  },
+  {
+   "id": "jemen",
+   "nazwa": "Jemen",
+   "waluta": "USD",
+   "dieta": 48,
+   "limit": 160
+  },
+  {
+   "id": "jordania",
+   "nazwa": "Jordania",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 130
+  },
+  {
+   "id": "kambodza",
+   "nazwa": "Kambodża",
+   "waluta": "USD",
+   "dieta": 45,
+   "limit": 100
+  },
+  {
+   "id": "kanada",
+   "nazwa": "Kanada",
+   "waluta": "CAD",
+   "dieta": 71,
+   "limit": 190
+  },
+  {
+   "id": "katar",
+   "nazwa": "Katar",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 200
+  },
+  {
+   "id": "kazachstan",
+   "nazwa": "Kazachstan",
+   "waluta": "EUR",
+   "dieta": 45,
+   "limit": 155
+  },
+  {
+   "id": "kenia",
+   "nazwa": "Kenia",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 150
+  },
+  {
+   "id": "kirgistan",
+   "nazwa": "Kirgistan",
+   "waluta": "USD",
+   "dieta": 41,
+   "limit": 150
+  },
+  {
+   "id": "kolumbia",
+   "nazwa": "Kolumbia",
+   "waluta": "USD",
+   "dieta": 49,
+   "limit": 120
+  },
+  {
+   "id": "kongo",
+   "nazwa": "Kongo",
+   "waluta": "USD",
+   "dieta": 66,
+   "limit": 220
+  },
+  {
+   "id": "korea-poludniowa",
+   "nazwa": "Korea Południowa",
+   "waluta": "EUR",
+   "dieta": 46,
+   "limit": 170
+  },
+  {
+   "id": "korea-polnocna",
+   "nazwa": "Korea Północna",
+   "waluta": "EUR",
+   "dieta": 48,
+   "limit": 170
+  },
+  {
+   "id": "kostaryka",
+   "nazwa": "Kostaryka",
+   "waluta": "USD",
+   "dieta": 50,
+   "limit": 140
+  },
+  {
+   "id": "kuba",
+   "nazwa": "Kuba",
+   "waluta": "EUR",
+   "dieta": 50,
+   "limit": 140
+  },
+  {
+   "id": "kuwejt",
+   "nazwa": "Kuwejt",
+   "waluta": "EUR",
+   "dieta": 39,
+   "limit": 200
+  },
+  {
+   "id": "laos",
+   "nazwa": "Laos",
+   "waluta": "USD",
+   "dieta": 54,
+   "limit": 100
+  },
+  {
+   "id": "liban",
+   "nazwa": "Liban",
+   "waluta": "USD",
+   "dieta": 57,
+   "limit": 150
+  },
+  {
+   "id": "libia",
+   "nazwa": "Libia",
+   "waluta": "EUR",
+   "dieta": 52,
+   "limit": 100
+  },
+  {
+   "id": "liechtenstein",
+   "nazwa": "Liechtenstein",
+   "waluta": "CHF",
+   "dieta": 88,
+   "limit": 220
+  },
+  {
+   "id": "litwa",
+   "nazwa": "Litwa",
+   "waluta": "EUR",
+   "dieta": 45,
+   "limit": 150
+  },
+  {
+   "id": "luksemburg",
+   "nazwa": "Luksemburg",
+   "waluta": "EUR",
+   "dieta": 55,
+   "limit": 200
+  },
+  {
+   "id": "lotwa",
+   "nazwa": "Łotwa",
+   "waluta": "EUR",
+   "dieta": 57,
+   "limit": 132
+  },
+  {
+   "id": "macedonia-polnocna",
+   "nazwa": "Macedonia Północna",
+   "waluta": "EUR",
+   "dieta": 43,
+   "limit": 138
+  },
+  {
+   "id": "malezja",
+   "nazwa": "Malezja",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 140
+  },
+  {
+   "id": "malta",
+   "nazwa": "Malta",
+   "waluta": "EUR",
+   "dieta": 43,
+   "limit": 180
+  },
+  {
+   "id": "maroko",
+   "nazwa": "Maroko",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 130
+  },
+  {
+   "id": "meksyk",
+   "nazwa": "Meksyk",
+   "waluta": "USD",
+   "dieta": 58,
+   "limit": 154
+  },
+  {
+   "id": "moldawia",
+   "nazwa": "Mołdawia",
+   "waluta": "EUR",
+   "dieta": 45,
+   "limit": 94
+  },
+  {
+   "id": "monako",
+   "nazwa": "Monako",
+   "waluta": "EUR",
+   "dieta": 55,
+   "limit": 200
+  },
+  {
+   "id": "mongolia",
+   "nazwa": "Mongolia",
+   "waluta": "EUR",
+   "dieta": 45,
+   "limit": 154
+  },
+  {
+   "id": "niemcy",
+   "nazwa": "Niemcy",
+   "waluta": "EUR",
+   "dieta": 49,
+   "limit": 170
+  },
+  {
+   "id": "nigeria",
+   "nazwa": "Nigeria",
+   "waluta": "EUR",
+   "dieta": 46,
+   "limit": 240
+  },
+  {
+   "id": "norwegia",
+   "nazwa": "Norwegia",
+   "waluta": "NOK",
+   "dieta": 496,
+   "limit": 1650
+  },
+  {
+   "id": "nowa-zelandia",
+   "nazwa": "Nowa Zelandia",
+   "waluta": "USD",
+   "dieta": 58,
+   "limit": 180
+  },
+  {
+   "id": "oman",
+   "nazwa": "Oman",
+   "waluta": "EUR",
+   "dieta": 40,
+   "limit": 240
+  },
+  {
+   "id": "pakistan",
+   "nazwa": "Pakistan",
+   "waluta": "EUR",
+   "dieta": 38,
+   "limit": 200
+  },
+  {
+   "id": "palestyna",
+   "nazwa": "Palestyna",
+   "waluta": "EUR",
+   "dieta": 70,
+   "limit": 200
+  },
+  {
+   "id": "panama",
+   "nazwa": "Panama",
+   "waluta": "USD",
+   "dieta": 52,
+   "limit": 140
+  },
+  {
+   "id": "peru",
+   "nazwa": "Peru",
+   "waluta": "USD",
+   "dieta": 50,
+   "limit": 150
+  },
+  {
+   "id": "poludniowa-afryka",
+   "nazwa": "Południowa Afryka",
+   "waluta": "USD",
+   "dieta": 52,
+   "limit": 275
+  },
+  {
+   "id": "portugalia",
+   "nazwa": "Portugalia",
+   "waluta": "EUR",
+   "dieta": 49,
+   "limit": 150
+  },
+  {
+   "id": "rosja",
+   "nazwa": "Rosja",
+   "waluta": "EUR",
+   "dieta": 48,
+   "limit": 200
+  },
+  {
+   "id": "rumunia",
+   "nazwa": "Rumunia",
+   "waluta": "EUR",
+   "dieta": 42,
+   "limit": 110
+  },
+  {
+   "id": "san-marino",
+   "nazwa": "San Marino",
+   "waluta": "EUR",
+   "dieta": 53,
+   "limit": 192
+  },
+  {
+   "id": "senegal",
+   "nazwa": "Senegal",
+   "waluta": "EUR",
+   "dieta": 44,
+   "limit": 120
+  },
+  {
+   "id": "serbia",
+   "nazwa": "Serbia",
+   "waluta": "EUR",
+   "dieta": 40,
+   "limit": 110
+  },
+  {
+   "id": "singapur",
+   "nazwa": "Singapur",
+   "waluta": "USD",
+   "dieta": 56,
+   "limit": 230
+  },
+  {
+   "id": "slowacja",
+   "nazwa": "Słowacja",
+   "waluta": "EUR",
+   "dieta": 47,
+   "limit": 132
+  },
+  {
+   "id": "slowenia",
+   "nazwa": "Słowenia",
+   "waluta": "EUR",
+   "dieta": 45,
+   "limit": 143
+  },
+  {
+   "id": "usa",
+   "nazwa": "Stany Zjednoczone (USA)",
+   "waluta": "USD",
+   "dieta": 59,
+   "limit": 200
+  },
+  {
+   "id": "syria",
+   "nazwa": "Syria",
+   "waluta": "USD",
+   "dieta": 50,
+   "limit": 150
+  },
+  {
+   "id": "szwajcaria",
+   "nazwa": "Szwajcaria",
+   "waluta": "CHF",
+   "dieta": 88,
+   "limit": 220
+  },
+  {
+   "id": "szwecja",
+   "nazwa": "Szwecja",
+   "waluta": "SEK",
+   "dieta": 510,
+   "limit": 2000
+  },
+  {
+   "id": "tadzykistan",
+   "nazwa": "Tadżykistan",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 140
+  },
+  {
+   "id": "tajlandia",
+   "nazwa": "Tajlandia",
+   "waluta": "USD",
+   "dieta": 42,
+   "limit": 110
+  },
+  {
+   "id": "tajwan",
+   "nazwa": "Tajwan",
+   "waluta": "EUR",
+   "dieta": 40,
+   "limit": 142
+  },
+  {
+   "id": "tanzania",
+   "nazwa": "Tanzania",
+   "waluta": "USD",
+   "dieta": 53,
+   "limit": 150
+  },
+  {
+   "id": "tunezja",
+   "nazwa": "Tunezja",
+   "waluta": "EUR",
+   "dieta": 37,
+   "limit": 100
+  },
+  {
+   "id": "turcja",
+   "nazwa": "Turcja",
+   "waluta": "USD",
+   "dieta": 53,
+   "limit": 185
+  },
+  {
+   "id": "turkmenistan",
+   "nazwa": "Turkmenistan",
+   "waluta": "EUR",
+   "dieta": 47,
+   "limit": 90
+  },
+  {
+   "id": "ukraina",
+   "nazwa": "Ukraina",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 180
+  },
+  {
+   "id": "urugwaj",
+   "nazwa": "Urugwaj",
+   "waluta": "USD",
+   "dieta": 50,
+   "limit": 80
+  },
+  {
+   "id": "usa-nowy-jork",
+   "nazwa": "USA – Nowy Jork",
+   "waluta": "USD",
+   "dieta": 59,
+   "limit": 350
+  },
+  {
+   "id": "usa-waszyngton",
+   "nazwa": "USA – Waszyngton",
+   "waluta": "USD",
+   "dieta": 59,
+   "limit": 300
+  },
+  {
+   "id": "uzbekistan",
+   "nazwa": "Uzbekistan",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 140
+  },
+  {
+   "id": "watykan",
+   "nazwa": "Watykan",
+   "waluta": "EUR",
+   "dieta": 53,
+   "limit": 192
+  },
+  {
+   "id": "wenezuela",
+   "nazwa": "Wenezuela",
+   "waluta": "USD",
+   "dieta": 60,
+   "limit": 220
+  },
+  {
+   "id": "wegry",
+   "nazwa": "Węgry",
+   "waluta": "EUR",
+   "dieta": 44,
+   "limit": 143
+  },
+  {
+   "id": "wielka-brytania",
+   "nazwa": "Wielka Brytania",
+   "waluta": "GBP",
+   "dieta": 45,
+   "limit": 220
+  },
+  {
+   "id": "wietnam",
+   "nazwa": "Wietnam",
+   "waluta": "USD",
+   "dieta": 53,
+   "limit": 160
+  },
+  {
+   "id": "wlochy",
+   "nazwa": "Włochy",
+   "waluta": "EUR",
+   "dieta": 53,
+   "limit": 192
+  },
+  {
+   "id": "wybrzeze-kosci-sloniowej",
+   "nazwa": "Wybrzeże Kości Słoniowej",
+   "waluta": "EUR",
+   "dieta": 33,
+   "limit": 100
+  },
+  {
+   "id": "zimbabwe",
+   "nazwa": "Zimbabwe",
+   "waluta": "EUR",
+   "dieta": 39,
+   "limit": 90
+  },
+  {
+   "id": "zjednoczone-emiraty-arabskie",
+   "nazwa": "Zjednoczone Emiraty Arabskie",
+   "waluta": "EUR",
+   "dieta": 43,
+   "limit": 220
+  },
+  {
+   "id": "inne",
+   "nazwa": "Inne państwo (niewymienione)",
+   "waluta": "EUR",
+   "dieta": 41,
+   "limit": 140
+  }
+ ]
+}

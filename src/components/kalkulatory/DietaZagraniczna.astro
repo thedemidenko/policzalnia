@@ -1,0 +1,305 @@
+---
+import { KRAJE } from '../../lib/dieta-zagraniczna';
+const WALUTY = [...new Set(KRAJE.map((k) => k.waluta))].sort();
+const opcje = KRAJE.map((k) => ({ id: k.id, n: k.nazwa }));
+const noclegi: [string, string][] = [['rachunek', 'rachunek'], ['ryczalt', 'ryczałt'], ['zapewniony', 'brak']];
+---
+<form id="k-dieta-zagr" class="pola" autocomplete="off">
+  <div class="pole">
+    <span class="nazwa" id="dz-etapy-nazwa">Państwo docelowe</span>
+    <div data-etapy role="group" aria-labelledby="dz-etapy-nazwa">
+      <div class="etap">
+        <div class="etap-gora">
+          <select name="k1" aria-label="Państwo docelowe 1">{opcje.map((o) => <option value={o.id} selected={o.id === 'niemcy'}>{o.n}</option>)}</select>
+          <button type="button" class="usun" aria-label="Usuń państwo">×</button>
+        </div>
+        <label class="etap-od" hidden><span>Wjazd do tego państwa</span><input type="datetime-local" name="e1" /></label>
+        <small class="etap-stawka" data-stawka></small>
+        <div class="etap-pola">
+          <span>Posiłki zapewnione za darmo (także śniadanie w hotelu)</span>
+          <div class="trojka">
+            <label>Śniadania<div class="kwota" data-jedn="×"><input name="s1" type="text" inputmode="numeric" placeholder="0" /></div></label>
+            <label>Obiady<div class="kwota" data-jedn="×"><input name="o1" type="text" inputmode="numeric" placeholder="0" /></div></label>
+            <label>Kolacje<div class="kwota" data-jedn="×"><input name="c1" type="text" inputmode="numeric" placeholder="0" /></div></label>
+          </div>
+          <div class="trojka etap-nocleg">
+            <label>Nocleg<select name="n1">{noclegi.map(([k, e]) => <option value={k}>{e}</option>)}</select></label>
+            <label>Noce<div class="kwota" data-jedn="×"><input name="p1" type="text" inputmode="numeric" placeholder="auto" /></div></label>
+            <label data-rach>Rachunki<div class="kwota" data-jedn="EUR" data-waluta><input name="r1" type="text" inputmode="decimal" placeholder="0" /></div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="przycisk maly" data-dodaj-etap>+ Dodaj kolejne państwo</button>
+    <small>Jedziesz do kilku państw? Pracodawca może ustalić kilka państw docelowych – wtedy dietę liczy się osobno za czas w każdym z nich.</small>
+  </div>
+  <div class="pole">
+    <label for="dz-granica" data-et-granica>Start samolotu z Polski</label>
+    <input id="dz-granica" name="granica" type="datetime-local" />
+  </div>
+  <div class="pole">
+    <label for="dz-powrot-gr" data-et-powrot>Lądowanie w Polsce</label>
+    <input id="dz-powrot-gr" name="powrotGr" type="datetime-local" />
+  </div>
+  <fieldset class="segmenty">
+    <legend>Podróż za granicą</legend>
+    <label><input type="radio" name="srodek" value="samolot" checked /><span>samolot</span></label>
+    <label><input type="radio" name="srodek" value="pociag" /><span>pociąg, autobus</span></label>
+    <label><input type="radio" name="srodek" value="auto" /><span>samochód</span></label>
+  </fieldset>
+  <div class="opcje" data-ryczalty>
+    <div class="pole">
+      <label for="dz-dojazdy">Ryczałt na dojazd z i do dworca / lotniska</label>
+      <select id="dz-dojazdy" name="dojazdy">
+        <option value="oba">tak – 1 dieta (tam i z powrotem)</option>
+        <option value="jedna">tylko w jedną stronę – 50% diety</option>
+        <option value="brak">nie – dojazd zapewniony</option>
+      </select>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="komunikacja" value="1" checked /> Ryczałt na komunikację miejscową (10% diety za każdą rozpoczętą dobę)</label>
+  </div>
+  <details class="wplaty" data-krajowa>
+    <summary>Część krajowa – dojazd do granicy lub lotniska</summary>
+    <p class="podpowiedz">Za czas w Polsce przed wyjazdem i po powrocie przysługuje dieta krajowa (45 zł).</p>
+    <div class="pole">
+      <label for="dz-wyjazd">Wyjazd z miejscowości</label>
+      <input id="dz-wyjazd" name="wyjazd" type="datetime-local" />
+    </div>
+    <div class="pole">
+      <label for="dz-powrot">Powrót do miejscowości</label>
+      <input id="dz-powrot" name="powrot" type="datetime-local" />
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="lacznie" value="1" /> Sumuj odcinki krajowe (domyślnie osobno – stanowisko resortu pracy i PIP)</label>
+  </details>
+  <details class="wplaty" data-kurs>
+    <summary>Kurs NBP, zaliczka, bilety</summary>
+    <div class="pole">
+      <label for="dz-zaliczka">Zaliczka</label>
+      <div class="pole-para">
+        <div class="kwota" data-jedn=""><input id="dz-zaliczka" name="zaliczka" type="text" inputmode="decimal" placeholder="0" /></div>
+        <select name="zalW" aria-label="Waluta zaliczki"><option value="">waluta diety</option><option value="PLN">PLN</option>{WALUTY.map((w) => <option value={w}>{w}</option>)}</select>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="dz-dkursu" data-et-dkursu>Dzień wypłaty należności</label>
+      <input id="dz-dkursu" name="dk" type="date" />
+      <small data-kurs-info>Rozliczenie w złotych – po średnim kursie NBP z dnia wypłaty zaliczki (§ 20).</small>
+    </div>
+    <div class="pole-para dz-kursy">
+      {WALUTY.map((w) => <div class="pole" data-kurs-w={w} hidden><label for={`dz-kurs-${w}`}>Kurs {w}{w === 'JPY' ? ' (za 100)' : ''}</label><input id={`dz-kurs-${w}`} name={`kurs${w}`} type="text" inputmode="decimal" placeholder="pobiorę z NBP" /></div>)}
+    </div>
+    <div class="pole">
+      <label for="dz-koszty">Bilety, wiza, ubezpieczenie, inne (w złotych)</label>
+      <div class="kwota" data-jedn="zł"><input id="dz-koszty" name="koszty" type="text" inputmode="decimal" placeholder="0" /></div>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Za granicą</dt><dd id="dz-czas"></dd>
+    <dt>Diety</dt><dd id="dz-diety"></dd>
+    <dt data-r="noc" hidden>Noclegi</dt><dd data-r="noc" hidden id="dz-noc"></dd>
+    <dt data-r="ryc" hidden>Ryczałty</dt><dd data-r="ryc" hidden id="dz-ryc"></dd>
+    <dt id="dz-wal-et">Razem w walucie</dt><dd id="dz-wal"></dd>
+    <dt data-r="kraj" hidden>Dieta krajowa</dt><dd data-r="kraj" hidden id="dz-kraj"></dd>
+    <dt data-r="koszty" hidden>Bilety i inne</dt><dd data-r="koszty" hidden id="dz-koszty-w"></dd>
+    <dt data-r="zal" hidden>Zaliczka</dt><dd data-r="zal" hidden id="dz-zal"></dd>
+    <dt data-r="wyp" hidden id="dz-wyp-et">Do wypłaty</dt><dd data-r="wyp" hidden id="dz-wyp"></dd>
+    <dt data-r="wyppln" hidden>W złotych</dt><dd data-r="wyppln" hidden id="dz-wyppln"></dd>
+  </dl>
+  <ul class="uwagi" id="dz-uwagi" hidden></ul>
+  <p class="blad" id="dz-blad" hidden></p>
+  <div class="suma"><span id="dz-suma-et">Razem</span><strong id="dz-suma" data-glowny="Należności"></strong></div>
+  <div class="stopka-paragonu">policzalnia.pl · rozporządzenie z 29.01.2013, stawki od 29.11.2022</div>
+</div></div>
+<details class="rozbicie" id="dz-tab" open>
+  <summary>Rozliczenie krok po kroku</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Pozycja</th><th>Kwota</th></tr></thead>
+    <tbody id="dz-tab-t"></tbody>
+  </table></div>
+</details>
+<template id="dz-wiersz">
+  <div class="etap">
+    <div class="etap-gora">
+      <select aria-label="Państwo docelowe">{opcje.map((o) => <option value={o.id}>{o.n}</option>)}</select>
+      <button type="button" class="usun" aria-label="Usuń państwo">×</button>
+    </div>
+    <label class="etap-od"><span>Wjazd do tego państwa (data i godzina)</span><input type="datetime-local" /></label>
+    <small class="etap-stawka" data-stawka></small>
+    <div class="etap-pola">
+      <span>Posiłki zapewnione za darmo</span>
+      <div class="trojka">
+        <label>Śniadania<div class="kwota" data-jedn="×"><input type="text" inputmode="numeric" placeholder="0" /></div></label>
+        <label>Obiady<div class="kwota" data-jedn="×"><input type="text" inputmode="numeric" placeholder="0" /></div></label>
+        <label>Kolacje<div class="kwota" data-jedn="×"><input type="text" inputmode="numeric" placeholder="0" /></div></label>
+      </div>
+      <div class="trojka etap-nocleg">
+        <label>Nocleg<select>{noclegi.map(([k, e]) => <option value={k}>{e}</option>)}</select></label>
+        <label>Noce<div class="kwota" data-jedn="×"><input type="text" inputmode="numeric" placeholder="auto" /></div></label>
+        <label data-rach>Rachunki<div class="kwota" data-jedn="EUR" data-waluta><input type="text" inputmode="decimal" placeholder="0" /></div></label>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  import { kraj, obliczDieteZagraniczna, type Etap, type Nocleg } from '../../lib/dieta-zagraniczna';
+  import { dodajDni } from '../../lib/kalendarz';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-dieta-zagr') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pl = (d: string) => d.slice(0, 10).split('-').reverse().join('.') + (d.length > 10 ? ` ${d.slice(11, 16)}` : '');
+  const fmt = (n: number, w: string) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${w}`;
+  const lokalnie = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString();
+  const params = new URLSearchParams(location.search);
+  const POLA = ['k', 'e', 's', 'o', 'c', 'n', 'p', 'r'];
+
+  // --- etapy: k1 e1 s1 o1 c1 n1 p1 r1, k2…
+  const lista = form.querySelector<HTMLElement>('[data-etapy]')!;
+  const wzor = document.getElementById('dz-wiersz') as HTMLTemplateElement;
+  const pola = (w: Element) => [...w.querySelectorAll<HTMLInputElement | HTMLSelectElement>('select, input')];
+  const przenumeruj = () => {
+    lista.querySelectorAll('.etap').forEach((w, i) => {
+      pola(w).forEach((x, j) => (x.name = `${POLA[j]}${i + 1}`));
+      (w.querySelector('.etap-od') as HTMLElement).hidden = i === 0;
+    });
+    lista.classList.toggle('jeden', lista.children.length === 1);
+    $('dz-etapy-nazwa').textContent = lista.children.length > 1 ? 'Państwa docelowe' : 'Państwo docelowe';
+  };
+  const dodaj = () => { lista.append(wzor.content.cloneNode(true)); przenumeruj(); };
+  form.querySelector('[data-dodaj-etap]')!.addEventListener('click', () => {
+    dodaj();
+    const nowy = lista.lastElementChild!;
+    const g = el('granica').value, p = el('powrotGr').value;
+    if (g && p) { const sr = new Date((Date.parse(g + ':00Z') + Date.parse(p + ':00Z')) / 2); (nowy.querySelector('.etap-od input') as HTMLInputElement).value = sr.toISOString().slice(0, 11) + '12:00'; }
+    (nowy.querySelector('select') as HTMLSelectElement).focus();
+    form.dispatchEvent(new Event('input'));
+  });
+  lista.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('.usun');
+    if (!b) return;
+    b.closest('.etap')!.remove(); przenumeruj(); form.dispatchEvent(new Event('input'));
+  });
+  przenumeruj();
+  for (let i = 2; params.has(`k${i}`); i++) dodaj();
+  if (params.get('wyjazd') || params.get('powrot')) (form.querySelector('[data-krajowa]') as HTMLDetailsElement).open = true;
+  if (params.get('zaliczka') || params.get('koszty')) (form.querySelector('[data-kurs]') as HTMLDetailsElement).open = true;
+
+  // --- przykład: 3 dni w Niemczech, wylot dziś 6:00, powrót pojutrze 20:00, hotel 300 EUR, 2 śniadania
+  if (!params.has('granica') && !params.has('k1')) {
+    const dzis = lokalnie(new Date()).slice(0, 10);
+    el('granica').value = `${dzis}T06:00`;
+    el('powrotGr').value = `${dodajDni(dzis, 2)}T20:00`;
+    el('s1').value = '2'; el('r1').value = '300';
+  }
+  if (!el('dk').value) el('dk').value = lokalnie(new Date()).slice(0, 10);
+
+  // --- kursy NBP: z dnia wypłaty zaliczki (§ 20), bez zaliczki – z ostatniego dnia roboczego przed wypłatą (art. 11a PIT)
+  const pobrane = new Map<string, Promise<{ mid: number; data: string } | null>>();
+  const reczne = new Set<string>();
+  const ustawione = new Map<string, string>(); // waluta -> klucz ostatnio wpisanego kursu
+  form.querySelectorAll<HTMLInputElement>('[data-kurs-w] input').forEach((x) => {
+    const w = x.name.slice(4);
+    if (params.get(x.name)) reczne.add(w);
+    x.addEventListener('input', () => { if (x.value.trim()) reczne.add(w); else reczne.delete(w); });
+  });
+  function pobierz(w: string, data: string, wlacznie: boolean) {
+    const klucz = `${w}|${data}|${wlacznie}`;
+    if (reczne.has(w) || ustawione.get(w) === klucz) return;
+    ustawione.set(w, klucz);
+    const od = dodajDni(data, -10), doD = wlacznie ? data : dodajDni(data, -1);
+    if (!pobrane.has(klucz)) pobrane.set(klucz, fetch(`https://api.nbp.pl/api/exchangerates/rates/a/${w.toLowerCase()}/${od}/${doD}/?format=json`)
+      .then((r) => (r.ok ? r.json() : null)).then((j) => { const x = j?.rates?.at(-1); return x ? { mid: x.mid, data: x.effectiveDate } : null; }).catch(() => null));
+    const info = form.querySelector<HTMLElement>('[data-kurs-info]')!;
+    pobrane.get(klucz)!.then((k) => {
+      if (reczne.has(w) || ustawione.get(w) !== klucz) return;
+      const inp = el(`kurs${w}`);
+      if (k) { inp.value = String(w === 'JPY' ? +(k.mid * 100).toFixed(4) : k.mid).replace('.', ','); info.textContent = `Kurs średni NBP z ${pl(k.data)} – ${wlacznie ? 'z dnia wypłaty zaliczki (§ 20 rozporządzenia)' : 'z ostatniego dnia roboczego przed wypłatą należności'}.`; }
+      else info.textContent = 'Nie udało się pobrać kursu z NBP – wpisz go ręcznie.';
+      przelicz();
+    });
+  }
+
+  const przelicz = () => {
+    const srodek = val('srodek');
+    $('dz-granica').previousElementSibling!.textContent = srodek === 'samolot' ? 'Start samolotu z Polski' : 'Przekroczenie granicy';
+    $('dz-powrot-gr').previousElementSibling!.textContent = srodek === 'samolot' ? 'Lądowanie w Polsce' : 'Powrót przez granicę';
+    (form.querySelector('[data-ryczalty]') as HTMLElement).hidden = srodek === 'auto';
+
+    const etapy: Etap[] = [...lista.querySelectorAll('.etap')].map((w, i) => {
+      const [k, e, s, o, c, n, p, r] = pola(w);
+      const kr = kraj(k.value);
+      const st = w.querySelector<HTMLElement>('[data-stawka]')!;
+      st.textContent = kr ? `Dieta ${kr.dieta} ${kr.waluta} · limit noclegu ${kr.limit} ${kr.waluta} · ryczałt bez rachunku ${fmt(kr.limit * 0.25, kr.waluta)}` : '';
+      w.querySelectorAll<HTMLElement>('[data-waluta]').forEach((x) => (x.dataset.jedn = kr?.waluta ?? ''));
+      (w.querySelector('[data-rach]') as HTMLElement).hidden = n.value !== 'rachunek';
+      const noce = p.value.trim() === '' ? undefined : liczba(p.value);
+      return { kraj: k.value, od: i === 0 ? undefined : e.value, sniadania: liczba(s.value), obiady: liczba(o.value), kolacje: liczba(c.value), nocleg: n.value as Nocleg, noce, rachunek: liczba(r.value) };
+    });
+    const waluty = [...new Set(etapy.map((e) => kraj(e.kraj)?.waluta).filter(Boolean))] as string[];
+    form.querySelectorAll<HTMLElement>('[data-kurs-w]').forEach((x) => (x.hidden = !waluty.includes(x.dataset.kursW!)));
+    const zal = liczba(val('zaliczka'));
+    $('dz-dkursu').previousElementSibling!.textContent = zal > 0 ? 'Dzień wypłaty zaliczki' : 'Dzień wypłaty należności';
+    const dk = val('dk');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dk)) waluty.forEach((w) => pobierz(w, dk, zal > 0));
+    const kursy = Object.fromEntries(waluty.map((w) => [w, liczba(val(`kurs${w}`)) / (w === 'JPY' ? 100 : 1)]));
+    const zalW = val('zalW') || waluty[0] || 'PLN';
+
+    const w = obliczDieteZagraniczna({
+      wyjazd: val('wyjazd') || undefined, granica: val('granica'), etapy, powrotGranica: val('powrotGr'), powrot: val('powrot') || undefined,
+      samochod: srodek === 'auto', dojazdy: val('dojazdy') as 'oba' | 'jedna' | 'brak', komunikacja: el('komunikacja').checked,
+      krajoweLacznie: el('lacznie').checked, kursy, koszty: liczba(val('koszty')), zaliczka: zal > 0 ? { kwota: zal, waluta: zalW } : undefined,
+    });
+    // domyślna liczba nocy jako podpowiedź
+    lista.querySelectorAll('.etap').forEach((x, i) => { const p = pola(x)[6] as HTMLInputElement; p.placeholder = w.etapy[i] ? String(w.etapy[i].noceDomyslne) : 'auto'; });
+
+    const blad = $('dz-blad');
+    blad.hidden = !w.blad; blad.textContent = w.blad ?? '';
+    const ul = $('dz-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    const pokaz = (r: string, on: boolean) => document.querySelectorAll<HTMLElement>(`.paragon [data-r="${r}"]`).forEach((x) => (x.hidden = !on));
+    const sumaW = (f: (n: string) => boolean) => {
+      const m: Record<string, number> = {};
+      for (const e of w.etapy) for (const p of e.pozycje) if (f(p.nazwa)) m[e.kraj.waluta] = Math.round(((m[e.kraj.waluta] ?? 0) + p.kwota) * 100) / 100;
+      return Object.entries(m).filter(([, v]) => v !== 0).map(([k, v]) => fmt(v, k)).join(' + ');
+    };
+    const godz = w.etapy.reduce((a, e) => a + e.godziny, 0);
+    const doby = Math.floor(godz / 24 + 1e-9), reszta = Math.round((godz - doby * 24) * 60);
+    $('dz-czas').textContent = w.etapy.length ? `${doby ? `${doby} ${doby === 1 ? 'doba' : doby < 5 ? 'doby' : 'dób'} ` : ''}${reszta ? `${Math.floor(reszta / 60)} h${reszta % 60 ? ` ${reszta % 60} min` : ''}` : ''}`.trim() || '0 h' : '–';
+    $('dz-diety').textContent = sumaW((n) => n === 'Dieta' || n === 'Zapewnione posiłki') || '–';
+    const noc = sumaW((n) => n.startsWith('Hotel') || n === 'Ryczałt za nocleg'); pokaz('noc', !!noc); $('dz-noc').textContent = noc;
+    const ryc = sumaW((n) => n.startsWith('Ryczałt na')); pokaz('ryc', !!ryc); $('dz-ryc').textContent = ryc;
+    $('dz-wal').textContent = Object.entries(w.waluty).map(([k, v]) => fmt(v, k)).join(' + ') || '–';
+    pokaz('kraj', !!w.krajowa); if (w.krajowa) $('dz-kraj').textContent = zl(w.krajowa.kwota);
+    pokaz('koszty', w.koszty > 0); $('dz-koszty-w').textContent = zl(w.koszty);
+    pokaz('zal', zal > 0); $('dz-zal').textContent = zal > 0 ? (zalW === 'PLN' ? zl(zal) : fmt(zal, zalW)) : '';
+    pokaz('wyp', zal > 0 && (w.doWyplatyPln !== null || w.doWyplatyWal !== null));
+    pokaz('wyppln', zal > 0 && !!w.doWyplatyWal && w.doWyplatyPln !== null);
+    if (zal > 0) {
+      const v = w.doWyplatyWal ? fmt(Math.abs(w.doWyplatyWal.kwota), w.doWyplatyWal.waluta) : w.doWyplatyPln !== null ? zl(Math.abs(w.doWyplatyPln)) : '';
+      $('dz-wyppln').textContent = w.doWyplatyPln !== null ? zl(Math.abs(w.doWyplatyPln)) : '';
+      const zwrot = (w.doWyplatyWal?.kwota ?? w.doWyplatyPln ?? 0) < 0;
+      $('dz-wyp-et').textContent = zwrot ? 'Do zwrotu pracodawcy' : 'Do wypłaty';
+      $('dz-wyp').textContent = v;
+    }
+    if (w.pln !== null) { $('dz-suma-et').textContent = 'Razem w złotych'; ustawKwote($('dz-suma'), w.pln); }
+    else { $('dz-suma-et').textContent = 'Razem'; $('dz-suma').textContent = $('dz-wal').textContent; }
+
+    // tabela
+    const wiele = w.etapy.length > 1;
+    $('dz-tab').hidden = !w.etapy.length;
+    $('dz-tab-t').innerHTML = w.etapy.map((e) => {
+      const glowa = `<tr class="grupa"><td colspan="2">${e.kraj.nazwa}: ${pl(e.od)} – ${pl(e.do)}</td></tr>`;
+      return glowa + e.pozycje.map((p) => `<tr><td>${p.nazwa}<br><small>${p.opis}</small></td><td>${fmt(p.kwota, e.kraj.waluta)}</td></tr>`).join('')
+        + (e.pozycje.length > 1 || wiele ? `<tr class="razem"><td>Razem</td><td>${fmt(e.razem, e.kraj.waluta)}</td></tr>` : '');
+    }).join('')
+      + (w.krajowa ? `<tr class="grupa"><td colspan="2">Część krajowa</td></tr><tr><td>Dieta krajowa<br><small>${w.krajowa.opis}: ${w.krajowa.diety.toLocaleString('pl-PL')} × ${w.krajowa.stawka} zł</small></td><td>${zl(w.krajowa.kwota)}</td></tr>` : '')
+      + (w.koszty > 0 ? `<tr><td>Bilety i inne koszty</td><td>${zl(w.koszty)}</td></tr>` : '')
+      + (w.pln !== null ? `<tr class="razem"><td>Razem w złotych<br><small>${Object.keys(w.waluty).map((k) => `${k} po ${(kursy[k] * (k === 'JPY' ? 100 : 1)).toLocaleString('pl-PL', { maximumFractionDigits: 4 })}`).join(', ')}</small></td><td>${zl(w.pln)}</td></tr>` : '');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

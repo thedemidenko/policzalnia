@@ -4,9 +4,10 @@ import { noceRyczaltowe, obliczDelegacje, stawkaDiety, stawkaKm } from '../src/l
 const t = (s: string) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10), +s.slice(11, 13), +s.slice(14, 16));
 
 describe('stawki', () => {
-  it('dieta 45 zł od 2023, wcześniej 30 zł; projekt 60 zł nie jest stosowany', () => {
+  it('dieta 45 zł od 2023, 38 zł od 28.07.2022, wcześniej 30 zł; projekt 60 zł nie jest stosowany', () => {
     expect(stawkaDiety('2026-11-24')).toBe(45);
-    expect(stawkaDiety('2022-12-31')).toBe(30);
+    expect(stawkaDiety('2022-12-31')).toBe(38);
+    expect(stawkaDiety('2022-07-27')).toBe(30);
     expect(stawkaDiety('2027-02-01')).toBe(45);
     expect(stawkaKm('pow900', '2026-11-24')).toBe(1.15);
     expect(stawkaKm('do900', '2026-11-24')).toBe(0.89);
