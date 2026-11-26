@@ -515,3 +515,8 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .widzet .wz-wynik b { font: 700 1.5rem var(--mono); }
 .widzet .wz-wynik small { color: var(--olowek); }
 @media (prefers-reduced-motion: reduce) { .ws-pasek i, .wl-linia, .wl-pkt { transition: none !important; } }
+.widzet select { font: inherit; font-size: .95rem; padding: 8px 10px; border: 1.5px solid var(--tusz); border-radius: 8px; background: var(--kartka); color: inherit; }
+.widzet .wz-slupki { margin-top: 14px; display: grid; gap: 8px; }
+.widzet .wz-slupki .ws-pasek i { transition: width .35s ease; transform: none; }
+.widzet label + label { margin-top: 8px; }
+.widzet output { font: 600 .9rem var(--mono); color: var(--dlugopis); }
