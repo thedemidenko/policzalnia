@@ -2,13 +2,39 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Okruszki from '../../components/Okruszki.astro';
-import Fiszka from '../../components/Fiszka.astro';
+import KartaPoradnika from '../../components/KartaPoradnika.astro';
 import { breadcrumbs, graf } from '../../lib/schema';
-const lista = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +b.data.date - +a.data.date);
+import { DZIALY, czasCzytania } from '../../lib/poradniki';
+const lista = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +(b.data.updated ?? b.data.date) - +(a.data.updated ?? a.data.date));
 const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: 'Poradniki', url: '/poradniki/' }];
+const dzialy = Object.entries(DZIALY).filter(([k]) => lista.some((p) => p.data.sekcja === k));
+const karta = (p: (typeof lista)[number], duza = false) => ({ href: `/poradniki/${p.data.slug}/`, tytul: p.data.title, lead: p.data.lead, sekcja: p.data.sekcja, dzial: DZIALY[p.data.sekcja], minuty: czasCzytania(p.body), data: p.data.updated ?? p.data.date, duza, okladka: p.data.okladka });
+const [pierwszy, ...reszta] = lista;
 ---
-<Base title="Poradniki - stawki, wyliczenia i porównania | Policzalnia" description="Aktualne stawki, instrukcje krok po kroku i porównania dla pracowników i JDG." schema={graf(breadcrumbs(sciezka))}>
+<Base title="Poradniki - stawki, wyliczenia i porównania | Policzalnia" description="Poradniki o pensji, podatkach, ZUS, kredytach i oszczędzaniu – aktualne stawki, przykłady krok po kroku i porównania. Każdy z kalkulatorem do własnych wyliczeń." schema={graf(breadcrumbs(sciezka))}>
   <Okruszki sciezka={sciezka} />
   <h1>Poradniki</h1>
-  {lista.length ? <ul class="fiszki">{lista.map((p) => <Fiszka href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} opis={p.data.lead} sekcja="poradniki" strzalka="Czytaj →" />)}</ul> : <p class="wkrotce">Pierwsze poradniki już wkrótce.</p>}
+  <p class="lead">Aktualne stawki, przykłady krok po kroku i porównania – a przy każdym poradniku kalkulator, w którym policzysz to na swoich liczbach.</p>
+  {lista.length === 0 ? <p class="wkrotce">Pierwsze poradniki już wkrótce.</p> : (
+    <>
+      {dzialy.length > 1 && (
+        <div class="filtry-poradnikow" role="group" aria-label="Filtruj według działu">
+          <button type="button" class="aktywny" data-filtr="">Wszystkie</button>
+          {dzialy.map(([k, n]) => <button type="button" data-filtr={k} data-sekcja={k}>{n}</button>)}
+        </div>
+      )}
+      <ul class="karty-poradnikow">
+        <KartaPoradnika {...karta(pierwszy, true)} />
+        {reszta.map((p) => <KartaPoradnika {...karta(p)} />)}
+      </ul>
+    </>
+  )}
 </Base>
+<script>
+  const przyciski = document.querySelectorAll<HTMLButtonElement>('[data-filtr]');
+  przyciski.forEach((b) => b.addEventListener('click', () => {
+    const f = b.dataset.filtr;
+    przyciski.forEach((x) => x.classList.toggle('aktywny', x === b));
+    document.querySelectorAll<HTMLElement>('.karta-poradnika').forEach((k) => (k.hidden = !!f && k.dataset.sekcja !== f));
+  }));
+</script>

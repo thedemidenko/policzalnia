@@ -1,0 +1,18 @@
+---
+// Karta poradnika na liście: miniatura okładki, dział (kolor), tytuł, lead, czas czytania, data aktualizacji.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { href: string; tytul: string; lead: string; sekcja: string; dzial: string; minuty: number; data: Date; duza?: boolean; okladka?: ImageMetadata }
+const { href, tytul, lead, sekcja, dzial, minuty, data, duza = false, okladka } = Astro.props;
+const dataPl = data.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+<li class:list={['karta-poradnika', { duza }]} data-sekcja={sekcja}>
+  <a href={href}>
+    {okladka && <Image class="kp-foto" src={okladka} alt="" widths={duza ? [480, 800, 1200] : [400, 640]} sizes={duza ? '(min-width: 900px) 560px, 100vw' : '(min-width: 900px) 360px, 100vw'} loading={duza ? 'eager' : 'lazy'} />}
+    <span class="kp-dzial">{dzial}</span>
+    <b class="kp-tytul">{tytul}</b>
+    <span class="kp-lead">{lead}</span>
+    <span class="kp-meta">{minuty} min czytania · {dataPl}</span>
+    <span class="kp-czytaj">Czytaj →</span>
+  </a>
+</li>

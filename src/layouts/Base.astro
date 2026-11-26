@@ -5,8 +5,8 @@ import Reklama from '../components/Reklama.astro';
 import Logo from '../components/Logo.astro';
 import '../styles/global.css';
 
-interface Props { title: string; description: string; schema?: object; sidebar?: boolean }
-const { title, description, schema, sidebar = false } = Astro.props;
+interface Props { title: string; description: string; schema?: object; sidebar?: boolean; obraz?: string }
+const { title, description, schema, sidebar = false, obraz } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc - b.data.kolejnosc);
 const strony = (await getCollection('strony')).filter((s) => s.data.stopka);
@@ -29,6 +29,8 @@ const sekcja = Astro.url.pathname.split('/')[1];
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="pl_PL" />
+    {obraz && <meta property="og:image" content={new URL(obraz, Astro.site).href} />}
+    {obraz && <meta name="twitter:card" content="summary_large_image" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap.xml" />
     {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}

@@ -417,3 +417,101 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .wykres-iv .med { fill: none; stroke: var(--oszczedzanie); stroke-width: 3; vector-effect: non-scaling-stroke; }
 .wykres-iv .wpl { fill: none; stroke: var(--olowek); stroke-width: 2; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
 .kalkulator input[type=month] { font-size: .95rem; padding: 12px 6px; }
+
+/* ===== Poradniki: lista ===== */
+.filtry-poradnikow { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 6px; }
+.filtry-poradnikow button { font: 600 .88rem var(--font); padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--kartka); color: var(--tusz); cursor: pointer; }
+.filtry-poradnikow button[data-sekcja] { border-color: var(--kolor); color: var(--kolor); }
+.filtry-poradnikow button.aktywny { background: var(--tusz); color: var(--papier); border-color: var(--tusz); }
+.karty-poradnikow { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.karty-poradnikow.male { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.karta-poradnika[hidden] { display: none; }
+.karta-poradnika a { display: flex; flex-direction: column; gap: 8px; height: 100%; padding: 20px 20px 18px; border: 1.5px solid var(--tusz); border-left: 6px solid var(--kolor, var(--tusz)); border-radius: var(--r); background: var(--kartka); color: var(--tusz); text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.karta-poradnika a:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--tusz); color: var(--tusz); }
+.kp-foto { width: calc(100% + 40px); max-width: none; height: auto; aspect-ratio: 16 / 9; object-fit: cover; margin: -20px -20px 6px; border-bottom: 1.5px solid var(--tusz); display: block; }
+.karta-poradnika.duza a:has(.kp-foto) { display: grid; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .karta-poradnika.duza a:has(.kp-foto) { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 26px; align-content: start; } .karta-poradnika.duza .kp-foto { grid-row: 1 / 7; margin: -26px 0 -22px -26px; width: calc(100% + 26px); height: calc(100% + 48px); aspect-ratio: auto; border-bottom: 0; border-right: 1.5px solid var(--tusz); } }
+@media (max-width: 899px) { .karta-poradnika.duza .kp-foto { margin: -26px -26px 8px; width: calc(100% + 52px); } }
+.kp-dzial { font: 600 .72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--kolor, var(--olowek)); }
+.kp-tytul { font-size: 1.12rem; line-height: 1.28; letter-spacing: -.01em; }
+.kp-lead { font-size: .9rem; color: var(--olowek); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.kp-meta { margin-top: auto; padding-top: 4px; font: .78rem var(--mono); color: var(--olowek); }
+.kp-czytaj { font: 600 .85rem var(--mono); color: var(--kolor, var(--dlugopis)); }
+.karta-poradnika.duza { grid-column: 1 / -1; }
+.karta-poradnika.duza a { padding: 26px 26px 22px; background: linear-gradient(135deg, color-mix(in srgb, var(--kolor) 9%, var(--kartka)), var(--kartka) 60%); }
+.karta-poradnika.duza .kp-tytul { font-size: clamp(1.3rem, 3.2vw, 1.75rem); max-width: 30ch; }
+.karta-poradnika.duza .kp-lead { -webkit-line-clamp: 4; font-size: 1rem; max-width: 62ch; }
+
+/* ===== Poradniki: artykuł ===== */
+.poradnik-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 10px; font: .8rem var(--mono); color: var(--olowek); }
+.poradnik-meta .pm-dzial { font-weight: 600; color: var(--na-dlugopisie, #fff); background: var(--kolor); padding: 3px 10px; border-radius: 999px; text-decoration: none; letter-spacing: .03em; }
+.w-skrocie { margin: 24px 0 18px; padding: 16px 20px 14px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: color-mix(in srgb, var(--zakreslacz) 28%, var(--kartka)); }
+.w-skrocie > b { font: 700 .78rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.w-skrocie ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.w-skrocie li { line-height: 1.5; }
+.w-skrocie li::marker { color: var(--tusz); }
+.kalk-cta { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 14px; align-items: center; margin: 18px 0; padding: 14px 18px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: var(--kartka); color: var(--tusz); text-decoration: none; box-shadow: 4px 4px 0 var(--kolor, var(--tusz)); transition: transform .12s, box-shadow .12s; }
+.kalk-cta:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--kolor, var(--tusz)); color: var(--tusz); }
+.kc-ikona { width: 48px; height: 48px; border-radius: 12px; background: var(--kolor, var(--tusz)); color: #fff; display: grid; place-items: center; font: 700 1.6rem var(--mono); }
+.kc-tekst { display: grid; gap: 2px; }
+.kc-tekst small { font: .75rem var(--mono); color: var(--olowek); text-transform: uppercase; letter-spacing: .05em; }
+.kc-tekst b { font-size: 1.05rem; line-height: 1.3; }
+.kc-strzalka { font: 700 1.3rem var(--mono); color: var(--kolor, var(--dlugopis)); }
+.spis-tresci { margin: 18px 0 0; padding: 12px 18px; border: 1px dashed var(--linia); border-radius: var(--r); }
+.spis-tresci summary { font-weight: 650; cursor: pointer; }
+.spis-tresci ol { margin: 10px 0 2px; padding-left: 1.4em; display: grid; gap: 5px; font-size: .95rem; }
+@media (min-width: 1100px) { .spis-tresci { display: none; } }
+.tresc blockquote > p:first-child > strong:first-child { display: block; font: 700 .78rem var(--mono); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+.kalk-cta-dol { margin: 36px 0 8px; padding: 20px 22px; border-radius: var(--r); border: 1.5px solid var(--tusz); background: color-mix(in srgb, var(--kolor) 8%, var(--kartka)); display: grid; gap: 12px; justify-items: start; }
+.kalk-cta-dol p { margin: 0; }
+.sidebar-kalk { padding: 18px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: var(--kartka); border-top: 6px solid var(--kolor, var(--tusz)); display: grid; gap: 8px; justify-items: start; margin-bottom: 18px; }
+.sidebar-kalk small, .sidebar-spis small { font: .72rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--olowek); }
+.sidebar-kalk b { font-size: 1.05rem; line-height: 1.3; }
+.sidebar-spis { padding: 4px 2px; }
+.sidebar-spis ol { margin: 8px 0 0; padding-left: 1.3em; display: grid; gap: 6px; font-size: .9rem; }
+.sidebar-spis a { color: var(--tusz); text-decoration: none; }
+.sidebar-spis a:hover { color: var(--dlugopis); text-decoration: underline; }
+@media print { .kalk-cta, .spis-tresci, .kalk-cta-dol, .filtry-poradnikow { display: none !important; } }
+
+.okladka { margin: 22px 0 6px; }
+.okladka img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border: 1.5px solid var(--tusz); border-radius: var(--r); display: block; }
+.okladka figcaption { font: .72rem var(--mono); color: var(--olowek); margin-top: 6px; }
+.tresc img { width: 100%; height: auto; border: 1.5px solid var(--tusz); border-radius: var(--r); display: block; margin: 1.4em 0 .4em; }
+.karta-poradnika a { overflow: hidden; }
+
+/* ===== Bloki w poradnikach: wykresy, kafelki z liczbami, widżety (src/lib/rehype-bloki.mjs) ===== */
+.tresc { --w0: var(--dlugopis); --w1: var(--firma); --w2: var(--kredyty); --w3: var(--oszczedzanie); --w4: var(--poradniki); --w5: var(--praca); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.wykres { margin: 1.8em 0; padding: 18px 20px 14px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: var(--kartka); }
+.wykres figcaption { font-weight: 700; margin-bottom: 14px; line-height: 1.35; }
+.wykres-zrodlo { margin: 10px 0 0; font: .72rem var(--mono); color: var(--olowek); }
+.ws-dane { display: grid; gap: 10px; }
+.ws-wiersz { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .9rem; }
+.ws-et { line-height: 1.3; }
+.ws-pasek { height: 22px; background: color-mix(in srgb, var(--linia) 45%, transparent); border-radius: 6px; overflow: hidden; }
+.ws-pasek i { display: block; height: 100%; width: var(--w); background: var(--k); border-radius: 6px; transform-origin: left; transition: transform 1s cubic-bezier(.2, .8, .2, 1); }
+.anim .wykres:not(.widoczny) .ws-pasek i { transform: scaleX(0); }
+.ws-wiersz:nth-child(2) i { transition-delay: .12s; } .ws-wiersz:nth-child(3) i { transition-delay: .24s; } .ws-wiersz:nth-child(4) i { transition-delay: .36s; } .ws-wiersz:nth-child(n+5) i { transition-delay: .48s; }
+.ws-wiersz b { font: 600 .88rem var(--mono); white-space: nowrap; }
+@media (max-width: 520px) { .ws-wiersz { grid-template-columns: minmax(0, 1fr) auto; } .ws-pasek { grid-column: 1 / -1; grid-row: 2; } }
+.wykres-linia svg { width: 100%; height: auto; display: block; overflow: visible; }
+.wl-siatka { stroke: var(--linia); stroke-width: 1; }
+.wl-os { font: 11px var(--mono); fill: var(--olowek); }
+.wl-linia { fill: none; stroke: var(--k); stroke-width: 3.2; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s ease-out; }
+.wl-pkt { fill: var(--k); transition: opacity .3s 1.5s; }
+.anim .wykres:not(.widoczny) .wl-linia { stroke-dashoffset: 1; }
+.anim .wykres:not(.widoczny) .wl-pkt { opacity: 0; }
+.wl-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: .85rem; }
+.wl-legenda i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--k); margin-right: 6px; vertical-align: -1px; }
+.liczby-kafle { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 1.6em 0; }
+.lk-kafel { padding: 16px 16px 14px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: var(--kartka); display: grid; gap: 4px; box-shadow: 3px 3px 0 var(--zakreslacz); }
+.lk-kafel b { font: 700 1.55rem var(--mono); letter-spacing: -.02em; line-height: 1.1; }
+.lk-kafel span { font-size: .85rem; color: var(--olowek); line-height: 1.4; }
+.widzet { margin: 1.8em 0; padding: 18px 20px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: color-mix(in srgb, var(--zakreslacz) 22%, var(--kartka)); box-shadow: 4px 4px 0 var(--tusz); }
+.widzet h3 { margin: 0 0 10px; font-size: 1.05rem; }
+.widzet label { display: grid; gap: 6px; font-size: .9rem; font-weight: 600; }
+.widzet input[type=range] { width: 100%; accent-color: var(--dlugopis); }
+.widzet .wz-wynik { margin-top: 12px; display: grid; gap: 4px; }
+.widzet .wz-wynik b { font: 700 1.5rem var(--mono); }
+.widzet .wz-wynik small { color: var(--olowek); }
+@media (prefers-reduced-motion: reduce) { .ws-pasek i, .wl-linia, .wl-pkt { transition: none !important; } }

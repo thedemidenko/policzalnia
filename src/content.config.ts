@@ -42,13 +42,23 @@ const dzialy = defineCollection({
 
 const poradniki = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/poradniki' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     slug: z.string(),
     title: z.string(),
     meta_title: z.string(),
     meta_description: z.string(),
     lead: z.string(),
+    /** dział, do którego należy poradnik (kolor, filtr na liście) */
+    sekcja: z.enum(SEKCJE),
+    /** 3–5 najważniejszych faktów w ramce „W skrócie” */
+    w_skrocie: z.array(z.string()).default([]),
     kalkulatory: z.array(z.string()).default([]),
+    /** adresy innych poradników do „Czytaj też” (domyślnie z tego samego działu) */
+    czytaj_tez: z.array(z.string()).default([]),
+    /** okładka 16:9 (src/assets/poradniki/<slug>/), alt = tytuł */
+    okladka: image().optional(),
+    /** źródło zdjęć, np. „Freepik” – pokazywane pod okładką */
+    zdjecia: z.string().optional(),
     faq,
     zrodla,
     autor: reference('autorzy'),

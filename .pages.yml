@@ -99,7 +99,15 @@ content:
       - { name: meta_title, label: Meta title, type: string, required: true }
       - { name: meta_description, label: Meta description, type: text, required: true }
       - { name: lead, label: Lead, type: text, required: true }
+      - name: sekcja
+        label: Dział
+        type: select
+        required: true
+        options:
+          values: [{ value: praca, label: Praca i płace }, { value: firma, label: Firma i podatki }, { value: kredyty, label: Kredyty i leasing }, { value: oszczedzanie, label: Oszczędzanie i inwestycje }]
+      - { name: w_skrocie, label: W skrócie (3–5 punktów), type: string, list: true }
       - { name: kalkulatory, label: Kalkulatory, do których linkuje (adresy), type: string, list: true }
+      - { name: czytaj_tez, label: Czytaj też (adresy poradników), type: string, list: true }
       - { name: body, label: Treść, type: rich-text }
       - { name: faq, component: faq }
       - { name: zrodla, component: zrodla }

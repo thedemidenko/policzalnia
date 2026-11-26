@@ -1,12 +1,15 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Okruszki from '../../components/Okruszki.astro';
 import Faq from '../../components/Faq.astro';
 import Autor from '../../components/Autor.astro';
 import Reklama from '../../components/Reklama.astro';
 import Fiszka from '../../components/Fiszka.astro';
+import KartaPoradnika from '../../components/KartaPoradnika.astro';
 import { abs, breadcrumbs, faqPage, graf } from '../../lib/schema';
+import { DZIALY, czasCzytania } from '../../lib/poradniki';
 
 export async function getStaticPaths() {
   const items = await getCollection('poradniki', (p) => !p.data.draft);
@@ -14,32 +17,128 @@ export async function getStaticPaths() {
 }
 const { entry } = Astro.props;
 const d = entry.data;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const url = `/poradniki/${d.slug}/`;
 const sciezka = [{ nazwa: 'Policzalnia', url: '/' }, { nazwa: 'Poradniki', url: '/poradniki/' }, { nazwa: d.title, url }];
 const autor = await getEntry(d.autor);
-const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).filter((e) => d.kalkulatory.includes(e.data.slug));
+const wszystkieKalk = await getCollection('kalkulatory', (e) => !e.data.draft);
+const kalk = d.kalkulatory.map((s) => wszystkieKalk.find((e) => e.data.slug === s)).filter((e) => !!e);
+const glowny = kalk[0];
+const href = (e: (typeof kalk)[number]) => `/${e.data.sekcja}/${e.data.slug}/`;
+const minuty = czasCzytania(entry.body);
+const zmiana = d.updated ?? d.date;
+const dataPl = (x: Date) => x.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const spis = headings.filter((h) => h.depth === 2);
+// czytaj też: wskazane ręcznie, potem najnowsze z tego samego działu
+const inne = (await getCollection('poradniki', (p) => !p.data.draft && p.data.slug !== d.slug)).sort((a, b) => +(b.data.updated ?? b.data.date) - +(a.data.updated ?? a.data.date));
+const czytaj = [...d.czytaj_tez.map((s) => inne.find((p) => p.data.slug === s)).filter((p) => !!p), ...inne.filter((p) => p.data.sekcja === d.sekcja && !d.czytaj_tez.includes(p.data.slug))].slice(0, 3);
+const og = d.okladka ? (await getImage({ src: d.okladka, width: 1200, format: 'jpg' })).src : undefined;
 const schema = graf(
   breadcrumbs(sciezka),
   {
-    '@type': 'Article', headline: d.title, description: d.meta_description, url: abs(url), inLanguage: 'pl-PL',
-    datePublished: d.date.toISOString().slice(0, 10), dateModified: (d.updated ?? d.date).toISOString().slice(0, 10),
+    '@type': 'Article', headline: d.title, description: d.meta_description, url: abs(url), inLanguage: 'pl-PL', ...(og ? { image: abs(og) } : {}),
+    datePublished: d.date.toISOString().slice(0, 10), dateModified: zmiana.toISOString().slice(0, 10),
     author: autor ? { '@type': 'Person', name: autor.data.imie, ...(autor.data.url ? { url: abs(autor.data.url) } : {}) } : undefined,
     publisher: { '@type': 'Organization', name: 'Policzalnia', url: abs('/') },
   },
   faqPage(d.faq),
 );
 ---
-<Base title={d.meta_title} description={d.meta_description} schema={schema} sidebar>
+<Base title={d.meta_title} description={d.meta_description} schema={schema} obraz={og} sidebar>
   <Okruszki sciezka={sciezka} />
+  <div class="poradnik-meta" data-sekcja={d.sekcja}>
+    <a class="pm-dzial" href={`/${d.sekcja}/`}>{DZIALY[d.sekcja]}</a>
+    <span>Poradnik · {minuty} min czytania · aktualizacja <time datetime={zmiana.toISOString().slice(0, 10)}>{dataPl(zmiana)}</time></span>
+  </div>
   <h1>{d.title}</h1>
   <p class="lead">{d.lead}</p>
-  {kalk[0] && <p><a class="przycisk glowny" href={`/${kalk[0].data.sekcja}/${kalk[0].data.slug}/`}>{kalk[0].data.nazwa_krotka ?? kalk[0].data.title} →</a></p>}
+  {d.okladka && (
+    <figure class="okladka">
+      <Image src={d.okladka} alt={d.title} widths={[480, 800, 1200, 1600]} sizes="(min-width: 1100px) 740px, 100vw" loading="eager" fetchpriority="high" />
+      {d.zdjecia && <figcaption>Zdjęcia: {d.zdjecia}</figcaption>}
+    </figure>
+  )}
+
+  {d.w_skrocie.length > 0 && (
+    <aside class="w-skrocie" aria-label="W skrócie">
+      <b>W skrócie</b>
+      <ul>{d.w_skrocie.map((t) => <li set:html={t} />)}</ul>
+    </aside>
+  )}
+
+  {glowny && (
+    <a class="kalk-cta" href={href(glowny)} data-sekcja={glowny.data.sekcja}>
+      <span class="kc-ikona" aria-hidden="true">=</span>
+      <span class="kc-tekst"><small>Policz na swoich liczbach</small><b>{glowny.data.nazwa_krotka ?? glowny.data.title}</b></span>
+      <span class="kc-strzalka" aria-hidden="true">→</span>
+    </a>
+  )}
+
+  {spis.length > 2 && (
+    <details class="spis-tresci" open>
+      <summary>Spis treści</summary>
+      <ol>{spis.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+    </details>
+  )}
+
   <article class="tresc"><Content /></article>
+
+  {glowny && (
+    <div class="kalk-cta-dol" data-sekcja={glowny.data.sekcja}>
+      <p><b>Sprawdź, ile wychodzi w twoim przypadku.</b> {glowny.data.lead.split('. ')[0]}.</p>
+      <a class="przycisk glowny" href={href(glowny)}>Otwórz kalkulator →</a>
+    </div>
+  )}
   <Reklama slot="przed-faq" />
   <Faq faq={d.faq} />
   {kalk.length > 0 && (
-    <section class="powiazane"><h2>Policz to sam</h2><ul class="fiszki">{kalk.map((e) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} sekcja={e.data.sekcja} />)}</ul></section>
+    <section class="powiazane"><h2>Policz to sam</h2><ul class="fiszki">{kalk.map((e) => <Fiszka href={href(e)} tytul={e.data.nazwa_krotka ?? e.data.title} sekcja={e.data.sekcja} />)}</ul></section>
   )}
-  <Autor autor={d.autor} updated={d.updated ?? d.date} zrodla={d.zrodla} />
+  {czytaj.length > 0 && (
+    <section class="powiazane"><h2>Czytaj też</h2><ul class="karty-poradnikow male">{czytaj.map((p) => <KartaPoradnika href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} lead={p.data.lead} sekcja={p.data.sekcja} dzial={DZIALY[p.data.sekcja]} minuty={czasCzytania(p.body)} data={p.data.updated ?? p.data.date} okladka={p.data.okladka} />)}</ul></section>
+  )}
+  <Autor autor={d.autor} updated={zmiana} zrodla={d.zrodla} />
+
+  <Fragment slot="sidebar">
+    {glowny && (
+      <div class="sidebar-kalk" data-sekcja={glowny.data.sekcja}>
+        <small>Kalkulator do tego poradnika</small>
+        <b>{glowny.data.nazwa_krotka ?? glowny.data.title}</b>
+        <a class="przycisk glowny" href={href(glowny)}>Policz →</a>
+      </div>
+    )}
+    {spis.length > 2 && (
+      <nav class="sidebar-spis" aria-label="Spis treści">
+        <small>W tym poradniku</small>
+        <ol>{spis.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+      </nav>
+    )}
+  </Fragment>
 </Base>
+<script>
+  import { WIDZETY } from '../../lib/widzety';
+  // animacje wykresów i kafelków po wejściu na ekran
+  const ruch = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (ruch) document.documentElement.classList.add('anim');
+  const licz = (b: HTMLElement) => {
+    const cel = +b.dataset.licz!, dz = +(b.dataset.dzies ?? 0), pre = b.dataset.pre ?? '', post = b.dataset.post ?? '';
+    const f = (n: number) => `${pre}${n.toLocaleString('pl-PL', { minimumFractionDigits: dz, maximumFractionDigits: dz })}${post}`;
+    if (!ruch) { b.textContent = f(cel); return; }
+    const t0 = performance.now(), T = 1200;
+    const krok = (t: number) => { const p = Math.min(1, (t - t0) / T); b.textContent = f(cel * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(krok); };
+    requestAnimationFrame(krok);
+  };
+  const io = new IntersectionObserver((wpisy) => wpisy.forEach((w) => {
+    if (!w.isIntersecting) return;
+    w.target.classList.add('widoczny');
+    w.target.querySelectorAll<HTMLElement>('[data-licz]').forEach(licz);
+    io.unobserve(w.target);
+  }), { threshold: 0.25 });
+  document.querySelectorAll('[data-anim]').forEach((el) => io.observe(el));
+  // widżety
+  document.querySelectorAll<HTMLElement>('[data-widzet]').forEach(async (el) => {
+    const w = WIDZETY[el.dataset.widzet ?? ''];
+    if (w) (await w())(el);
+  });
+</script>
+
