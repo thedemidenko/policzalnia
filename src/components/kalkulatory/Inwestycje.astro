@@ -1,0 +1,260 @@
+---
+import { INSTRUMENTY, PROFILE } from '../../lib/inwestycje';
+import { OSTATNI } from '../../lib/inflacja';
+---
+<form id="k-inwest" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Co liczysz?</legend>
+    <label><input type="radio" name="tryb" value="historia" checked /><span>gdybym inwestował</span></label>
+    <label><input type="radio" name="tryb" value="prognoza" /><span>ile zarobię</span></label>
+    <label><input type="radio" name="tryb" value="zwrot" /><span>stopa zwrotu</span></label>
+  </fieldset>
+
+  <div data-tryb="historia" class="opcje">
+    <div class="pole">
+      <label for="iv-ins">W co</label>
+      <select id="iv-ins" name="ins">{Object.entries(INSTRUMENTY).map(([k, v]) => <option value={k}>{v.nazwa}</option>)}</select>
+      <small id="iv-ins-pod"></small>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-od">Od</label>
+        <input id="iv-od" name="od" type="month" value="2010-01" />
+      </div>
+      <div class="pole">
+        <label for="iv-do">Do</label>
+        <input id="iv-do" name="do" type="month" value={OSTATNI} />
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-k">Na start</label>
+        <div class="kwota" data-jedn="zł" data-waluta><input id="iv-k" name="kwota" type="text" inputmode="decimal" value="10000" /></div>
+      </div>
+      <div class="pole">
+        <label for="iv-m">Co miesiąc</label>
+        <div class="kwota" data-jedn="zł" data-waluta><input id="iv-m" name="miesiecznie" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+    <details class="wplaty" data-wiecej>
+      <summary>Koszty i podatek</summary>
+      <div class="pole-para">
+        <div class="pole">
+          <label for="iv-pr">Prowizja od zakupu</label>
+          <div class="kwota" data-jedn="%"><input id="iv-pr" name="prowizja" type="text" inputmode="decimal" placeholder="0" /></div>
+        </div>
+        <div class="pole">
+          <label for="iv-ter">Opłata roczna (TER)</label>
+          <div class="kwota" data-jedn="%"><input id="iv-ter" name="ter" type="text" inputmode="decimal" placeholder="0" /></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div data-tryb="prognoza" class="opcje" hidden>
+    <div class="pole">
+      <label for="iv-prof">Rodzaj inwestycji</label>
+      <select id="iv-prof" name="profil">{Object.entries(PROFILE).map(([k, v]) => <option value={k}>{v.nazwa} – {String(v.stopa).replace('.', ',')}% ± {v.zmiennosc}%</option>)}<option value="wlasny">własne założenia</option></select>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-pk">Na start</label>
+        <div class="kwota" data-jedn="zł"><input id="iv-pk" name="pk" type="text" inputmode="decimal" value="10000" /></div>
+      </div>
+      <div class="pole">
+        <label for="iv-pm">Co miesiąc</label>
+        <div class="kwota" data-jedn="zł"><input id="iv-pm" name="pm" type="text" inputmode="decimal" value="500" /></div>
+      </div>
+    </div>
+    <div class="trojka">
+      <div class="pole">
+        <label for="iv-pl">Lat</label>
+        <input id="iv-pl" name="pl" type="text" inputmode="decimal" value="20" />
+      </div>
+      <div class="pole">
+        <label for="iv-ps">Zwrot</label>
+        <div class="kwota" data-jedn="%"><input id="iv-ps" name="ps" type="text" inputmode="decimal" value="7" /></div>
+      </div>
+      <div class="pole">
+        <label for="iv-pz">Zmienność</label>
+        <div class="kwota" data-jedn="%"><input id="iv-pz" name="pz" type="text" inputmode="decimal" value="16" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-pko">Koszty rocznie</label>
+        <div class="kwota" data-jedn="%"><input id="iv-pko" name="pko" type="text" inputmode="decimal" value="0,2" /></div>
+      </div>
+      <div class="pole">
+        <label for="iv-pi">Inflacja</label>
+        <div class="kwota" data-jedn="%"><input id="iv-pi" name="pi" type="text" inputmode="decimal" value="3" /></div>
+      </div>
+    </div>
+    <small>Zwrot – średni roczny wynik przed kosztami; zmienność – typowe roczne wahania (odchylenie standardowe). Symulujemy 2000 możliwych przebiegów.</small>
+  </div>
+
+  <div data-tryb="zwrot" class="opcje" hidden>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-zi">Zainwestowana kwota</label>
+        <div class="kwota" data-jedn="zł"><input id="iv-zi" name="zi" type="text" inputmode="decimal" value="10000" /></div>
+      </div>
+      <div class="pole">
+        <label for="iv-zw">Wartość teraz</label>
+        <div class="kwota" data-jedn="zł"><input id="iv-zw" name="zw" type="text" inputmode="decimal" value="15000" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-zd">Dywidendy, odsetki</label>
+        <div class="kwota" data-jedn="zł"><input id="iv-zd" name="zd" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="iv-zp">Prowizje</label>
+        <div class="kwota" data-jedn="zł"><input id="iv-zp" name="zp" type="text" inputmode="decimal" placeholder="0" /></div>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="iv-zod">Data zakupu</label>
+        <input id="iv-zod" name="zod" type="month" value="2020-01" />
+      </div>
+      <div class="pole">
+        <label for="iv-zdo">Data wyceny</label>
+        <input id="iv-zdo" name="zdo" type="month" value={OSTATNI} />
+      </div>
+    </div>
+  </div>
+  <label class="przelacznik" data-ike><input type="checkbox" name="ike" value="1" /> W IKE / IKZE / OKI w limicie – bez podatku Belki</label>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl data-w="historia">
+    <dt>Wpłacone</dt><dd id="iv-wpl"></dd>
+    <dt>Wartość</dt><dd id="iv-wart"></dd>
+    <dt>Podatek Belki</dt><dd id="iv-pod"></dd>
+    <dt>Rocznie netto</dt><dd id="iv-irr"></dd>
+    <dt>Ponad inflację</dt><dd id="iv-real"></dd>
+    <dt>Największy spadek</dt><dd id="iv-dd"></dd>
+    <dt>Najsłabszy rok</dt><dd id="iv-zly"></dd>
+  </dl>
+  <dl data-w="prognoza" hidden>
+    <dt>Wpłacisz</dt><dd id="iv-p-wpl"></dd>
+    <dt>Słabo (1 na 10)</dt><dd id="iv-p10"></dd>
+    <dt>Dobrze (1 na 10)</dt><dd id="iv-p90"></dd>
+    <dt>Szansa straty</dt><dd id="iv-strata"></dd>
+    <dt>Mediana realnie</dt><dd id="iv-p-real"></dd>
+  </dl>
+  <dl data-w="zwrot" hidden>
+    <dt>Zysk</dt><dd id="iv-z-zysk"></dd>
+    <dt>Stopa zwrotu (ROI)</dt><dd id="iv-z-roi"></dd>
+    <dt>Rocznie po podatku</dt><dd id="iv-z-net"></dd>
+    <dt>Inflacja w tym czasie</dt><dd id="iv-z-inf"></dd>
+    <dt>Rocznie realnie</dt><dd id="iv-z-real"></dd>
+  </dl>
+  <p class="blad" id="iv-blad" hidden></p>
+  <div class="suma"><span id="iv-et">Wynik</span><strong id="iv-wynik" data-glowny="Wynik"></strong></div>
+  <div class="stopka-paragonu" id="iv-stopka">policzalnia.pl</div>
+</div></div>
+<figure class="wykres-ps wykres-iv" id="iv-wykres">
+  <svg id="iv-svg" role="img" aria-labelledby="iv-wykres-opis" viewBox="0 0 640 220" preserveAspectRatio="none"></svg>
+  <figcaption id="iv-wykres-opis"></figcaption>
+</figure>
+<details class="rozbicie" id="iv-por" open>
+  <summary id="iv-por-sum">Porównanie w tym samym okresie</summary>
+  <div class="tabela-przewijana"><table>
+    <thead><tr><th>Inwestycja</th><th>Na koniec</th><th>Rocznie</th><th>Najg. spadek</th></tr></thead>
+    <tbody id="iv-por-t"></tbody>
+  </table></div>
+  <p class="podpowiedz" id="iv-por-pod"></p>
+</details>
+<script>
+  import { historia, INSTRUMENTY, PROFILE, prognoza, stopaZwrotu, zakres, type Instrument } from '../../lib/inwestycje';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-inwest') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const pr = (x: number | null | undefined, m = 2) => (x == null || !Number.isFinite(x) ? '–' : (x * 100).toFixed(m).replace('.', ',') + '%');
+  const kw = (x: number, waluta = 'PLN') => (waluta === 'USD' ? zl(x).replace('zł', 'USD') : zl(x));
+  const krotko = (x: number) => (x >= 1e6 ? (x / 1e6).toFixed(1).replace('.', ',') + ' mln' : Math.round(x / 1000) + ' tys.');
+  if (['prowizja', 'ter'].some((k) => new URLSearchParams(location.search).has(k))) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+
+  function slupki(dane: { et: string; a: number; b: number }[], opis: string) {
+    const svg = $('iv-svg'), max = Math.max(1, ...dane.map((d) => Math.max(d.a, d.b)));
+    const W = 640, H = 210, gap = dane.length > 30 ? 1 : 3, bw = (W - gap * (dane.length - 1)) / dane.length;
+    svg.innerHTML = dane.map((d, i) => {
+      const x = (i * (bw + gap)).toFixed(1), hb = (Math.max(0, d.b) / max) * H, ha = (Math.min(d.a, d.b) / max) * H;
+      return `<rect class="s-z" x="${x}" y="${(H - hb + 5).toFixed(1)}" width="${bw.toFixed(1)}" height="${hb.toFixed(1)}"><title>${d.et}: ${zl(d.b)}</title></rect>`
+        + `<rect class="s-w" x="${x}" y="${(H - ha + 5).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0, ha).toFixed(1)}"><title>${d.et}: wpłacone ${zl(d.a)}</title></rect>`;
+    }).join('');
+    $('iv-wykres-opis').innerHTML = opis;
+  }
+  function wachlarz(sc: { rok: number; wplaty: number; p10: number; p50: number; p90: number }[]) {
+    const svg = $('iv-svg'), max = Math.max(...sc.map((s) => s.p90)), W = 640, H = 210, n = sc.length;
+    const X = (i: number) => (n === 1 ? W : (i / (n - 1)) * W), Y = (v: number) => H - (v / max) * H + 5;
+    const linia = (k: 'p10' | 'p50' | 'p90' | 'wplaty') => sc.map((s, i) => `${X(i).toFixed(1)},${Y(s[k]).toFixed(1)}`).join(' ');
+    const pole = sc.map((s, i) => `${X(i).toFixed(1)},${Y(s.p90).toFixed(1)}`).join(' ') + ' ' + [...sc].reverse().map((s, j) => `${X(n - 1 - j).toFixed(1)},${Y(s.p10).toFixed(1)}`).join(' ');
+    svg.innerHTML = `<polygon points="${pole}" class="pas"/><polyline points="${linia('p50')}" class="med"/><polyline points="${linia('wplaty')}" class="wpl"/>`;
+    $('iv-wykres-opis').textContent = `Pas – 80% symulacji, linia ciągła – mediana, przerywana – wpłaty. Górna krawędź: ${krotko(max)} zł.`;
+  }
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    form.querySelectorAll<HTMLElement>('[data-tryb]').forEach((x) => (x.hidden = x.dataset.tryb !== tryb));
+    document.querySelectorAll<HTMLElement>('.paragon [data-w]').forEach((x) => (x.hidden = x.dataset.w !== tryb));
+    $('iv-por').hidden = tryb !== 'historia';
+    $('iv-wykres').hidden = tryb === 'zwrot';
+    const ike = el('ike').checked;
+    const g = $('iv-wynik'), et = (t: string) => { $('iv-et').textContent = t; g.dataset.glowny = t; };
+    const blad = $('iv-blad'); blad.hidden = true;
+
+    if (tryb === 'prognoza') {
+      const prof = PROFILE[val('profil')];
+      if (prof && form.dataset.profil !== val('profil')) { el('ps').value = String(prof.stopa).replace('.', ','); el('pz').value = String(prof.zmiennosc); }
+      form.dataset.profil = val('profil');
+      const p = prognoza({ kwota: liczba(val('pk')), miesiecznie: liczba(val('pm')), lata: Math.min(60, liczba(val('pl'))), stopa: liczba(val('ps')), zmiennosc: liczba(val('pz')), koszty: liczba(val('pko')), ike, inflacja: liczba(val('pi')) });
+      ustawKwote($('iv-p-wpl'), p.wplaty); ustawKwote($('iv-p10'), p.p10); ustawKwote($('iv-p90'), p.p90); ustawKwote($('iv-p-real'), p.realnieP50);
+      $('iv-strata').textContent = pr(p.szansaStraty, 1);
+      et(`Najbardziej prawdopodobnie po ${val('pl')} latach`); ustawKwote(g, p.p50);
+      $('iv-stopka').textContent = `policzalnia.pl · mediana z 2000 symulacji · ${ike ? 'bez podatku' : 'po podatku Belki'}`;
+      wachlarz(p.sciezka);
+      return;
+    }
+    if (tryb === 'zwrot') {
+      const s = stopaZwrotu({ zainwestowano: liczba(val('zi')), wartosc: liczba(val('zw')), dochody: liczba(val('zd')), prowizje: liczba(val('zp')), od: val('zod'), do: val('zdo'), ike });
+      ustawKwote($('iv-z-zysk'), s.zysk); $('iv-z-roi').textContent = pr(s.roi); $('iv-z-net').textContent = pr(s.cagrNetto);
+      $('iv-z-inf').textContent = s.inflacja == null ? 'brak danych' : pr(s.inflacja, 1); $('iv-z-real').textContent = pr(s.cagrRealny);
+      et(`Średnio rocznie (${String(Math.round(s.lata * 10) / 10).replace('.', ',')} lat)`); g.textContent = pr(s.cagr);
+      $('iv-stopka').textContent = 'policzalnia.pl · CAGR = (wartość końcowa ÷ wpłata)^(1/lata) − 1';
+      return;
+    }
+    const ins = val('ins') as Instrument;
+    const [min, max] = zakres(ins);
+    el('od').min = el('do').min = min; el('od').max = el('do').max = max;
+    const waluta = INSTRUMENTY[ins].waluta;
+    form.querySelectorAll<HTMLElement>('[data-waluta]').forEach((x) => (x.dataset.jedn = waluta === 'USD' ? 'USD' : 'zł'));
+    $('iv-ins-pod').textContent = `Dane od ${min.split('-').reverse().join('.')} do ${max.split('-').reverse().join('.')}. ${ins.startsWith('spx') ? 'Z reinwestowanymi dywidendami.' : 'Cena złota bez kosztów przechowywania.'}`;
+    const d = { ins, od: val('od'), do: val('do'), kwota: liczba(val('kwota')), miesiecznie: liczba(val('miesiecznie')), prowizja: liczba(val('prowizja')), oplata: liczba(val('ter')), ike };
+    const w = historia(d);
+    if (!w) { blad.hidden = false; blad.textContent = `Wybierz daty z zakresu ${min} – ${max}, „od” wcześniej niż „do”.`; g.textContent = '–'; return; }
+    ustawKwote($('iv-wpl'), w.wplaty); ustawKwote($('iv-wart'), w.wartosc); ustawKwote($('iv-pod'), w.podatek);
+    $('iv-irr').textContent = pr(w.stopa);
+    $('iv-real').textContent = kw(w.zyskRealny, waluta);
+    $('iv-dd').textContent = '−' + pr(w.spadekCeny, 1);
+    $('iv-zly').textContent = w.najgorszy ? `${w.najgorszy.rok}: ${pr(w.najgorszy.zmiana, 1)}` : '–';
+    et(`${INSTRUMENTY[ins].nazwa}: na koniec masz`); g.textContent = kw(w.netto, waluta);
+    $('iv-stopka').textContent = `policzalnia.pl · ${ike ? 'bez podatku' : 'po podatku Belki 19%'} · ponad inflację = ponad wpłaty powiększone o inflację`;
+    slupki(w.lata.map((l) => ({ et: String(l.rok), a: l.wplaty, b: l.wartosc })), `<span class="lg lg-w"></span> wpłacone <span class="lg lg-z"></span> wartość na koniec roku (przed podatkiem)`);
+    // porównanie instrumentów w tym samym okresie i walucie
+    const tez = (Object.keys(INSTRUMENTY) as Instrument[]).filter((i) => INSTRUMENTY[i].waluta === waluta);
+    const wiersze = tez.map((i) => ({ i, w: historia({ ...d, ins: i }) })).filter((x) => x.w);
+    $('iv-por-sum').textContent = `Porównanie: ${d.od} – ${d.do}, w ${waluta === 'USD' ? 'dolarach' : 'złotych'}`;
+    $('iv-por-t').innerHTML = wiersze.map(({ i, w: x }) => `<tr${i === ins ? ' class="aktywny"' : ''}><td>${i.startsWith('spx') ? 'S&P 500' : 'złoto'}</td><td>${kw(x!.netto, waluta)}</td><td>${pr(x!.stopa, 1)}</td><td>−${pr(x!.spadekCeny, 0)}</td></tr>`).join('')
+      + `<tr><td>gotówka</td><td>${kw(w.wplaty, waluta)}</td><td>0%</td><td>–</td></tr>`
+      + `<tr><td>inflacja</td><td>${kw(w.wplatyRealne, waluta)}</td><td>–</td><td>–</td></tr>`;
+    $('iv-por-pod').textContent = 'Gotówka – same wpłaty bez oprocentowania; inflacja – tyle trzeba by mieć, żeby nie stracić na wartości. Wyniki historyczne nie gwarantują przyszłych. Liczymy na średnich miesięcznych cenach; S&P 500 z dywidendami (dane R. Shillera), złoto – Bank Światowy, kurs dolara – NBP.';
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

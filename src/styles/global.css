@@ -120,13 +120,13 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .kwota { position: relative; }
 .kwota input { padding-right: 3.2em; }
 .kwota::after { content: attr(data-jedn); position: absolute; right: 14px; top: 50%; translate: 0 -50%; font: 600 1rem var(--mono); color: var(--olowek); pointer-events: none; }
-.kalkulator input[type=text], .kalkulator input[type=number], .kalkulator input[type=date], .kalkulator input[type=datetime-local], .kalkulator select {
+.kalkulator input[type=text], .kalkulator input[type=number], .kalkulator input[type=date], .kalkulator input[type=month], .kalkulator input[type=datetime-local], .kalkulator select {
   width: 100%; font: 600 1.35rem/1.2 var(--mono); color: var(--tusz); letter-spacing: -.02em;
   padding: 14px 14px; border: 1.5px solid var(--tusz); border-radius: 10px; background: var(--papier);
   transition: box-shadow .15s, background .15s;
 }
 .kalkulator select { font: 600 1.05rem var(--font); }
-.kalkulator input[type=date] { font-size: 1.05rem; min-height: 52px; padding: 12px 10px; }
+.kalkulator input[type=date], .kalkulator input[type=month] { font-size: 1.05rem; min-height: 52px; padding: 12px 10px; }
 .pole-para { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 380px) { .pole-para { grid-template-columns: 1fr; } }
 .przelacznik { display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; cursor: pointer; }
@@ -336,7 +336,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 }
 .rozbicie tr.aktywny td { background: color-mix(in srgb, var(--kolor, var(--tusz)) 12%, var(--papier)); font-weight: 600; }
 .kalkulator #ls-kredyt { grid-column: 1 / -1; margin: 0; }
-#ls-formy td:first-child, #ls-siatka td:first-child, #lk-por td:first-child, #lk-okresy td:first-child, #n-war td:first-child, #pk-wyp td:first-child, #ik-por td:first-child { white-space: nowrap; }
+#ls-formy td:first-child, #ls-siatka td:first-child, #lk-por td:first-child, #lk-okresy td:first-child, #n-war td:first-child, #pk-wyp td:first-child, #ik-por td:first-child, #iv-por td:first-child { white-space: nowrap; }
 .wiersz-oferty { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; margin-bottom: 8px; }
 .wiersz-oferty > span:first-child { font-weight: 700; }
 .kalkulator .wiersz-oferty input { min-height: 44px; padding: 8px 10px; font-size: .95rem; }
@@ -354,3 +354,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 #ob-por td small { display: block; color: var(--olowek); font-size: .78em; white-space: nowrap; }
 .wykres-inf svg { height: 180px; border-bottom: 0; }
 .wykres-inf .os { stroke: var(--tusz); stroke-width: 1.5; }
+.wykres-iv .pas { fill: color-mix(in srgb, var(--oszczedzanie) 25%, transparent); stroke: none; }
+.wykres-iv .med { fill: none; stroke: var(--oszczedzanie); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.wykres-iv .wpl { fill: none; stroke: var(--olowek); stroke-width: 2; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
+.kalkulator input[type=month] { font-size: .95rem; padding: 12px 6px; }

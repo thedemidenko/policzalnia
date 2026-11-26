@@ -21,6 +21,7 @@ import ProcentSkladany from './kalkulatory/ProcentSkladany.astro';
 import Obligacje from './kalkulatory/Obligacje.astro';
 import Ike from './kalkulatory/Ike.astro';
 import Inflacja from './kalkulatory/Inflacja.astro';
+import Inwestycje from './kalkulatory/Inwestycje.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -44,6 +45,7 @@ const KOMPONENTY = {
   obligacje: Obligacje,
   ike: Ike,
   inflacja: Inflacja,
+  inwestycje: Inwestycje,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora }
