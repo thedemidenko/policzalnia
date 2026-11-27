@@ -93,6 +93,8 @@ Limit 14 dni dotyczy pracownika od roku następującego po roku, w którym skoń
 - **W JDG przy zaległościach w ZUS** powyżej 1% płacy minimalnej – do czasu spłaty (prawo przedawnia się po 6 miesiącach).
 - **Za czas urlopu bezpłatnego i wychowawczego.**
 
+Kiedy dokładnie przysługuje 100%, ile to na rękę przy 80% i 100% oraz jak jest z L4 w szpitalu, od psychiatry i na dziecko – wyjaśniamy w poradniku [L4 – 80% czy 100%?](/poradniki/l4-80-czy-100/).
+
 ## Co zmienia się w L4 w 2026 i 2027 roku?
 
 - Od **27 stycznia 2026 r.** ZUS ma nowe zasady kontroli lekarzy wystawiających zwolnienia.

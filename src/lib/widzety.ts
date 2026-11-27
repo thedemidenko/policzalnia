@@ -5,6 +5,44 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // L4 80% czy 100%: wypłata za miesiąc z L4 – pensja minus 1/30 za każdy dzień L4 + wynagrodzenie chorobowe/zasiłek (lib L4),
+  // netto: składki ZUS i zdrowotna tylko od części pensji, PIT 12% (koszty 250 zł, PIT-2 300 zł) od całości
+  'l4-80-czy-100': async () => {
+    const { obliczL4 } = await import('./l4');
+    return (el) => {
+      const przyczyny: [string, string][] = [['choroba', 'choroba (80%)'], ['ciaza', 'choroba w ciąży (100%)'], ['wypadek', 'wypadek w drodze do lub z pracy (100%)'], ['dawca', 'badania i zabieg dawcy (100%)']];
+      el.innerHTML = `<h3>Ile dostaniesz za miesiąc z L4?</h3>
+        <label>Pensja brutto <output data-o="b"></output><input type="range" min="4800" max="20000" step="100" value="${el.dataset.pensja ?? 7000}" data-i="b"></label>
+        <label>Dni L4 w miesiącu <output data-o="d"></output><input type="range" min="1" max="30" step="1" value="${el.dataset.dni ?? 30}" data-i="d"></label>
+        <label>Przyczyna<select data-i="p">${przyczyny.map(([v, n]) => `<option value="${v}">${n}</option>`).join('')}</select></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const r2 = (n: number) => Math.round(n * 100) / 100;
+      const netto = (pensja: number, l4: number) => {
+        const zus = r2(pensja * 0.1371);
+        const zdr = r2((pensja - zus) * 0.09); // od chorobowego i zasiłku nie ma składek ZUS ani zdrowotnej
+        const pit = Math.max(0, Math.round(Math.round(pensja - zus + l4 - 250) * 0.12 - 300));
+        return r2(pensja - zus + l4 - zdr - pit);
+      };
+      const licz = () => {
+        const b = +i('b').value, d = +i('d').value, p = i('p').value as 'choroba' | 'ciaza' | 'wypadek' | 'dawca';
+        o('b').textContent = zl(b); o('d').textContent = `${d} ${d === 1 ? 'dzień' : 'dni'}`;
+        const l4 = obliczL4({ forma: 'uop', brutto: b, dni: d, przyczyna: p }).razem;
+        const czescPensji = d >= 30 ? 0 : r2(b - r2((b / 30) * d));
+        const zwykle = netto(b, 0), zL4 = netto(czescPensji, l4);
+        const wiersze: [string, number, number][] = [['Zwykła wypłata na rękę', zwykle, 2], ['Wypłata z L4 na rękę', zL4, p === 'choroba' ? 1 : 0]];
+        const max = Math.max(zwykle, zL4, 1);
+        o('s').innerHTML = wiersze.map(([n, v, k]) => `<div class="ws-wiersz"><span class="ws-et">${n}</span><span class="ws-pasek"><i style="--w:${((v / max) * 100).toFixed(1)}%;--k:var(--w${k})"></i></span><b>${zl(v)}</b></div>`).join('');
+        const roznica = zL4 - zwykle;
+        o('werdykt').textContent = Math.abs(roznica) < 1 ? 'Tyle samo co zwykle' : roznica < 0 ? `O ${zl(-roznica)} mniej niż zwykle (${Math.round((zL4 / zwykle) * 100)}%)` : `O ${zl(roznica)} więcej niż zwykle (${Math.round((zL4 / zwykle) * 100)}%)`;
+        o('opis').textContent = `L4 brutto: ${zl(l4)}. Od wynagrodzenia chorobowego i zasiłku nie płaci się składek ZUS ani zdrowotnej, tylko podatek – dlatego 80% brutto to ok. 90% zwykłej wypłaty netto. Założenia: stała pensja, PIT 12% z PIT-2, koszty 250 zł, pensja pomniejszona o 1/30 za dzień L4.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // urlop czy ekwiwalent przy odejściu: urlop proporcjonalny (art. 155¹, 155²ᵃ – miesiąc w górę, 155³ – dzień w górę),
   // ekwiwalent = dni × pensja ÷ współczynnik (lib ekwiwalent), netto orientacyjnie, urlop u nowego pracodawcy (łącznie ≤ wymiar)
   'urlop-czy-ekwiwalent': async () => {
