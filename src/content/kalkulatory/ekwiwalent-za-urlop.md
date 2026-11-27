@@ -98,6 +98,8 @@ Ekwiwalentu **nie ma**, gdy od razu podpisujesz kolejną umowę z tym samym prac
 
 Liczbę dni wykorzystanego urlopu pracodawca wpisuje do **świadectwa pracy**. Nowy pracodawca liczy na tej podstawie twój urlop w roku zmiany pracy.
 
+Czy lepiej wykorzystać urlop w okresie wypowiedzenia, czy wziąć ekwiwalent – i kiedy pracodawca może wysłać cię na urlop bez twojej zgody – wyjaśniamy w poradniku [Urlop czy ekwiwalent przy odejściu z pracy](/poradniki/urlop-czy-ekwiwalent/).
+
 ## Co, jeśli pracodawca nie wypłacił ekwiwalentu?
 
 Ekwiwalent jest wymagalny w dniu rozwiązania umowy. Jeśli nie został wypłacony, wezwij pracodawcę do zapłaty na piśmie, a potem możesz złożyć skargę do Państwowej Inspekcji Pracy albo pozew do sądu pracy. Roszczenie **przedawnia się po 3 latach** od dnia, w którym umowa się skończyła. Od spóźnionej wypłaty należą się odsetki ustawowe za opóźnienie – policzysz je w [kalkulatorze odsetek](/oszczedzanie/kalkulator-odsetek/).

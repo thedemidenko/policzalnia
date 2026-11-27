@@ -5,6 +5,49 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // urlop czy ekwiwalent przy odejściu: urlop proporcjonalny (art. 155¹, 155²ᵃ – miesiąc w górę, 155³ – dzień w górę),
+  // ekwiwalent = dni × pensja ÷ współczynnik (lib ekwiwalent), netto orientacyjnie, urlop u nowego pracodawcy (łącznie ≤ wymiar)
+  'urlop-czy-ekwiwalent': async () => {
+    const { wspolczynnik } = await import('./ekwiwalent');
+    return (el) => {
+      const rok = new Date().getFullYear();
+      const mies = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+      el.innerHTML = `<h3>Ile urlopu zostanie i ile wyniesie ekwiwalent?</h3>
+        <label>Ostatni miesiąc pracy<select data-i="m">${mies.map((n, j) => `<option value="${j + 1}"${j + 1 === +(el.dataset.miesiac ?? 8) ? ' selected' : ''}>${n} ${rok}</option>`).join('')}</select></label>
+        <label>Wymiar urlopu<select data-i="w"><option value="20">20 dni (staż poniżej 10 lat)</option><option value="26" selected>26 dni (staż od 10 lat)</option></select></label>
+        <label>Wykorzystane w tym roku <output data-o="u"></output><input type="range" min="0" max="26" step="1" value="${el.dataset.wykorzystane ?? 10}" data-i="u"></label>
+        <label>Zaległe z poprzedniego roku <output data-o="z"></output><input type="range" min="0" max="26" step="1" value="${el.dataset.zalegle ?? 2}" data-i="z"></label>
+        <label>Pensja brutto <output data-o="p"></output><input type="range" min="4800" max="20000" step="100" value="${el.dataset.pensja ?? 8000}" data-i="p"></label>
+        <div class="wz-slupki" data-o="lista"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const dni = (n: number) => `${n} ${n === 1 ? 'dzień' : 'dni'}`;
+      const licz = () => {
+        const m = +i('m').value, w = +i('w').value, u = +i('u').value, z = +i('z').value, p = +i('p').value;
+        o('u').textContent = dni(u); o('z').textContent = dni(z); o('p').textContent = zl(p);
+        const prop = Math.ceil((m / 12) * w - 1e-9);
+        const zostalo = Math.max(0, prop + z - u);
+        const wsp = wspolczynnik(rok);
+        const godz = Math.round((p / wsp / 8) * 100) / 100; // stawka za godzinę do grosza – jak w kalkulatorze ekwiwalentu
+        const brutto = Math.round(zostalo * 8 * godz * 100) / 100;
+        const netto = brutto * (1 - 0.1371) * (1 - 0.09 - 0.12); // składki pracownika, zdrowotna 9%, PIT 12% – bez kosztów i kwoty wolnej (zwykle już wykorzystanych w pensji)
+        const nowy = m < 12 ? Math.max(0, Math.min(Math.ceil(((12 - m) / 12) * w - 1e-9), w - Math.max(prop, u))) : 0;
+        const wiersze: [string, string][] = [
+          ['Urlop proporcjonalny za ten rok', dni(prop)],
+          ['Do wykorzystania albo wypłaty', dni(zostalo)],
+          ['Ekwiwalent brutto', zl(brutto)],
+          ['Na rękę (orientacyjnie, PIT 12%)', zl(netto)],
+          [m < 12 ? `Urlop u nowego pracodawcy (od ${['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'][m]})` : 'Urlop u nowego pracodawcy', m < 12 ? dni(nowy) : 'od stycznia – pełny wymiar'],
+        ];
+        o('lista').innerHTML = wiersze.map(([n, v]) => `<div class="ws-wiersz wz-tekst"><span class="ws-et">${n}</span><b>${v}</b></div>`).join('');
+        o('werdykt').textContent = zostalo ? `${dni(zostalo)} = ok. ${zl(brutto)} brutto` : u > prop + z ? 'Wykorzystano więcej, niż przysługiwało – pracodawca nie może tego potrącić' : 'Cały urlop wykorzystany';
+        o('opis').textContent = `Współczynnik ${rok}: ${wsp.toLocaleString('pl-PL')} (pełny etat, stała pensja). Pracodawca może zamiast ekwiwalentu wysłać cię na ten urlop w okresie wypowiedzenia. Premie i dodatki zmienne podwyższają ekwiwalent – policzysz je w kalkulatorze ekwiwalentu.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // układ ratalny w ZUS: odsetki narosłe do wniosku + opłata prolongacyjna (50% stawki odsetek, art. 29 ust. 4 ustawy o sus)
   // wobec spłaty w tym samym tempie bez układu (odsetki za zwłokę od malejącego długu); stawka z ostatniej stopy lombardowej NBP
   'zus-raty': async () => {
