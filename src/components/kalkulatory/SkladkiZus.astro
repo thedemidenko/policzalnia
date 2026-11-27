@@ -1,0 +1,164 @@
+---
+import { parametry } from '../../lib/maly-zus';
+const rok = new Date().getFullYear();
+const p = parametry(rok);
+const etapy: [string, string][] = [
+  ['start', 'ulga na start (6 mies.)'],
+  ['pref', 'preferencyjny (24 mies.)'],
+  ['mzp', 'mały ZUS plus'],
+  ['pelny', 'pełny ZUS'],
+  ['wlasna', 'pełny – wyższa podstawa'],
+];
+const formy: [string, string][] = [['skala', 'skala (12% i 32%)'], ['liniowy', 'liniowy 19%'], ['ryczalt', 'ryczałt'], ['karta', 'karta podatkowa']];
+const MIES = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+---
+<form id="k-zus" class="pola" autocomplete="off">
+  <div class="pole-para">
+    <div class="pole">
+      <label for="z-etap">Etap składek</label>
+      <select id="z-etap" name="etap">{etapy.map(([k, e]) => <option value={k} selected={k === 'pelny'}>{e}</option>)}</select>
+    </div>
+    <div class="pole">
+      <label for="z-rok">Rok</label>
+      <select id="z-rok" name="rok"><option value={String(rok)}>{rok}</option><option value={String(rok + 1)}>{rok + 1}</option></select>
+    </div>
+  </div>
+  <div class="pole" data-podstawa hidden>
+    <label for="z-podst" id="z-podst-et">Podstawa składek</label>
+    <div class="kwota" data-jedn="zł"><input id="z-podst" name="podstawa" type="text" inputmode="decimal" value={String(p?.max ?? 5652).replace('.', ',')} aria-describedby="z-podst-pod" /></div>
+    <small id="z-podst-pod"></small>
+  </div>
+  <div class="pole">
+    <label for="z-forma">Forma opodatkowania</label>
+    <select id="z-forma" name="forma">{formy.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+  </div>
+  <div class="pole" data-dochod>
+    <label for="z-kwota" id="z-kwota-et">Dochód miesięcznie</label>
+    <div class="kwota" data-jedn="zł"><input id="z-kwota" name="kwota" type="text" inputmode="decimal" value="10000" aria-describedby="z-kwota-pod" /></div>
+    <small id="z-kwota-pod">Przychód minus koszty, przed odjęciem składek ZUS.</small>
+  </div>
+  <label class="przelacznik" data-chor><input type="checkbox" name="chorobowe" value="1" checked /> Dobrowolna składka chorobowa (prawo do L4 i macierzyńskiego)</label>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole">
+      <label for="z-syt">Twoja sytuacja</label>
+      <select id="z-syt" name="sytuacja"><option value="firma">tylko firma</option><option value="etat">mam też etat (min. płaca minimalna)</option><option value="emeryt">emeryt lub rencista</option></select>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="z-wak">Wakacje składkowe</label>
+        <select id="z-wak" name="wakacje"><option value="-1">nie korzystam</option>{MIES.map((n, i) => <option value={String(i)}>{n}</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for="z-wyp">Składka wypadkowa</label>
+        <div class="kwota" data-jedn="%"><input id="z-wyp" name="wypadkowa" type="text" inputmode="decimal" value="1,67" /></div>
+      </div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="wiek" value="1" /> Kobieta 55+ / mężczyzna 60+ (bez Funduszu Pracy)</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Emerytalna 19,52%</dt><dd id="z-em"></dd>
+    <dt>Rentowa 8%</dt><dd id="z-ren"></dd>
+    <dt>Chorobowa 2,45%</dt><dd id="z-cho"></dd>
+    <dt id="z-wyp-et">Wypadkowa</dt><dd id="z-wy"></dd>
+    <dt>Fundusz Pracy</dt><dd id="z-fp"></dd>
+    <dt id="z-zdr-et">Zdrowotna</dt><dd id="z-zdr"></dd>
+  </dl>
+  <ul class="uwagi" id="z-uwagi" hidden></ul>
+  <div class="suma"><span>Do zapłaty miesięcznie</span><strong id="z-wynik" data-glowny="Do zapłaty miesięcznie"></strong></div>
+  <div class="stopka-paragonu" id="z-stopka">policzalnia.pl · termin: 20. dzień następnego miesiąca</div>
+</div></div>
+
+<div class="rozbicie zus-podsumowanie" id="z-pods">
+  <p class="struktura-tytul">Ile zapłacisz na każdym etapie?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Etap</th><th>Społeczne + FP</th><th>Zdrowotna</th><th>Razem miesięcznie</th></tr></thead><tbody id="z-etapy"></tbody></table></div>
+  <p class="pit37" id="z-info"></p>
+</div>
+
+<details class="rozbicie" id="z-rok-det" open>
+  <summary id="z-rok-tyt">Składki w kolejnych miesiącach</summary>
+  <div class="tabela-przewijana"><table class="tabela-roku">
+    <thead><tr><th>Miesiąc</th><th>Społeczne + FP</th><th>Zdrowotna</th><th>Razem</th></tr></thead>
+    <tbody id="z-mies"></tbody>
+    <tfoot id="z-mies-suma"></tfoot>
+  </table></div>
+</details>
+<script>
+  import { obliczZus, type Etap, type FormaZdr, type Sytuacja } from '../../lib/skladki-zus';
+  import { parametry } from '../../lib/maly-zus';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const MIES = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+  const ETAPY: [Etap, string][] = [['start', 'Ulga na start (6 mies.)'], ['pref', 'Preferencyjny (24 mies.)'], ['pelny', 'Pełny ZUS']];
+  const form = document.getElementById('k-zus') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  const domyslne: Record<string, string> = { sytuacja: 'firma', wakacje: '-1', wypadkowa: '1,67', wiek: '0' };
+  if (Object.entries(domyslne).some(([k, v]) => p.has(k) && p.get(k) !== v)) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  let poprzedniEtap = val('etap');
+
+  const przelicz = () => {
+    const rok = +val('rok');
+    const pr = parametry(rok);
+    const etap = val('etap') as Etap;
+    const forma = val('forma') as FormaZdr;
+    const sytuacja = val('sytuacja') as Sytuacja;
+    // pole podstawy: mały ZUS plus i wyższa podstawa
+    const polePodst = form.querySelector<HTMLElement>('[data-podstawa]')!;
+    polePodst.hidden = etap !== 'mzp' && etap !== 'wlasna';
+    if (etap !== poprzedniEtap && pr) el('podstawa').value = String(etap === 'mzp' ? pr.min : pr.max).replace('.', ',');
+    poprzedniEtap = etap;
+    if (pr) $('z-podst-pod').innerHTML = etap === 'mzp'
+      ? `Od ${zl(pr.min)} do ${zl(pr.max)} – policz ją w <a href="/firma/maly-zus-plus/">kalkulatorze Małego ZUS Plus</a>.`
+      : `Co najmniej ${zl(pr.max)} (60% prognozowanego przeciętnego wynagrodzenia).`;
+    $('z-podst-et').textContent = etap === 'mzp' ? 'Podstawa z Małego ZUS Plus' : 'Zadeklarowana podstawa';
+    // pole kwoty zależne od formy
+    form.querySelector<HTMLElement>('[data-dochod]')!.hidden = forma === 'karta';
+    $('z-kwota-et').textContent = forma === 'ryczalt' ? 'Przychód miesięcznie' : 'Dochód miesięcznie';
+    $('z-kwota-pod').textContent = forma === 'ryczalt' ? 'Od przychodu od początku roku zależy próg składki zdrowotnej.' : 'Przychód minus koszty, przed odjęciem składek ZUS.';
+    form.querySelector<HTMLElement>('[data-chor]')!.hidden = etap === 'start' || sytuacja === 'etat';
+
+    const kwota = liczba(val('kwota'));
+    const dane = (e: Etap) => ({
+      rok, etap: e, forma, sytuacja, chorobowe: el('chorobowe').checked, podstawa: liczba(val('podstawa')),
+      wypadkowa: liczba(val('wypadkowa')), bezFp: el('wiek').checked, wakacje: +val('wakacje'),
+      dochod: forma === 'ryczalt' ? 0 : kwota, przychod: forma === 'ryczalt' ? kwota : 0,
+    });
+    const w = obliczZus(dane(etap));
+    const t = w.typowy;
+    const ul = $('z-uwagi');
+    ul.hidden = w.uwagi.length === 0; ul.innerHTML = w.uwagi.map((u) => `<li>${u}</li>`).join('');
+    ustawKwote($('z-em'), t.emerytalna); ustawKwote($('z-ren'), t.rentowa); ustawKwote($('z-cho'), t.chorobowa);
+    $('z-wyp-et').textContent = `Wypadkowa ${val('wypadkowa') || '0'}%`;
+    ustawKwote($('z-wy'), t.wypadkowa); ustawKwote($('z-fp'), t.fp); ustawKwote($('z-zdr'), t.zdrowotna);
+    $('z-zdr-et').textContent = `Zdrowotna (${t.zdrOpis})`;
+    ustawKwote($('z-wynik'), t.razem);
+    $('z-stopka').textContent = `policzalnia.pl · ${rok} · od lutego · płatne do 20. dnia następnego miesiąca`;
+
+    // porównanie etapów przy tych samych ustawieniach
+    $('z-etapy').innerHTML = ETAPY.map(([e, n]) => {
+      const q = obliczZus(dane(e)).typowy;
+      return `<tr${e === etap ? ' class="inny"' : ''}><td>${n}</td><td>${zl(q.spoleczne + q.fp)}</td><td>${zl(q.zdrowotna)}</td><td><b>${zl(q.razem)}</b></td></tr>`;
+    }).join('');
+    const info: string[] = [`<b>Rocznie:</b> ${zl(w.rok.razem)} (społeczne i FP ${zl(w.rok.spoleczne + w.rok.fp)}, zdrowotna ${zl(w.rok.zdrowotna)}).`];
+    if (w.odliczenieSpolecznych > 0) info.push(`Składki społeczne (${zl(w.odliczenieSpolecznych)} rocznie) odliczysz od ${forma === 'ryczalt' ? 'przychodu' : 'dochodu'} albo wpiszesz w koszty.`);
+    if (forma === 'liniowy') info.push(`Zdrowotną odliczysz od dochodu do limitu – w tym przypadku ${zl(w.odliczenieZdrowotnej)}.`);
+    if (forma === 'ryczalt') info.push(`Połowę zdrowotnej (${zl(w.odliczenieZdrowotnej)} rocznie) odliczysz od przychodu.`);
+    if (w.doplataZdrowotnej > 0) info.push(`Po przekroczeniu progu w ciągu roku w rozliczeniu rocznym (do 20 maja) dopłacisz ok. <b>${zl(w.doplataZdrowotnej)}</b> zdrowotnej za wcześniejsze miesiące.`);
+    if (forma === 'skala') info.push('Na skali zdrowotnej nie odliczysz od podatku.');
+    if (w.zasilek > 0) info.push(`Z chorobową dostaniesz ok. <b>${zl(w.zasilek)}</b> zasiłku za pełny miesiąc L4 (80%) – po 90 dniach opłacania.`);
+    $('z-info').innerHTML = info.join(' ');
+
+    $('z-mies').innerHTML = w.miesiace.map((q, i) => {
+      const fl = [i === 0 && (forma === 'skala' || forma === 'liniowy') ? `zdrowotna wg ${rok - 1} r.` : '', q.wakacje ? 'wakacje składkowe' : '', i > 0 && q.zdrOpis !== w.miesiace[i - 1].zdrOpis ? q.zdrOpis : ''].filter(Boolean);
+      return `<tr${fl.length ? ' class="inny"' : ''}><td>${MIES[i]}${fl.length ? ` <small>${fl.join(', ')}</small>` : ''}</td><td>${zl(q.spoleczne + q.fp)}</td><td>${zl(q.zdrowotna)}</td><td><b>${zl(q.razem)}</b></td></tr>`;
+    }).join('');
+    $('z-mies-suma').innerHTML = `<tr><td>Rok</td><td>${zl(w.rok.spoleczne + w.rok.fp)}</td><td>${zl(w.rok.zdrowotna)}</td><td><b>${zl(w.rok.razem)}</b></td></tr>`;
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

@@ -176,6 +176,8 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .rozbicie .tabela-roku tr:last-child td { border-bottom: 1px solid var(--linia); }
 .rozbicie .tabela-roku tbody tr:last-child td { border-bottom: 0; }
 .pit37 { margin: 10px 0 0; font-size: .9rem; line-height: 1.5; }
+.zus-podsumowanie .struktura-tytul { margin-bottom: 10px; }
+.tabela-etapow tr.inny td { background: color-mix(in srgb, var(--zakreslacz) 35%, var(--papier)); }
 @media (max-width: 480px) { .struktura-legenda { font-size: .84rem; } }
 .rozbicie tr.razem td { font-weight: 700; }
 .kalkulator input:focus, .kalkulator select:focus { outline: none; background: var(--kartka); box-shadow: 0 0 0 4px color-mix(in srgb, var(--dlugopis) 30%, transparent); border-color: var(--dlugopis); }

@@ -1,0 +1,10 @@
+{
+  "_opis": "Składka zdrowotna JDG według roku składkowego (luty roku R – styczeń roku R+1, art. 81 ust. 2 ustawy o świadczeniach). Kwoty na lata obecne biorą się ze stawki.json (płaca minimalna, zdrowotna_ryczalt_podstawa); tu tylko lata wcześniejsze, potrzebne do stycznia.",
+  "lata": {
+    "2025": {
+      "min_podstawa": 3499.50,
+      "ryczalt_podstawa": 8549.18,
+      "uwagi": "Rok składkowy II 2025 – I 2026: minimum 9% × 75% płacy minimalnej 4666 zł = 314,96 zł (zmiana z 6.12.2024, Dz.U. 2024 poz. 1915); ryczałt: przeciętne wynagrodzenie IV kw. 2024 = 8549,18 zł (461,66 / 769,43 / 1384,97 zł)."
+    }
+  }
+}

@@ -72,6 +72,7 @@ content:
             - { value: wspolne-rozliczenie, label: Wspólne rozliczenie małżonków }
             - { value: ryczalt, label: Ryczałt }
             - { value: wynagrodzenie, label: Wynagrodzenie brutto-netto (umowa o pracę) }
+            - { value: skladki-zus, label: Składki ZUS przedsiębiorcy }
       - { name: title, label: Tytuł H1, type: string, required: true }
       - { name: nazwa_krotka, label: Nazwa krótka (menu, linki), type: string }
       - { name: meta_title, label: Meta title, type: string, required: true, description: "Kończy się „ | Policzalnia”; zamiast „:” piszemy „ - ”." }
