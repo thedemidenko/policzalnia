@@ -21,21 +21,23 @@ Administratorem danych osobowych jest właściciel serwisu policzalnia.pl (dalej
 
 **Statystyki odwiedzin bez plików cookie.** Korzystamy z Cloudflare Web Analytics, żeby wiedzieć, ile osób odwiedza poszczególne strony i skąd przychodzą (np. z wyszukiwarki). Narzędzie nie zapisuje plików cookie, nie korzysta z pamięci przeglądarki i nie tworzy profili użytkowników – zbiera tylko zbiorcze, anonimowe dane o wizytach (odwiedzona strona, źródło wejścia, kraj, typ urządzenia i przeglądarki, czas ładowania strony). Podstawa prawna: nasz prawnie uzasadniony interes w ulepszaniu serwisu (art. 6 ust. 1 lit. f RODO).
 
-**Inne statystyki i reklamy – tylko za Twoją zgodą.** Jeśli w przyszłości włączymy narzędzia analityczne korzystające z plików cookie (np. Google Analytics) lub reklamy (np. Google AdSense), będą one uruchamiane dopiero po wyrażeniu przez Ciebie zgody w banerze cookies. Podstawa prawna: Twoja zgoda (art. 6 ust. 1 lit. a RODO). Zgodę możesz w każdej chwili wycofać. Przed uruchomieniem tych narzędzi uzupełnimy tę politykę o ich szczegóły.
+**Google Analytics – tylko za Twoją zgodą.** Jeśli klikniesz „Akceptuję” w banerze cookies, uruchomimy Google Analytics 4 (Google Ireland Ltd / Google LLC), żeby sprawdzać, które strony i kalkulatory są odwiedzane, skąd przychodzą użytkownicy i jak korzystają z serwisu. Narzędzie zapisuje pliki cookie (m.in. `_ga`, `_ga_*`) przechowywane do 2 lat i przetwarza identyfikator urządzenia, przybliżoną lokalizację (na podstawie adresu IP, który nie jest zapisywany), typ urządzenia i przeglądarki oraz informacje o odwiedzanych stronach. Podstawa prawna: Twoja zgoda (art. 6 ust. 1 lit. a RODO). Bez zgody Google Analytics się nie uruchamia. Zgodę możesz w każdej chwili wycofać przez link „Ustawienia cookies” w stopce strony.
+
+**Reklamy – tylko za Twoją zgodą.** Jeśli w przyszłości włączymy reklamy (np. Google AdSense), będą one uruchamiane dopiero po wyrażeniu przez Ciebie zgody. Przed ich uruchomieniem uzupełnimy tę politykę o szczegóły.
 
 ## 3. Komu powierzamy dane?
 
 - **Cloudflare, Inc.** – sieć dostarczania treści, ochrona strony przed atakami i anonimowe statystyki odwiedzin (Cloudflare Web Analytics);
 - **GitHub, Inc.** – hosting plików strony;
-- **Google LLC** – obsługa poczty e-mail.
+- **Google Ireland Ltd / Google LLC** – obsługa poczty e-mail oraz – po wyrażeniu zgody – statystyki odwiedzin (Google Analytics).
 
 Dostawcy ci mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym, w szczególności w USA. Przekazanie odbywa się na podstawie decyzji Komisji Europejskiej stwierdzającej odpowiedni stopień ochrony (EU-US Data Privacy Framework) lub standardowych klauzul umownych.
 
 ## 4. Jakich plików cookie używamy?
 
-Serwis nie zapisuje własnych plików cookie służących do śledzenia. Cloudflare może zapisać techniczny plik cookie niezbędny do odróżnienia ruchu ludzi od botów i ochrony strony – nie wymaga on zgody.
+Bez Twojej zgody serwis nie zapisuje plików cookie służących do statystyk ani śledzenia. Po kliknięciu „Akceptuję” Google Analytics zapisuje pliki cookie `_ga` i `_ga_*` (do 2 lat). Twój wybór zapamiętujemy w pamięci przeglądarki (localStorage), żeby nie pytać ponownie. Cloudflare może zapisać techniczny plik cookie niezbędny do odróżnienia ruchu ludzi od botów i ochrony strony – nie wymaga on zgody.
 
-Pliki cookie analityczne i reklamowe (jeśli zostaną włączone) zapiszemy wyłącznie po wyrażeniu zgody w banerze. Pliki cookie możesz też w każdej chwili usunąć lub zablokować w ustawieniach przeglądarki.
+Pliki cookie analityczne i reklamowe zapisujemy wyłącznie po wyrażeniu zgody w banerze. Zgodę możesz zmienić w każdej chwili przez link „Ustawienia cookies” w stopce. Pliki cookie możesz też w każdej chwili usunąć lub zablokować w ustawieniach przeglądarki.
 
 ## 5. Jakie masz prawa?
 
@@ -59,4 +61,4 @@ Nie. Z kalkulatorów korzystasz bez podawania jakichkolwiek danych osobowych. Po
 
 Polityka może być aktualizowana, np. po włączeniu nowych narzędzi. Aktualna wersja jest zawsze dostępna na tej stronie.
 
-Ostatnia aktualizacja: 24 listopada 2026 r.
+Ostatnia aktualizacja: 27 listopada 2026 r.
