@@ -1,7 +1,101 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Fiszka from '../components/Fiszka.astro';
+import KartaPoradnika from '../components/KartaPoradnika.astro';
+import { DZIALY, czasCzytania } from '../lib/poradniki';
+import site from '../site.json';
+
+const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'));
+const por = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +(b.data.updated ?? b.data.date) - +(a.data.updated ?? a.data.date));
+const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc - b.data.kolejnosc);
+// najczęściej szukane kalkulatory – stała lista, uzupełniana resztą, gdyby któregoś zabrakło
+const popularne = ['zwolnienie-lekarskie', 'kalkulator-urlopu', 'umowa-zlecenie', 'kalkulator-vat', 'ryczalt', 'nadplata-kredytu']
+  .map((s) => kalk.find((e) => e.data.slug === s)).filter((e) => !!e);
 ---
-<Base title="Nie znaleziono strony | Policzalnia" description="Ta strona nie istnieje. Wróć na stronę główną Policzalni i wyszukaj kalkulator albo poradnik." noindex>
-  <h1>Nie ma takiej strony</h1>
-  <p>Wróć na <a href="/">stronę główną</a> i wybierz kalkulator.</p>
+<Base title={`Nie znaleziono strony | ${site.name}`} description="Ta strona nie istnieje albo zmieniła adres. Wyszukaj kalkulator lub poradnik Policzalni albo wybierz jeden z najpopularniejszych.">
+  <section class="hero blad-404">
+    <div>
+      <h1>Tej strony <mark>nie ma</mark>.</h1>
+      <p class="lead">Adres <code id="adres-404">tej strony</code> nie istnieje albo się zmienił. Wpisz, co chcesz policzyć – znajdziemy właściwy kalkulator albo poradnik.</p>
+      <div class="szukaj" role="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="szukaj-404" type="search" placeholder="Co policzyć? urlop, VAT, L4…" aria-label="Szukaj kalkulatora lub poradnika" autocomplete="off" />
+      </div>
+      <p class="szukaj-info" id="info-404" aria-live="polite"></p>
+    </div>
+    <div class="hero-paragon" aria-hidden="true">
+      <div class="paragon-cien"><div class="paragon">
+        <dl>
+          <dt>Strona</dt><dd>nie znaleziono</dd>
+          <dt>Kod błędu</dt><dd>404</dd>
+          <dt>Kalkulatory</dt><dd>{kalk.length}</dd>
+          <dt>Poradniki</dt><dd>{por.length}</dd>
+        </dl>
+        <div class="suma"><span>Do zapłaty</span><strong>0,00 zł</strong></div>
+        <div class="stopka-paragonu">policzalnia.pl · zapraszamy ponownie</div>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="dzial-blok" id="wyniki-404" hidden>
+    <div class="dzial-naglowek"><h2>Wyniki wyszukiwania</h2></div>
+    <ul class="fiszki">
+      {kalk.map((e) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} opis={e.data.lead} sekcja={e.data.sekcja} />)}
+      {por.map((p) => <Fiszka href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} opis={p.data.lead} sekcja="poradniki" strzalka="Czytaj →" />)}
+    </ul>
+    <p class="brak-wynikow" id="brak-404">Nie mamy jeszcze takiego kalkulatora. <a href="/kontakt/">Napisz, czego szukasz</a> – dodamy go do listy.</p>
+  </section>
+
+  <div id="podpowiedzi-404">
+    <section class="dzial-blok">
+      <div class="dzial-naglowek"><h2>Najczęściej używane kalkulatory</h2><a href="/">Wszystkie kalkulatory →</a></div>
+      <ul class="fiszki">{popularne.map((e) => <Fiszka href={`/${e.data.sekcja}/${e.data.slug}/`} tytul={e.data.nazwa_krotka ?? e.data.title} opis={e.data.lead} sekcja={e.data.sekcja} />)}</ul>
+    </section>
+
+    <section class="dzial-blok">
+      <div class="dzial-naglowek"><h2>Działy</h2></div>
+      <ul class="fiszki">
+        {dzialy.map((d) => <Fiszka href={`/${d.data.slug}/`} tytul={d.data.title} opis={d.data.lead} sekcja={d.data.slug} strzalka="Otwórz dział →" />)}
+        <Fiszka href="/poradniki/" tytul="Poradniki" opis="Porównania i wyjaśnienia krok po kroku – z wykresami i kalkulatorami w treści." sekcja="poradniki" strzalka="Czytaj →" />
+      </ul>
+    </section>
+
+    {por.length > 0 && (
+      <section class="dzial-blok" data-sekcja="poradniki">
+        <div class="dzial-naglowek"><h2>Najnowsze poradniki</h2><a href="/poradniki/">Wszystkie poradniki →</a></div>
+        <ul class="karty-poradnikow male">{por.slice(0, 3).map((p) => <KartaPoradnika href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} lead={p.data.lead} sekcja={p.data.sekcja} dzial={DZIALY[p.data.sekcja]} minuty={czasCzytania(p.body)} data={p.data.updated ?? p.data.date} okladka={p.data.okladka} />)}</ul>
+      </section>
+    )}
+
+    <p class="zglos-404">Prowadził tu nieaktualny link z naszej albo innej strony? <a href="/kontakt/">Daj nam znać</a> – poprawimy go.</p>
+  </div>
 </Base>
+<script>
+  const adres = document.getElementById('adres-404');
+  if (adres && location.pathname !== '/404.html') adres.textContent = decodeURIComponent(location.pathname);
+  const input = document.getElementById('szukaj-404') as HTMLInputElement;
+  const wyniki = document.getElementById('wyniki-404')!;
+  const podpowiedzi = document.getElementById('podpowiedzi-404')!;
+  const info = document.getElementById('info-404')!;
+  const brak = document.getElementById('brak-404')!;
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').trim();
+  const szukaj = () => {
+    const q = norm(input.value);
+    let ile = 0;
+    wyniki.querySelectorAll<HTMLElement>('[data-szukaj]').forEach((li) => {
+      const ok = !!q && q.split(/\s+/).every((t) => li.dataset.szukaj!.includes(t));
+      li.hidden = !ok;
+      if (ok) ile++;
+    });
+    wyniki.hidden = !q;
+    podpowiedzi.hidden = !!q;
+    brak.style.display = q && ile === 0 ? 'block' : 'none';
+    info.textContent = q ? (ile ? `Znaleziono: ${ile}` : '') : '';
+  };
+  input.addEventListener('input', szukaj);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') wyniki.querySelector<HTMLAnchorElement>('[data-szukaj]:not([hidden]) a')?.click(); });
+  // fraza z adresu, np. /kalkulator-l4 → podpowiedź „kalkulator l4”
+  const zAdresu = location.pathname.split('/').filter(Boolean).pop()?.replace(/[-_]+/g, ' ').replace(/\.html?$/, '') ?? '';
+  if (zAdresu && zAdresu !== '404' && zAdresu.length < 40) { input.value = zAdresu; szukaj(); if (wyniki.querySelector('[data-szukaj]:not([hidden])') === null) { input.value = ''; szukaj(); } }
+</script>

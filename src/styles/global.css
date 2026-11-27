@@ -262,7 +262,7 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .dzial-blok { margin-top: 52px; }
 .dzial-naglowek { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 1.5px solid var(--tusz); padding-bottom: 10px; }
 .dzial-naglowek h2 { margin: 0; display: flex; align-items: center; gap: 12px; }
-.dzial-naglowek h2::before { content: ""; width: 14px; height: 14px; border-radius: 4px; background: var(--kolor); rotate: 45deg; flex: none; }
+.dzial-naglowek h2::before { content: ""; width: 14px; height: 14px; border-radius: 4px; background: var(--kolor, var(--tusz)); rotate: 45deg; flex: none; }
 .dzial-naglowek a { font: 600 .85rem var(--mono); text-decoration: none; display: inline-block; padding: 10px 0; margin: -10px 0; } /* większy cel dotykowy */
 .wkrotce { color: var(--olowek); font-style: italic; }
 .brak-wynikow { display: none; padding: 20px; border: 1.5px dashed var(--tusz); border-radius: var(--r); margin-top: 24px; }
@@ -535,3 +535,9 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 
 /* małe dopiski w tabelach wyników – nie mniej niż 12 px */
 .kalkulator td small { font-size: .75rem; }
+
+/* ===== Strona 404 ===== */
+.blad-404 .lead code { font: 600 .92em var(--mono); background: var(--kartka); border: 1.5px solid var(--linia); border-radius: 6px; padding: 1px 6px; word-break: break-all; }
+#wyniki-404 { margin-top: 24px; }
+.zglos-404 { margin: 40px 0 8px; color: var(--olowek); }
+@media (max-width: 899px) { .blad-404 .hero-paragon { display: none; } } /* na telefonie wyniki od razu pod wyszukiwarką */
