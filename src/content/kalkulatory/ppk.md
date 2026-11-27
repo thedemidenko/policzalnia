@@ -136,6 +136,6 @@ Wpłata dodatkowa do 2% od ciebie i do 2,5% od pracodawcy podnosi kwotę na konc
 ## Rezygnacja z PPK i autozapis
 
 - Z PPK możesz wypisać się w każdej chwili, składając pracodawcy deklarację rezygnacji. Pieniądze zostają na koncie i dalej pracują.
-- Co 4 lata pracodawca ponownie zapisuje wszystkich, którzy zrezygnowali (najbliższy autozapis – w 2027 r.). Wtedy trzeba ponownie złożyć deklarację, jeśli nie chcesz oszczędzać.
+- Co 4 lata pracodawca ponownie zapisuje wszystkich, którzy zrezygnowali (najbliższy autozapis – w 2027 r.). Wtedy trzeba ponownie złożyć deklarację, jeśli nie chcesz oszczędzać. Terminy autozapisu 2027 i wyliczenia, ile kosztuje rezygnacja, znajdziesz w poradniku [Rezygnacja z PPK – czy warto się wypisać?](/poradniki/rezygnacja-z-ppk-czy-warto/).
 - Osoby po 55. roku życia nie są zapisywane automatycznie, ale mogą przystąpić na wniosek (do 70 lat).
 - PPK podlega dziedziczeniu – po śmierci uczestnika środki trafiają do wskazanych osób albo spadkobierców, bez podatku od spadku.
