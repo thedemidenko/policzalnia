@@ -5,6 +5,37 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // nadpłacać kredyt czy inwestować: lib kalkulatora nadpłaty (te same miesięczne wydatki w obu scenariuszach)
+  'nadplata-czy-inwestycja': async () => {
+    const { obliczNadplate } = await import('./nadplata');
+    return (el) => {
+      el.innerHTML = `<h3>Nadpłacać czy inwestować – policz</h3>
+        <label>Kredyt do spłaty <output data-o="s"></output><input type="range" min="50000" max="1000000" step="10000" value="${el.dataset.saldo ?? 400000}" data-i="s"></label>
+        <label>Oprocentowanie kredytu <output data-o="p"></output><input type="range" min="1" max="12" step="0.05" value="${el.dataset.stopa ?? 6}" data-i="p"></label>
+        <label>Zostało lat spłaty <output data-o="n"></output><input type="range" min="2" max="35" step="1" value="${el.dataset.lata ?? 25}" data-i="n"></label>
+        <label>Wolna kwota co miesiąc <output data-o="c"></output><input type="range" min="100" max="5000" step="100" value="${el.dataset.kwota ?? 1000}" data-i="c"></label>
+        <label>Zysk z inwestycji rocznie <output data-o="r"></output><input type="range" min="1" max="12" step="0.25" value="${el.dataset.zysk ?? 7}" data-i="r"></label>
+        <label>Gdzie inwestujesz<select data-i="b"><option value="1">zwykłe konto (podatek Belki)</option><option value="0">IKE / IKZE / OKI (bez Belki)</option></select></label>
+        <div class="wz-slupki" data-o="wyk"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const proc = (v: number) => `${v.toLocaleString('pl-PL', { maximumFractionDigits: 2 })}%`;
+      const licz = () => {
+        const s = +i('s').value, p = +i('p').value, n = +i('n').value, c = +i('c').value, r = +i('r').value, belka = i('b').value === '1';
+        o('s').textContent = zl(s); o('p').textContent = proc(p); o('n').textContent = `${n} lat`; o('c').textContent = zl(c); o('r').textContent = proc(r);
+        const w = obliczNadplate({ saldo: s, stopa: p, rat: n * 12, cykliczna: c }, { stopa: r, belka });
+        const inw = w.inwestycja!;
+        const prog = belka ? p / 0.81 : p;
+        o('wyk').innerHTML = `<div class="ws-wiersz"><span class="ws-et">Oszczędność na odsetkach</span><span class="ws-pasek"><i style="--w:100%;--k:var(--w0)"></i></span><b>${zl(w.oszczednosc)}</b></div>`
+          + `<div class="ws-wiersz"><span class="ws-et">Kredyt krótszy o</span><span class="ws-pasek"><i style="--w:${((w.skrocenie / (n * 12)) * 100).toFixed(1)}%;--k:var(--w2)"></i></span><b>${Math.floor(w.skrocenie / 12)} l. ${w.skrocenie % 12} mies.</b></div>`;
+        o('werdykt').textContent = inw.roznica < 1 ? 'Wychodzi tak samo' : inw.lepsze === 'nadplata' ? `Nadpłata lepsza o ${zl(inw.roznica)}` : `Inwestowanie lepsze o ${zl(inw.roznica)}`;
+        o('opis').textContent = `Porównanie po ${n} latach: w obu wariantach co miesiąc wydajesz tyle samo, a po spłacie kredytu ratę i nadpłatę inwestujesz. Inwestycja wygrywa, gdy daje średnio więcej niż ${proc(Math.round(prog * 100) / 100)} rocznie${belka ? ' przed podatkiem' : ''} – i nie jest to pewne, a oszczędność na odsetkach jest.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // obligacje skarbowe czy lokata: najlepsze obligacje (lib kalkulatora) vs lokata odnawiana z podatkiem Belki
   'obligacje-czy-lokata': async () => {
     const { porownaj, TYPY } = await import('./obligacje');

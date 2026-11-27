@@ -50,9 +50,10 @@ function linia({ meta, wiersze }) {
   const W = 640, H = 300, L = 56, R = 16, T = 16, B = 34;
   const x = (i) => L + (i * (W - L - R)) / Math.max(1, os.length - 1);
   const y = (v) => T + (1 - (v - min) / (max - min || 1)) * (H - T - B);
-  const krok = Math.pow(10, Math.floor(Math.log10(max - min || 1)));
+  let krok = Math.pow(10, Math.floor(Math.log10(max - min || 1)));
+  if ((max - min) / krok < 2) krok /= 5; else if ((max - min) / krok < 5) krok /= 2; // 4–8 linii siatki
   const podz = [];
-  for (let v = Math.ceil(min / krok) * krok; v <= max; v += krok * (((max - min) / krok) > 5 ? 2 : 1)) podz.push(v);
+  for (let v = Math.ceil(min / krok) * krok; v <= max; v += krok * (((max - min) / krok) > 5 ? 2 : 1)) podz.push(v + 0);
   const siatka = podz.map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" class="wl-siatka"/><text x="${L - 6}" y="${(y(v) + 4).toFixed(1)}" class="wl-os" text-anchor="end">${esc(fmt(v))}</text>`).join('');
   const osX = os.map((e, i) => `<text x="${x(i).toFixed(1)}" y="${H - 10}" class="wl-os" text-anchor="middle">${esc(e)}</text>`).join('');
   const linie = serie.map((s, i) => {
