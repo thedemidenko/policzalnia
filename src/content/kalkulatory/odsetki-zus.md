@@ -162,3 +162,5 @@ Jeśli wpłata nie wystarcza na całą zaległość z odsetkami, ZUS zalicza ją
 - Od składek **rozłożonych na raty** – od dnia po wpływie wniosku o raty (art. 29 ust. 2). W zamian ZUS pobiera opłatę prolongacyjną.
 
 Odsetki finansujesz w całości z własnych środków – także od składek pracownika, które potrącono z wynagrodzenia. Nie są kosztem uzyskania przychodu.
+
+Co grozi za zaległości, jak rozłożyć dług na raty, ile kosztuje układ ratalny i kiedy ZUS umarza składki – opisujemy w poradniku [Zaległości w ZUS – raty, umorzenie, przedawnienie](/poradniki/zaleglosci-w-zus/).

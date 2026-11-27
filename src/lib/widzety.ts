@@ -5,6 +5,39 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // układ ratalny w ZUS: odsetki narosłe do wniosku + opłata prolongacyjna (50% stawki odsetek, art. 29 ust. 4 ustawy o sus)
+  // wobec spłaty w tym samym tempie bez układu (odsetki za zwłokę od malejącego długu); stawka z ostatniej stopy lombardowej NBP
+  'zus-raty': async () => {
+    const stopy = (await import('../data/stopy-nbp.json')).default as { zmiany: { od: string; lomb: number }[] };
+    const lomb = [...stopy.zmiany].sort((a, b) => a.od.localeCompare(b.od)).at(-1)!.lomb;
+    const odsetki = Math.round((2 * lomb + 2) * 100) / 100; // art. 56 Ordynacji: 200% lombardowej + 2 pp.
+    return (el) => {
+      el.innerHTML = `<h3>Układ ratalny w ZUS – ile kosztuje?</h3>
+        <label>Zaległe składki <output data-o="d"></output><input type="range" min="500" max="100000" step="500" value="${el.dataset.dlug ?? 12000}" data-i="d"></label>
+        <label>Od ilu miesięcy zalegasz (średnio) <output data-o="m"></output><input type="range" min="0" max="36" step="1" value="${el.dataset.miesiecy ?? 4}" data-i="m"></label>
+        <label>Liczba rat <output data-o="n"></output><input type="range" min="2" max="60" step="1" value="${el.dataset.raty ?? 24}" data-i="n"></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const proc = (v: number) => `${v.toLocaleString('pl-PL', { maximumFractionDigits: 2 })}%`;
+      const licz = () => {
+        const d = +i('d').value, m = +i('m').value, n = +i('n').value;
+        o('d').textContent = zl(d); o('m').textContent = `${m} mies.`; o('n').textContent = String(n);
+        const doWniosku = d * (odsetki / 100) * (m / 12);
+        const rata = d / n;
+        let prolong = 0, bez = 0;
+        for (let k = 1; k <= n; k++) { prolong += rata * (odsetki / 200) * (k / 12); bez += rata * (odsetki / 100) * (k / 12); }
+        const wiersze: [string, number, number][] = [['Odsetki narosłe do dnia wniosku', doWniosku, 1], ['Opłata prolongacyjna w układzie', prolong, 0], ['Odsetki przy tej samej spłacie bez układu', bez, 2]];
+        const max = Math.max(...wiersze.map((w) => w[1]), 1);
+        o('s').innerHTML = wiersze.map(([nz, v, k]) => `<div class="ws-wiersz"><span class="ws-et">${nz}</span><span class="ws-pasek"><i style="--w:${((v / max) * 100).toFixed(1)}%;--k:var(--w${k})"></i></span><b>${zl(v)}</b></div>`).join('');
+        o('werdykt').textContent = `Rata ok. ${zl(rata + (doWniosku + prolong) / n)} miesięcznie`;
+        o('opis').textContent = `Odsetki za zwłokę ${proc(odsetki)} rocznie, opłata prolongacyjna ${proc(odsetki / 2)}. Od dnia po złożeniu wniosku ZUS nie nalicza odsetek od składek objętych układem. Rata zawiera też odsetki sprzed wniosku i opłatę – w umowie ZUS rozkłada je po swojemu. Szacunek: raty co miesiąc od miesiąca po wniosku.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // koniec umowy o pracę: okres wypowiedzenia (art. 36 KP), odprawa (art. 8 ustawy o zwolnieniach grupowych),
   // zasiłek dla bezrobotnych (ustawa o rynku pracy – kwoty od 1.06.2026, 90 dni karencji przy własnym wypowiedzeniu/porozumieniu)
   'koniec-umowy': async () => {
