@@ -43,8 +43,13 @@ export interface DaneWynagrodzenia {
   /** wpłata pracodawcy do PPK (podstawowa + dodatkowa), np. 0,015 */
   ppkPracodawca?: number;
   wypadkowa?: number;
-  /** kobieta 55+ / mężczyzna 60+ – bez Funduszu Pracy i FGŚP */
+  /** bez Funduszu Pracy i FGŚP: kobieta 55+ / mężczyzna 60+, 36 mies. po urlopie macierzyńskim, rodzicielskim lub
+   *  wychowawczym, 12 mies. po zatrudnieniu bezrobotnego 50+ albo skierowanego bezrobotnego do 30 lat (art. 261–263 ustawy
+   *  o rynku pracy, art. 9a–9c ustawy o ochronie roszczeń pracowniczych) */
   bezFp?: boolean;
+  /** oświadczenie o wspólnym rozliczeniu z małżonkiem (art. 32 ust. 3): 'nizszy' – zaliczki 12% przez cały rok;
+   *  'bezDochodow' – małżonek bez dochodów, a dochód do 120 000 zł: 12% i dodatkowo 1/12 kwoty zmniejszającej */
+  wspolne?: 'brak' | 'nizszy' | 'bezDochodow';
   /** wymiar etatu (do sprawdzenia płacy minimalnej) */
   etat?: number;
 }
@@ -99,7 +104,13 @@ export function obliczRok(x: DaneWynagrodzenia): WynikRoczny {
   const lim = limit30(x.rok);
   const min = placaMinimalna(x.rok);
 
-  let narZus = 0, narZw = 0, narDoch = 0, narKupAut = 0;
+  const progDo = p.progi[0].do ?? 120000;
+  const kwota12 = p.kwota_zmniejszajaca / 12;
+  // art. 32 ust. 3 pkt 1 wymaga przewidywanego dochodu do 120 000 zł – sprawdzamy go wyliczeniem bez oświadczenia
+  const wspolne = x.wspolne && x.wspolne !== 'brak' ? x.wspolne : null;
+  const dodatkowa = wspolne === 'bezDochodow' && obliczRok({ ...x, wspolne: 'brak' }).pit37.dochod <= progDo ? kwota12 : 0;
+
+  let narZus = 0, narZw = 0, narDoch = 0, narKupAut = 0, narOpod = 0, narSpolOdl = 0;
   let miesiacProgu = -1, miesiacLimitu = -1, miesiacKoncaUlgi = -1;
   const miesiace: Miesiac[] = [];
   for (let m = 0; m < 12; m++) {
@@ -121,18 +132,23 @@ export function obliczRok(x: DaneWynagrodzenia): WynikRoczny {
     const udzial = przychod > 0 ? opod / przychod : 0;
     // składki społeczne odlicza się tylko w części przypadającej na przychód opodatkowany
     const spoleczneOdl = r2(spoleczne * udzial);
+    narOpod += opod; narSpolOdl += spoleczneOdl;
     let koszty = 0;
     if (opod > 0) {
+      // 50% od części autorskiej po jej składkach (art. 22 ust. 9 pkt 3); limit 120 000 zł w roku (ust. 9a),
+      // a przy uldze zerowego PIT – wspólny z przychodem zwolnionym (ust. 9aa)
       const bazaAut = Math.max(0, (brutto * udzial - spoleczneOdl) * aut);
-      const kupAut = r2(Math.min(bazaAut * 0.5, Math.max(0, LIMIT_KUP_AUTORSKICH - narKupAut)));
+      const kupAut = r2(Math.min(bazaAut * 0.5, Math.max(0, Math.min(LIMIT_KUP_AUTORSKICH, progDo) - narKupAut - (zw ? narZw : 0))));
       narKupAut += kupAut;
-      koszty = r2(Math.min((aut < 1 ? kup : 0) + kupAut, Math.max(0, opod - spoleczneOdl)));
+      // koszty pracownicze od reszty pensji; przy uldze – najwyżej do opodatkowanej części przychodu (art. 22 ust. 3b)
+      koszty = r2(Math.min((aut < 1 ? kup : 0) + kupAut, opod));
       if (zw && miesiacKoncaUlgi < 0) miesiacKoncaUlgi = m;
     }
     const podstawa = opod > 0 ? Math.round(Math.max(0, opod - spoleczneOdl - koszty)) : 0;
     // zaliczka według skali narastająco: od miesiąca przekroczenia progu – wyższa stawka od nadwyżki
     let podatek = 0, wyzszyProg = 0, dol = 0;
-    for (const pr of p.progi) {
+    // przy oświadczeniu o wspólnym rozliczeniu – 12% przez cały rok (art. 32 ust. 3)
+    for (const pr of wspolne ? [{ do: null, stawka: p.progi[0].stawka }] : p.progi) {
       const gora = pr.do ?? Infinity;
       const czesc = Math.max(0, Math.min(narDoch + podstawa, gora) - Math.max(narDoch, dol));
       podatek += czesc * pr.stawka;
@@ -141,13 +157,15 @@ export function obliczRok(x: DaneWynagrodzenia): WynikRoczny {
     }
     narDoch += podstawa;
     if (wyzszyProg > 0 && miesiacProgu < 0) miesiacProgu = m;
-    const zaliczka = podstawa > 0 ? Math.max(0, Math.round(podatek - pit2)) : 0;
+    const zaliczka = podstawa > 0 ? Math.max(0, Math.round(podatek - pit2 - dodatkowa)) : 0;
     const netto = r2(brutto - spoleczne - zdrowotna - zaliczka - ppkPracownika);
 
+    // Fundusz Pracy i FGŚP od pełnego brutto – bez limitu 30-krotności (art. 259 ust. 1 ustawy o rynku pracy,
+    // art. 29 ust. 1 ustawy o ochronie roszczeń pracowniczych); FP tylko od pensji co najmniej równej płacy minimalnej
     const fpTak = !x.bezFp && brutto >= min;
     const sp = {
       emerytalna: r2(bazaER * 0.0976), rentowa: r2(bazaER * 0.065), wypadkowa: r2(brutto * wyp),
-      fp: fpTak ? r2(bazaER * 0.0245) : 0, fgsp: x.bezFp ? 0 : r2(bazaER * 0.001),
+      fp: fpTak ? r2(brutto * 0.0245) : 0, fgsp: x.bezFp ? 0 : r2(brutto * 0.001),
     };
     const kosztPracodawcy = r2(brutto + sp.emerytalna + sp.rentowa + sp.wypadkowa + sp.fp + sp.fgsp + ppkPracodawcy);
     miesiace.push({ brutto, emerytalna, rentowa, chorobowa, spoleczne, zdrowotna, koszty, ppkPracownika, ppkPracodawcy, zwolniony, podstawa, wyzszyProg, zaliczka, netto, skladkiPracodawcy: sp, kosztPracodawcy, limitZus: bazaER < brutto });
@@ -161,8 +179,10 @@ export function obliczRok(x: DaneWynagrodzenia): WynikRoczny {
     netto: s((q) => q.netto), kosztPracodawcy: s((q) => q.kosztPracodawcy),
     skladkiPracodawcy: s((q) => q.skladkiPracodawcy.emerytalna + q.skladkiPracodawcy.rentowa + q.skladkiPracodawcy.wypadkowa + q.skladkiPracodawcy.fp + q.skladkiPracodawcy.fgsp),
   };
-  // zeznanie roczne: dochód zaokrąglony, skala z kwotą zmniejszającą 3600 zł (bez innych ulg i wspólnego rozliczenia)
-  const dochodRoczny = Math.round(suma.podstawa);
+  // zeznanie roczne (bez innych ulg i wspólnego rozliczenia): koszty pracownicze za 12 miesięcy, ale najwyżej do
+  // opodatkowanego przychodu (art. 22 ust. 2 i 3b), skala z kwotą zmniejszającą
+  const kupRoczne = r2(Math.min((aut < 1 ? 12 * kup : 0) + narKupAut, narOpod));
+  const dochodRoczny = Math.round(Math.max(0, narOpod - narSpolOdl - kupRoczne));
   const podatekRoczny = Math.round(podatekSkala(dochodRoczny, p));
   const pit37 = { dochod: dochodRoczny, podatek: podatekRoczny, zaliczki: suma.zaliczka, roznica: r2(suma.zaliczka - podatekRoczny) };
 
@@ -175,6 +195,8 @@ export function obliczRok(x: DaneWynagrodzenia): WynikRoczny {
   if (zw && miesiacKoncaUlgi >= 0) uwagi.push(`Limit zerowego PIT (${LIMIT_ULGI.toLocaleString('pl-PL')} zł przychodu w roku) wyczerpie się w ${MIESIACE_W[miesiacKoncaUlgi]} – od tej pory pracodawca pobiera zaliczkę na podatek.`);
   if (zw) uwagi.push('Ulga zerowego PIT zwalnia tylko z podatku – składki ZUS i zdrowotną płacisz w całości.');
   if (pit2 === 0 && !zw) uwagi.push('Bez PIT-2 pracodawca nie odlicza 300 zł miesięcznie – nadpłatę (do 3600 zł) odzyskasz w zeznaniu rocznym.');
+  if (x.ppk && ppkP < 0.02 && brutto > 1.2 * min) uwagi.push(`Wpłatę pracownika do PPK poniżej 2% można zadeklarować tylko przy wynagrodzeniu do 1,2-krotności płacy minimalnej (${r2(1.2 * min).toLocaleString('pl-PL')} zł).`);
+  if (wspolne) uwagi.push(dodatkowa ? 'Przy oświadczeniu o wspólnym rozliczeniu z małżonkiem bez dochodów zaliczka wynosi 12% przez cały rok i jest dodatkowo obniżana o 300 zł miesięcznie.' : 'Przy oświadczeniu o wspólnym rozliczeniu z małżonkiem zaliczka wynosi 12% przez cały rok, także powyżej progu – ostateczny podatek wyjdzie w zeznaniu.');
   if (x.ppk) uwagi.push('Wpłata pracodawcy do PPK jest Twoim przychodem – zwiększa zaliczkę na podatek, choć nie trafia na konto.');
   return { miesiace, suma, miesiacProgu, miesiacLimitu, miesiacKoncaUlgi, pit37, uwagi };
 }

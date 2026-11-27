@@ -46,7 +46,7 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
     <div class="pole-para">
       <div class="pole">
         <label for="w-pit2">PIT-2 (kwota zmniejszająca)</label>
-        <select id="w-pit2" name="pit2"><option value="300">złożony – 300 zł</option><option value="150">u 2 pracodawców – 150 zł</option><option value="100">u 3 pracodawców – 100 zł</option><option value="0">nie złożony</option></select>
+        <select id="w-pit2" name="pit2"><option value="300">tak – 300 zł</option><option value="150">2 pracodawców – 150 zł</option><option value="100">3 pracodawców – 100 zł</option><option value="0">nie</option></select>
       </div>
       <div class="pole">
         <label for="w-etat">Wymiar etatu</label>
@@ -74,7 +74,16 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
         <div class="kwota" data-jedn="%"><input id="w-wyp" name="wypadkowa" type="text" inputmode="decimal" value="1,67" /></div>
       </div>
     </div>
-    <label class="przelacznik"><input type="checkbox" name="wiek" value="1" /> Kobieta 55+ / mężczyzna 60+ (pracodawca nie płaci Funduszu Pracy i FGŚP)</label>
+    <div class="pole">
+      <label for="w-wsp">Oświadczenie o wspólnym rozliczeniu z małżonkiem</label>
+      <select id="w-wsp" name="wspolne" aria-describedby="w-wsp-pod"><option value="brak">nie</option><option value="nizszy">małżonek zarabia mniej</option><option value="bezDochodow">małżonek bez dochodów</option></select>
+      <small id="w-wsp-pod">Składane pracodawcy. Zaliczka wynosi wtedy 12% przez cały rok, a przy małżonku bez dochodów jest niższa o kolejne 300 zł (gdy Twój dochód nie przekracza 120 000 zł).</small>
+    </div>
+    <div class="pole">
+      <label for="w-fp">Pracodawca nie płaci Funduszu Pracy i FGŚP</label>
+      <select id="w-fp" name="fp" aria-describedby="w-fp-pod"><option value="0">nie – płaci</option><option value="wiek">kobieta 55+ / mężczyzna 60+</option><option value="urlop">powrót z urlopu (36 mies.)</option><option value="50">bezrobotny 50+ (12 mies.)</option><option value="30">bezrobotny do 30 lat (12 mies.)</option></select>
+      <small id="w-fp-pod">Powrót z urlopu macierzyńskiego, rodzicielskiego lub wychowawczego; bezrobotny 50+ z rejestru urzędu pracy albo do 30 lat skierowany przez urząd.</small>
+    </div>
   </details>
 </form>
 <div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
@@ -122,7 +131,7 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
   const $ = (id: string) => document.getElementById(id)!;
   const p = new URLSearchParams(location.search);
   // „Więcej opcji” otwarte, gdy link do wyliczenia zmienia któreś z ustawień domyślnych
-  const domyslne: Record<string, string> = { pit2: '300', etat: '1', autorskie: '0', wypadkowa: '1,67', wiek: '0', ppkp: '2', ppkf: '1.5' };
+  const domyslne: Record<string, string> = { pit2: '300', etat: '1', autorskie: '0', wypadkowa: '1,67', fp: '0', wspolne: 'brak', ppkp: '2', ppkf: '1.5' };
   if (Object.entries(domyslne).some(([k, v]) => p.has(k) && p.get(k) !== v)) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
   const zlr = (n: number) => zl(n).replace(/,00\s/, ' ');
 
@@ -139,7 +148,7 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
       rok: +val('rok'), podwyzszoneKoszty: el('dojazd').checked, pit2: +val('pit2'), zwolnienie: val('ulga') as Zwolnienie,
       ppk, ppkPracownik: +val('ppkp') / 100, ppkPracodawca: +val('ppkf') / 100,
       autorskie: Math.min(100, Math.max(0, liczba(val('autorskie')))) / 100, wypadkowa: Math.max(0, liczba(val('wypadkowa'))) / 100,
-      bezFp: el('wiek').checked, etat: +val('etat'),
+      bezFp: val('fp') !== '0', wspolne: val('wspolne') as 'brak' | 'nizszy' | 'bezDochodow', etat: +val('etat'),
     };
     const kierunek = val('kierunek');
     const kwota = liczba(val('kwota'));
@@ -188,7 +197,8 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
     $('w-pit37').innerHTML = r.suma.brutto > 0
       ? `<b>Zeznanie PIT-37 za ${opcje.rok} r.:</b> podatek ${zlr(r.pit37.podatek)}, pobrane zaliczki ${zlr(r.pit37.zaliczki)} – ` +
         (Math.abs(d) < 10 ? `rozliczenie wyjdzie praktycznie na zero${Math.abs(d) >= 1 ? ` (${d > 0 ? 'zwrot' : 'dopłata'} ${zlr(Math.abs(d))})` : ''}.` : d > 0 ? `ok. <b>${zl(d)} zwrotu</b>.` : `ok. <b>${zl(-d)} dopłaty</b>.`) +
-        ' Bez innych dochodów, ulg i wspólnego rozliczenia.'
+        ' Bez innych dochodów, ulg i wspólnego rozliczenia.' +
+        (opcje.wspolne !== 'brak' ? ' Wynik wspólnego zeznania z małżonkiem policzysz w <a href="/firma/wspolne-rozliczenie/">kalkulatorze wspólnego rozliczenia</a>.' : '')
       : '';
 
     const wiersz = (a: string, b: number) => `<tr><td>${a}</td><td>${zl(b)}</td></tr>`;
@@ -199,7 +209,7 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
       ...(m.ppkPracodawcy ? [wiersz('Wpłata pracodawcy do PPK (przychód)', m.ppkPracodawcy)] : []),
       ...(m.zwolniony ? [wiersz('Przychód zwolniony z PIT (ulga)', m.zwolniony)] : []),
       wiersz('Koszty uzyskania przychodu', m.koszty), wiersz('Podstawa opodatkowania (zaokrąglona)', m.podstawa),
-      wiersz(`Zaliczka na PIT (12%${opcje.pit2 ? ` − ${opcje.pit2} zł` : ''})`, m.zaliczka),
+      wiersz(`Zaliczka na PIT (12%${opcje.pit2 ? ` − ${opcje.pit2} zł` : ''}${opcje.wspolne === 'bezDochodow' && m.zaliczka < Math.round(m.podstawa * 0.12 - opcje.pit2) ? ' − 300 zł' : ''})`, m.zaliczka),
       ...(m.ppkPracownika ? [wiersz('Twoja wpłata do PPK', m.ppkPracownika)] : []),
       wiersz('Na rękę', m.netto),
       wiersz('Pracodawca: emerytalna 9,76%', sp.emerytalna), wiersz('Pracodawca: rentowa 6,5%', sp.rentowa), wiersz(`Pracodawca: wypadkowa ${(opcje.wypadkowa * 100).toLocaleString('pl-PL')}%`, sp.wypadkowa),

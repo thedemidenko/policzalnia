@@ -24,6 +24,8 @@ faq:
     odpowiedz: Nie. Do 26. urodzin nie płacisz podatku od pensji do 85 528 zł przychodu w roku, ale składki ZUS i zdrowotną pracodawca pobiera w całości. Przy 7000 zł brutto na rękę dostajesz 5496,67 zł zamiast 5101,67 zł. Ten sam limit dotyczy ulgi dla rodzin 4+, na powrót z zagranicy i dla pracujących seniorów.
   - pytanie: Czy PPK zmniejsza pensję netto?
     odpowiedz: Tak. Twoja wpłata (zwykle 2% brutto) jest potrącana z wypłaty, a wpłata pracodawcy (1,5%) jest Twoim przychodem i zwiększa zaliczkę na podatek. Przy 7000 zł brutto na rękę zostaje 4949,67 zł zamiast 5101,67 zł, ale na konto PPK co miesiąc trafia 245 zł.
+  - pytanie: Ile wynosi pensja netto na pół etatu?
+    odpowiedz: Przy płacy minimalnej na pół etatu (2403 zł brutto w 2026 r.) na rękę zostaje 1886,93 zł. Podatku nie ma, bo kwota zmniejszająca 300 zł z PIT-2 w całości pokrywa zaliczkę. Pracodawca nie płaci przy tej pensji Funduszu Pracy, więc etat kosztuje go 2836,26 zł.
   - pytanie: Czy zmiany w PIT od 2027 roku zmienią moją pensję netto?
     odpowiedz: Nie. Prezydent zawetował 27 listopada 2026 r. ustawę, która podnosiła próg do 130 000 zł i dodawała stawkę 24%. W 2027 r. zostaje skala 12% i 32% z progiem 120 000 zł oraz kwota zmniejszająca podatek 300 zł miesięcznie. Pensja netto zmieni się głównie przez nowy limit składek ZUS i wyższą płacę minimalną.
 powiazane:
@@ -34,13 +36,17 @@ powiazane:
   - ppk
   - wspolne-rozliczenie
 zrodla:
-  - nazwa: Ustawa o podatku dochodowym od osób fizycznych – art. 11, 12, 21 ust. 1 pkt 148 i 152–154, 22 ust. 2, 9 i 9a, 27, 31, 32 (Dz.U. 2026 poz. 592)
+  - nazwa: Ustawa o podatku dochodowym od osób fizycznych – art. 11, 12, 21 ust. 1 pkt 148 i 152–154, 22 ust. 2, 3b, 9, 9a i 9aa, 26 ust. 1 pkt 2 lit. b, 27, 31b, 32 (Dz.U. 2026 poz. 592)
     url: https://eli.gov.pl/eli/DU/2026/592/ogl
   - nazwa: Ustawa o systemie ubezpieczeń społecznych – art. 16, 18, 19 ust. 1 (limit 30-krotności), art. 22 (tekst jednolity Dz.U. 2026 poz. 1474)
     url: https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19981370887
-  - nazwa: Ustawa o rynku pracy i służbach zatrudnienia – Fundusz Pracy (Dz.U. 2025 poz. 620)
+  - nazwa: Ustawa o rynku pracy i służbach zatrudnienia – art. 259, 261–263 (Fundusz Pracy, Dz.U. 2025 poz. 620)
     url: https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20250000620
-  - nazwa: Ustawa o pracowniczych planach kapitałowych – art. 26, 27 (Dz.U. 2026 poz. 192)
+  - nazwa: Ustawa o ochronie roszczeń pracowniczych w razie niewypłacalności pracodawcy – art. 9a–9c, 29 (FGŚP, Dz.U. 2026 poz. 186)
+    url: https://eli.gov.pl/eli/DU/2026/186/ogl
+  - nazwa: Ministerstwo Finansów – objaśnienia podatkowe dotyczące ulgi dla młodych (koszty i składki przy przekroczeniu limitu)
+    url: https://podatki-arch.mf.gov.pl/media/5974/obja%C5%9Bnienia-podatkowe-ulga-dla-m%C5%82odych-14-kwietnia-2020-r.pdf
+  - nazwa: Ustawa o pracowniczych planach kapitałowych – art. 2 ust. 1 pkt 40, art. 26, 27 (Dz.U. 2026 poz. 192)
     url: https://eli.gov.pl/eli/DU/2026/192/ogl
   - nazwa: Rozporządzenie w sprawie minimalnego wynagrodzenia za pracę na 2027 r. (Dz.U. 2026 poz. 1213)
     url: https://eli.gov.pl/eli/DU/2026/1213
@@ -57,7 +63,7 @@ Kalkulator liczy pensję z **umowy o pracę** według przepisów na 2026 i 2027 
 - **na rękę** – kwota, którą chcesz dostać; kalkulator policzy, ile brutto wpisać w umowę,
 - **koszt firmy** – budżet pracodawcy na etat; kalkulator policzy, jaka pensja się w nim mieści.
 
-Domyślnie przyjmujemy najczęstszą sytuację: koszty uzyskania przychodu 250 zł, złożony PIT-2 (kwota zmniejszająca podatek 300 zł miesięcznie) i składkę wypadkową 1,67%. Możesz zaznaczyć dojazd z innej miejscowości, PPK i ulgę zerowego PIT, a w „Więcej opcji” – PIT-2 u kilku pracodawców, koszty autorskie 50%, inną składkę wypadkową i wiek 55/60+.
+Domyślnie przyjmujemy najczęstszą sytuację: koszty uzyskania przychodu 250 zł, złożony PIT-2 (kwota zmniejszająca podatek 300 zł miesięcznie) i składkę wypadkową 1,67%. Możesz zaznaczyć dojazd z innej miejscowości, PPK i ulgę zerowego PIT, a w „Więcej opcji” – PIT-2 u kilku pracodawców, wymiar etatu, wysokość wpłat do PPK, koszty autorskie 50%, oświadczenie o wspólnym rozliczeniu z małżonkiem, składkę wypadkową i zwolnienie pracodawcy z Funduszu Pracy.
 
 Pod wynikiem zobaczysz, na co idą pieniądze pracodawcy, oraz **wypłaty w każdym miesiącu roku**. To ważne przy wyższych pensjach: netto spada po przekroczeniu progu 120 000 zł i rośnie po przekroczeniu limitu składek ZUS. Kalkulator szacuje też wynik rocznego zeznania PIT-37.
 
@@ -109,7 +115,14 @@ Do pensji brutto pracodawca dokłada własne składki:
 
 Łączny koszt etatu za 7000 zł brutto to **8433,60 zł** miesięcznie, czyli ponad 101 000 zł rocznie. Z PPK pracodawca dopłaca jeszcze co najmniej 1,5% brutto.
 
-Funduszu Pracy nie płaci się, gdy pensja jest niższa od płacy minimalnej (np. przy części etatu), ani za kobiety po 55. i mężczyzn po 60. roku życia – wtedy odpada też FGŚP. Składka wypadkowa zależy od firmy: mniejsze firmy płacą zwykle 1,67%, większe – stawkę ustaloną przez ZUS.
+Funduszu Pracy nie płaci się, gdy pensja jest niższa od płacy minimalnej – np. przy części etatu. Pracodawca nie płaci też Funduszu Pracy ani FGŚP za:
+
+- kobiety, które skończyły 55 lat, i mężczyzn po 60. roku życia,
+- osoby wracające z urlopu macierzyńskiego, rodzicielskiego albo wychowawczego – przez 36 miesięcy,
+- zatrudnionych bezrobotnych po 50. roku życia – przez 12 miesięcy,
+- skierowanych przez urząd pracy bezrobotnych przed 30. rokiem życia – przez 12 miesięcy.
+
+Przy 7000 zł brutto zwolnienie obniża koszt etatu do 8255,10 zł miesięcznie. Składka wypadkowa zależy od firmy: mniejsze firmy płacą zwykle 1,67%, większe – stawkę ustaloną przez ZUS.
 
 ## Od jakiej pensji netto spada w trakcie roku?
 
@@ -134,7 +147,7 @@ Przez dziewięć miesięcy na rękę jest 10 555,58 zł, w październiku 9167,58
 
 ## Dlaczego pod koniec roku netto rośnie?
 
-Składki emerytalną i rentową płaci się tylko do **limitu 30-krotności** prognozowanego przeciętnego wynagrodzenia – **282 600 zł w 2026 r.** i **300 990 zł w 2027 r.** Po przekroczeniu limitu do końca roku nie płaci ich ani pracownik, ani pracodawca (składka chorobowa, wypadkowa i zdrowotna zostają).
+Składki emerytalną i rentową płaci się tylko do **limitu 30-krotności** prognozowanego przeciętnego wynagrodzenia – **282 600 zł w 2026 r.** i **300 990 zł w 2027 r.** Po przekroczeniu limitu do końca roku nie płaci ich ani pracownik, ani pracodawca. Zostają składka chorobowa i zdrowotna, a po stronie pracodawcy – wypadkowa, Fundusz Pracy i FGŚP, które liczy się od całej pensji, bez limitu.
 
 Limit dotyczy osób, które zarabiają ponad **23 550 zł brutto miesięcznie** (w 2027 r. – 25 082,50 zł). Przy 30 000 zł brutto w październiku składki pobiera się już tylko od części pensji, a od listopada wcale: netto rośnie z 15 653,17 zł do 16 809,08 zł, a potem do 17 646,15 zł miesięcznie. Ponieważ w tym samym roku działa też próg 32%, wypłaty mogą się zmieniać kilka razy – tabela w kalkulatorze pokazuje każdy miesiąc.
 
@@ -151,19 +164,35 @@ Ulga zwalnia tylko z PIT – **składki ZUS i zdrowotną płaci się w całości
 
 Przy wyższej pensji limit kończy się w trakcie roku. Przy 10 000 zł brutto ulga działa do sierpnia (7852,39 zł na rękę), we wrześniu wyczerpuje się częściowo, a od października netto wynosi 7147,39 zł – tyle samo co bez ulgi. Kalkulator zaznacza miesiąc końca ulgi w tabeli.
 
+> **Przykład.** Pracodawca odlicza koszty 250 zł tylko w miesiącach, w których pobiera podatek. W zeznaniu rocznym przysługują one jednak za cały rok – do wysokości przychodu, od którego płacisz podatek. Przy 20 000 zł brutto ulga kończy się w maju, a zeznanie PIT-37 da ok. **1521 zł zwrotu**. Kalkulator szacuje go pod tabelą miesięcy.
+
 ## Co zmieniają PIT-2, koszty 300 zł i koszty autorskie?
 
 **PIT-2** – oświadczenie, dzięki któremu pracodawca co miesiąc obniża zaliczkę o 300 zł (1/12 kwoty zmniejszającej 3600 zł). Jeśli pracujesz u dwóch albo trzech pracodawców, możesz rozdzielić kwotę – po 150 zł albo 100 zł. Bez PIT-2 zaliczki są wyższe, a różnicę dostaniesz w zwrocie podatku.
 
 **Koszty podwyższone 300 zł** przysługują, gdy dojeżdżasz do pracy z innej miejscowości i nie dostajesz dodatku za dojazdy. Zysk to 6 zł miesięcznie.
 
-**Koszty autorskie 50%** stosuje się do części pensji za prace twórcze – np. programistów, grafików, dziennikarzy, architektów – jeśli umowa przenosi prawa autorskie. Liczy się je od tej części pensji po odjęciu składek, do 120 000 zł kosztów w roku. Przy 10 000 zł brutto i połowie pensji za prawa autorskie na rękę zostaje 7405,39 zł zamiast 7147,39 zł.
+**Koszty autorskie 50%** stosuje się do części pensji za prace twórcze – np. programistów, grafików, dziennikarzy, architektów – jeśli umowa przenosi prawa autorskie. Liczy się je od tej części pensji po odjęciu składek, do 120 000 zł kosztów w roku. Przy uldze zerowego PIT ten limit jest wspólny z przychodem zwolnionym z podatku – zostaje na koszty autorskie najwyżej 34 472 zł (120 000 − 85 528 zł). Przy 10 000 zł brutto i połowie pensji za prawa autorskie na rękę zostaje 7405,39 zł zamiast 7147,39 zł.
+
+**Oświadczenie o wspólnym rozliczeniu z małżonkiem** sprawia, że pracodawca pobiera zaliczkę 12% przez cały rok – także po przekroczeniu 120 000 zł. Jeśli małżonek nie ma dochodów, a Twój dochód nie przekroczy 120 000 zł, zaliczka jest dodatkowo niższa o 300 zł miesięcznie. Przy 15 000 zł brutto z oświadczeniem na rękę dostajesz 10 555,58 zł przez cały rok (126 666,96 zł zamiast 120 200,96 zł), a ostateczny podatek wyjdzie we wspólnym zeznaniu – policzysz go w [kalkulatorze wspólnego rozliczenia](/firma/wspolne-rozliczenie/).
 
 ## Ile mniej na rękę przy PPK?
 
 W [PPK](/oszczedzanie/ppk/) pracownik wpłaca zwykle 2% brutto (przy pensji do 1,2-krotności płacy minimalnej może obniżyć wpłatę do 0,5%), a pracodawca 1,5%. Obie wpłaty mogą być wyższe – dobrowolnie do 4% (pracownik) i 4% (pracodawca). Wpłata pracodawcy jest **przychodem pracownika** – zwiększa zaliczkę na PIT, choć pieniądze trafiają na konto PPK, a nie na rękę.
 
 Przy 7000 zł brutto z PPK na rękę zostaje **4949,67 zł** (o 152 zł mniej), a na konto PPK trafia co miesiąc 245 zł (140 zł Twojej wpłaty i 105 zł od pracodawcy). Do tego dochodzą dopłaty od państwa. Czy warto zostać, liczymy w poradniku [PPK – zostać czy się wypisać?](/poradniki/rezygnacja-z-ppk-czy-warto/)
+
+## Ile wynosi pensja na część etatu i stawka godzinowa?
+
+Na części etatu płaca minimalna przysługuje proporcjonalnie – na pół etatu to **2403 zł brutto** w 2026 r. Na rękę zostaje **1886,93 zł**: kwota zmniejszająca 300 zł z PIT-2 w całości pokrywa zaliczkę, więc podatku nie ma. Pracodawca nie płaci przy tej pensji Funduszu Pracy (jest niższa od pełnej płacy minimalnej), więc etat kosztuje go 2836,26 zł.
+
+Pełny etat w 2026 r. to **2008 godzin pracy**, średnio 167,33 godziny w miesiącu. Płaca minimalna daje więc ok. 28,72 zł brutto i 21,55 zł na rękę za godzinę. Swoją stawkę godzinową zobaczysz na stronach z gotowymi wyliczeniami dla popularnych kwot.
+
+## Ile zostaje z premii albo trzynastki?
+
+Premia i trzynastka to część wynagrodzenia – płaci się od nich te same składki i podatek co od pensji. Przy pensji 7000 zł premia 3000 zł brutto zwiększa wypłatę o **2045,72 zł** na rękę, czyli ok. 68% kwoty brutto. Przy pensji 15 000 zł premia 5000 zł daje 3408,20 zł.
+
+Wyższa wypłata przybliża też próg 120 000 zł – po dużej premii 32% może zacząć działać o miesiąc lub dwa wcześniej. Żeby to sprawdzić, wpisz w kalkulatorze średnią pensję z premiami, a tabela pokaże miesiąc przekroczenia progu.
 
 ## Ile wynosi płaca minimalna netto w 2026 i 2027 roku?
 

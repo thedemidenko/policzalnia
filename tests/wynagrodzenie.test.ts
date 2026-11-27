@@ -67,6 +67,48 @@ describe('wynagrodzenie – cały rok', () => {
     expect(przed + r.miesiace[r.miesiacProgu].podstawa).toBeGreaterThan(120000);
     expect(r.miesiace[11].netto).toBeLessThan(r.miesiace[0].netto);
   });
+  it('zgodność z Sedlak & Sedlak (wynagrodzenia.pl), 30 000 zł: każdy miesiąc netto i koszt pracodawcy', () => {
+    const r = obliczRok({ ...baza, brutto: 30000 });
+    expect(r.miesiace.map((m) => m.netto)).toEqual([20781.17, 20781.17, 20781.17, 20781.17, 19144.17, 15653.17, 15653.17, 15653.17, 15653.17, 16809.08, 17646.15, 17646.15]);
+    expect(r.miesiace.map((m) => m.zaliczka)).toEqual([2776, 2776, 2776, 2776, 4413, 7904, 7904, 7904, 7904, 8531, 8985, 8985]);
+    expect(r.suma.netto).toBe(216982.91);
+    expect(r.miesiace[9].kosztPracodawcy).toBe(33314.76);
+    expect(r.miesiace[10].kosztPracodawcy).toBe(31266);
+    expect(r.suma.kosztPracodawcy).toBe(421142.76);
+  });
+  it('zgodność z Sedlak & Sedlak, 15 000 zł: październik 9167,58 zł, grudzień 8016,58 zł, koszt roczny 216 864 zł', () => {
+    const r = obliczRok({ ...baza, brutto: 15000 });
+    expect(r.miesiace[9].netto).toBe(9167.58);
+    expect(r.miesiace[11].netto).toBe(8016.58);
+    expect(r.suma.kosztPracodawcy).toBe(216864);
+  });
+  it('FP i FGŚP bez limitu 30-krotności (art. 259 ust. 1 ustawy o rynku pracy, art. 29 ust. 1 ustawy o FGŚP)', () => {
+    const s = obliczRok({ ...baza, brutto: 30000 }).miesiace[11].skladkiPracodawcy;
+    expect(s.emerytalna + s.rentowa).toBe(0);
+    expect(s.fp).toBe(735);
+    expect(s.fgsp).toBe(30);
+  });
+  it('ulga: koszty 250 zł za 12 miesięcy w zeznaniu, najwyżej do przychodu opodatkowanego (art. 22 ust. 3b, objaśnienia MF)', () => {
+    // 20 000 zł: limit 85 528 zł kończy się w maju; opodatkowane 154 472 zł, składki odliczane 1984,11 + 7 × 2742 zł
+    const r = obliczRok({ ...baza, brutto: 20000, zwolnienie: 'mlodzi' });
+    expect(r.miesiacKoncaUlgi).toBe(4);
+    expect(r.pit37.dochod).toBe(130294);
+    expect(r.pit37.podatek).toBe(14094);
+  });
+  it('ulga + koszty autorskie: wspólny limit 120 000 zł (art. 22 ust. 9aa)', () => {
+    const r = obliczRok({ ...baza, brutto: 20000, autorskie: 1, zwolnienie: 'mlodzi' });
+    expect(r.suma.koszty).toBe(120000 - 85528);
+  });
+  it('oświadczenie o wspólnym rozliczeniu: 12% przez cały rok (art. 32 ust. 3)', () => {
+    const r = obliczRok({ ...baza, brutto: 30000, wspolne: 'nizszy' });
+    expect(r.miesiacProgu).toBe(-1);
+    expect(r.miesiace[5].zaliczka).toBe(2776);
+    expect(r.miesiace[11].zaliczka).toBe(3182);
+    // małżonek bez dochodów i dochód do 120 000 zł – dodatkowo 1/12 kwoty zmniejszającej
+    expect(obliczMiesiac({ ...baza, brutto: 7000, wspolne: 'bezDochodow' }).zaliczka).toBe(95);
+    // powyżej 120 000 zł dodatkowego obniżenia nie ma (art. 32 ust. 3 pkt 2)
+    expect(obliczMiesiac({ ...baza, brutto: 15000, wspolne: 'bezDochodow' }).zaliczka).toBe(1223);
+  });
   it('limit 30-krotności 2026 (282 600 zł): przy 30 000 zł przekroczony w październiku', () => {
     const r = obliczRok({ ...baza, brutto: 30000 });
     expect(r.miesiacLimitu).toBe(9);
