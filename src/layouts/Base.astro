@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import site from '../site.json';
 import Reklama from '../components/Reklama.astro';
 import Logo from '../components/Logo.astro';
+import Zgoda from '../components/Zgoda.astro';
 import '../styles/global.css';
 
 interface Props { title: string; description: string; schema?: object; sidebar?: boolean; obraz?: string; artykul?: { opublikowano: string; zmieniono: string }; noindex?: boolean }
@@ -58,10 +59,11 @@ const sekcja = Astro.url.pathname.split('/')[1];
       <div class="wrap">
         <Logo />
         <nav aria-label="Działy">{dzialy.map((d) => <a href={`/${d.data.slug}/`}>{d.data.title}</a>)}<a href="/poradniki/">Poradniki</a></nav>
-        <nav aria-label="Informacje">{strony.map((s) => <a href={`/${s.data.slug}/`}>{s.data.title}</a>)}</nav>
+        <nav aria-label="Informacje">{strony.map((s) => <a href={`/${s.data.slug}/`}>{s.data.title}</a>)}<a href="#" data-zgoda>Ustawienia cookies</a></nav>
         <p>© {new Date().getFullYear()} {site.name}. Wyniki kalkulatorów mają charakter informacyjny i nie stanowią porady podatkowej.</p>
       </div>
     </footer>
+    <Zgoda />
     <script>
       // menu działów na telefonie: zanikanie przy krawędziach, aktywny dział widoczny bez przewijania
       const menu = document.querySelector<HTMLElement>('.menu');
