@@ -5,6 +5,36 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // ryczałt czy liniowy (i skala): lib kalkulatora ryczałtu – na rękę rocznie przy tych samych przychodach, kosztach i ZUS
+  'ryczalt-czy-liniowy': async () => {
+    const { obliczRyczalt, STAWKI } = await import('./ryczalt');
+    return (el) => {
+      const stawki = STAWKI.filter((s) => s.id !== 'najem');
+      el.innerHTML = `<h3>Ryczałt, liniowy czy skala – policz</h3>
+        <label>Przychód miesięcznie <output data-o="p"></output><input type="range" min="3000" max="80000" step="500" value="${el.dataset.przychod ?? 20000}" data-i="p"></label>
+        <label>Koszty (% przychodu) <output data-o="k"></output><input type="range" min="0" max="90" step="1" value="${el.dataset.koszty ?? 10}" data-i="k"></label>
+        <label>Stawka ryczałtu<select data-i="s">${stawki.map((s) => `<option value="${s.id}"${s.id === (el.dataset.stawka ?? '12') ? ' selected' : ''}>${s.nazwa}</option>`).join('')}</select></label>
+        <label>Składki ZUS<select data-i="z"><option value="pelny">pełny ZUS</option><option value="pref">preferencyjny ZUS</option><option value="start">ulga na start (bez społecznych)</option></select></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const licz = () => {
+        const p = +i('p').value, k = +i('k').value;
+        o('p').textContent = zl(p); o('k').textContent = `${k}%`;
+        const w = obliczRyczalt({ rok: 2026, przychody: [{ stawka: i('s').value, kwota: p * 12 }], zus: i('z').value as 'pelny' | 'pref' | 'start', koszty: (p * 12 * k) / 100 });
+        const formy = (w.porownanie ?? []).map((f) => [f.nazwa.replace('Podatek liniowy 19%', 'Liniowy 19%'), f.naReke / 12, f.podatek + f.zdrowotna] as [string, number, number]);
+        const max = Math.max(...formy.map((f) => f[1]), 1);
+        const najl = [...formy].sort((a, b) => b[1] - a[1])[0];
+        o('s').innerHTML = formy.map(([n, v], j) => `<div class="ws-wiersz"><span class="ws-et">${n}</span><span class="ws-pasek"><i style="--w:${((Math.max(v, 0) / max) * 100).toFixed(1)}%;--k:var(--w${j})"></i></span><b>${zl(v)}</b></div>`).join('');
+        const drugi = [...formy].sort((a, b) => b[1] - a[1])[1];
+        o('werdykt').textContent = najl ? `${najl[0]}: o ${zl((najl[1] - drugi[1]) * 12)} rocznie więcej niż ${drugi[0].toLowerCase()}` : '';
+        o('opis').textContent = `Na rękę miesięcznie po podatku, zdrowotnej, ZUS i kosztach (parametry 2026: skala 12/32%, zdrowotna na ryczałcie wg progów przychodu, na liniowym 4,9% z odliczeniem). Bez ulg i wspólnego rozliczenia – przy skali z małżonkiem lub ulgą na dzieci wynik może być lepszy.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // L4 80% czy 100%: wypłata za miesiąc z L4 – pensja minus 1/30 za każdy dzień L4 + wynagrodzenie chorobowe/zasiłek (lib L4),
   // netto: składki ZUS i zdrowotna tylko od części pensji, PIT 12% (koszty 250 zł, PIT-2 300 zł) od całości
   'l4-80-czy-100': async () => {

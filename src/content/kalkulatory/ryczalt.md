@@ -122,6 +122,8 @@ Na ryczałcie płacisz podatek od przychodu, ale niższą stawką. Na liniowym (
 
 Kwoty „na rękę” po kosztach, składkach i podatku. Skala liczona bez ulg (np. na dzieci) i bez wspólnego rozliczenia – z nimi wypada jeszcze lepiej. Na liniowym nie przysługuje kwota wolna, ale część składki zdrowotnej (do 14 100 zł rocznie w 2026 r.) zmniejsza dochód.
 
+Progi kosztów dla każdej stawki, przykłady zawodów, terminy zmiany formy na 2027 r. i nowy limit ryczałtu opisujemy w poradniku [Ryczałt czy podatek liniowy w 2027 roku](/poradniki/ryczalt-czy-liniowy/).
+
 ## Kto nie może płacić ryczałtu?
 
 - przedsiębiorca, którego przychód w poprzednim roku przekroczył **2 000 000 euro**,
