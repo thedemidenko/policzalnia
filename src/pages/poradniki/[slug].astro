@@ -92,7 +92,7 @@ const schema = graf(
   <Reklama slot="przed-faq" />
   <Faq faq={d.faq} />
   {kalk.length > 0 && (
-    <section class="powiazane"><h2>Policz to sam</h2><ul class="fiszki">{kalk.map((e) => <Fiszka href={href(e)} tytul={e.data.nazwa_krotka ?? e.data.title} sekcja={e.data.sekcja} />)}</ul></section>
+    <section class="powiazane"><h2>Policz to sam</h2><ul class="fiszki">{kalk.slice(0, 3).map((e) => <Fiszka href={href(e)} tytul={e.data.nazwa_krotka ?? e.data.title} sekcja={e.data.sekcja} />)}</ul></section>
   )}
   {czytaj.length > 0 && (
     <section class="powiazane"><h2>Czytaj też</h2><ul class="karty-poradnikow male">{czytaj.map((p) => <KartaPoradnika href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} lead={p.data.lead} sekcja={p.data.sekcja} dzial={DZIALY[p.data.sekcja]} minuty={czasCzytania(p.body)} data={p.data.updated ?? p.data.date} okladka={p.data.okladka} />)}</ul></section>
