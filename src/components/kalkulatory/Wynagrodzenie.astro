@@ -1,5 +1,7 @@
 ---
 import { placaMinimalna } from '../../lib/wynagrodzenie';
+interface Props { kwota?: number }
+const { kwota = 7000 } = Astro.props;
 const rok = new Date().getFullYear();
 const min = placaMinimalna(rok);
 const szybkie: [string, number][] = [['płaca minimalna', min], ['6000 zł', 6000], ['8000 zł', 8000], ['10 000 zł', 10000], ['15 000 zł', 15000]];
@@ -22,7 +24,7 @@ const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number
   <div class="pole-para">
     <div class="pole">
       <label for="w-kwota" id="w-kwota-et">Pensja brutto miesięcznie</label>
-      <div class="kwota" data-jedn="zł"><input id="w-kwota" name="kwota" type="text" inputmode="decimal" value="7000" /></div>
+      <div class="kwota" data-jedn="zł"><input id="w-kwota" name="kwota" type="text" inputmode="decimal" value={String(kwota)} /></div>
     </div>
     <div class="pole">
       <label for="w-rok">Rok</label>

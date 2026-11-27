@@ -1,0 +1,203 @@
+---
+// Strony „X zł brutto ile to netto” – gotowe wyliczenia dla popularnych pensji, liczone przy budowie tą samą logiką co kalkulator.
+import { getEntry } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Okruszki from '../../../components/Okruszki.astro';
+import Kalkulator from '../../../components/Kalkulator.astro';
+import Reklama from '../../../components/Reklama.astro';
+import Faq from '../../../components/Faq.astro';
+import Autor from '../../../components/Autor.astro';
+import Fiszka from '../../../components/Fiszka.astro';
+import { abs, breadcrumbs, faqPage, graf } from '../../../lib/schema';
+import { KWOTY_STRON, MIESIACE, MIESIACE_OD, MIESIACE_W, adresKwoty, limit30, obliczRok, placaMinimalna, type DaneWynagrodzenia } from '../../../lib/wynagrodzenie';
+import { obliczZlecenie } from '../../../lib/zlecenie';
+import { obliczDzielo } from '../../../lib/dzielo';
+import { rokPracy } from '../../../lib/dni-robocze';
+import { pit } from '../../../lib/ikze';
+import { zl } from '../../../lib/format';
+import stawki from '../../../data/stawki.json';
+
+export function getStaticPaths() {
+  return KWOTY_STRON.map((k) => ({ params: { kwota: `${k}-brutto-ile-to-netto` }, props: { k } }));
+}
+const { k } = Astro.props as { k: number };
+const glowna = (await getEntry('kalkulatory', 'kalkulator-wynagrodzen'))!;
+const rok = new Date().getFullYear();
+const nast = (stawki.lata as Record<string, unknown>)[String(rok + 1)] ? rok + 1 : null;
+const baza: DaneWynagrodzenia = { rok, brutto: k, pit2: 300 };
+const R = obliczRok(baza);
+const m = R.miesiace[0];
+const kw = (n: number) => n.toLocaleString('pl-PL', { useGrouping: 'always' } as Intl.NumberFormatOptions);
+const K = `${kw(k)} zł`;
+const proc = (n: number) => `${(Math.round((n / k) * 1000) / 10).toLocaleString('pl-PL')}%`;
+const minRok = placaMinimalna(rok);
+const progDo = pit(rok).progi[0].do ?? 120000;
+
+// warianty tej samej pensji
+const wariant = (opis: string, x: Partial<DaneWynagrodzenia>) => { const q = obliczRok({ ...baza, ...x }).miesiace[0]; return { opis, netto: q.netto, roznica: Math.round((q.netto - m.netto) * 100) / 100, koszt: q.kosztPracodawcy }; };
+const warianty = [
+  wariant('Standard: koszty 250 zł, PIT-2', {}),
+  wariant('Do 26 lat (ulga dla młodych)', { zwolnienie: 'mlodzi' }),
+  wariant('Z PPK (2% + 1,5% od pracodawcy)', { ppk: true }),
+  wariant('Dojazd z innej miejscowości (koszty 300 zł)', { podwyzszoneKoszty: true }),
+  wariant('Bez złożonego PIT-2', { pit2: 0 }),
+];
+const mlodzi = warianty[1];
+const R2 = nast ? obliczRok({ ...baza, rok: nast }) : null;
+const roznicaNast = R2 ? Math.round((R2.suma.netto - R.suma.netto) * 100) / 100 : 0;
+
+// inne umowy przy tej samej kwocie brutto
+const zlec = obliczZlecenie({ rok, brutto: k, sytuacja: 'brak', chorobowe: true, pit2: 300 });
+const stud = obliczZlecenie({ rok, brutto: k, sytuacja: 'student' });
+const dz = obliczDzielo({ brutto: k, pit2: 300 });
+const umowy = [
+  { nazwa: 'Umowa o pracę', netto: m.netto, koszt: m.kosztPracodawcy },
+  { nazwa: 'Umowa zlecenie (jedyny tytuł, z chorobową)', netto: zlec.netto, koszt: zlec.kosztZleceniodawcy },
+  { nazwa: 'Umowa zlecenie – student do 26 lat', netto: stud.netto, koszt: stud.kosztZleceniodawcy },
+  { nazwa: 'Umowa o dzieło', netto: dz.netto, koszt: dz.kosztZamawiajacego },
+];
+
+// rok i godziny
+const godzRok = rokPracy(rok).godziny;
+const godzMies = Math.round((godzRok / 12) * 100) / 100;
+const sp = m.skladkiPracodawcy;
+const zmienia = R.miesiacProgu >= 0 || R.miesiacLimitu >= 0;
+const dochRok = R.suma.podstawa;
+
+// sąsiednie kwoty
+const i = KWOTY_STRON.indexOf(k);
+const sasiedzi = KWOTY_STRON.slice(Math.max(0, i - 2), i + 3).filter((x) => x !== k);
+const tabSasiedzi = sasiedzi.map((x) => ({ k: x, netto: obliczRok({ ...baza, brutto: x }).miesiace[0].netto }));
+
+const specjalna = k === minRok ? `To płaca minimalna w ${rok} r.` : nast && k === placaMinimalna(nast) ? `To płaca minimalna od 1 stycznia ${nast} r.` : '';
+const title = `${K} brutto ile to netto w ${rok} roku?`;
+const metaTitle = `${k} zł brutto ile to netto w ${rok} roku | Policzalnia`;
+const metaDesc = `${K} brutto to ${zl(m.netto)} na rękę na umowie o pracę w ${rok} r. Składki, podatek, koszt pracodawcy, wynik do 26 lat, z PPK i na zleceniu.`;
+const url = adresKwoty(k);
+
+const faq = [
+  { pytanie: `Ile to netto ${K} brutto w ${rok} roku?`, odpowiedz: `Na umowie o pracę ${zl(m.netto)} na rękę – przy kosztach 250 zł i złożonym PIT-2. Z pensji odchodzą składki ZUS (${zl(m.spoleczne)}), składka zdrowotna (${zl(m.zdrowotna)}) i zaliczka na PIT (${zl(m.zaliczka)}).${zmienia ? ` W ciągu roku kwota się zmienia – ${R.miesiacProgu >= 0 ? `od ${MIESIACE_OD[R.miesiacProgu]} pracodawca pobiera zaliczkę 32% od nadwyżki ponad ${kw(progDo)} zł dochodu` : ''}${R.miesiacProgu >= 0 && R.miesiacLimitu >= 0 ? ', a ' : ''}${R.miesiacLimitu >= 0 ? `od ${MIESIACE_OD[R.miesiacLimitu]} nie płaci się składkę emerytalną i rentową` : ''}.` : ''}` },
+  { pytanie: `Ile to netto ${K} brutto dla osoby do 26 lat?`, odpowiedz: `${zl(mlodzi.netto)} na rękę – o ${zl(mlodzi.roznica)} więcej, bo ulga dla młodych zwalnia z podatku przychód do ${kw(stawki.stale.ulga_dla_mlodych_limit)} zł w roku. Składki ZUS i zdrowotną płaci się w całości.${k * 12 > stawki.stale.ulga_dla_mlodych_limit ? ` Przy ${K} miesięcznie limit wyczerpie się w ${MIESIACE_W[obliczRok({ ...baza, zwolnienie: 'mlodzi' }).miesiacKoncaUlgi]} – od tej pory pracodawca zacznie pobierać zaliczkę.` : ''}` },
+  { pytanie: `Ile kosztuje pracodawcę ${K} brutto?`, odpowiedz: `${zl(m.kosztPracodawcy)} miesięcznie, czyli ${zl(R.suma.kosztPracodawcy)} rocznie. Do pensji pracodawca dolicza składkę emerytalną (${zl(sp.emerytalna)}), rentową (${zl(sp.rentowa)}), wypadkową (${zl(sp.wypadkowa)}), Fundusz Pracy i Solidarnościowy (${zl(sp.fp)}) oraz FGŚP (${zl(sp.fgsp)}).` },
+  { pytanie: `Ile to netto ${K} brutto na umowie zlecenie?`, odpowiedz: `Gdy zlecenie jest jedynym tytułem do ubezpieczeń i płacisz chorobową – ${zl(zlec.netto)} na rękę (z PIT-2). Student przed 26. urodzinami dostaje całe ${zl(stud.netto)}, bo nie płaci składek ani podatku. Na umowie o dzieło zostaje ${zl(dz.netto)}.` },
+];
+
+const sciezka = [
+  { nazwa: 'Policzalnia', url: '/' },
+  { nazwa: 'Praca i płace', url: '/praca/' },
+  { nazwa: glowna.data.nazwa_krotka ?? glowna.data.title, url: `/praca/${glowna.data.slug}/` },
+  { nazwa: `${K} brutto`, url },
+];
+const schema = graf(breadcrumbs(sciezka), { '@type': 'WebPage', name: title, url: abs(url), description: metaDesc, inLanguage: 'pl-PL', dateModified: glowna.data.updated.toISOString().slice(0, 10) }, faqPage(faq));
+---
+<Base title={metaTitle} description={metaDesc} schema={schema} sidebar>
+  <Okruszki sciezka={sciezka} />
+  <span class="etykieta" data-sekcja="praca">Praca i płace</span>
+  <h1>{title}</h1>
+  <p class="lead"><b>{K} brutto to {zl(m.netto)} na rękę</b> na umowie o pracę w {rok} r. {specjalna} Pracodawcę taki etat kosztuje {zl(m.kosztPracodawcy)} miesięcznie. Zmień ustawienia w kalkulatorze, żeby policzyć swój przypadek.</p>
+  <Kalkulator klucz="wynagrodzenie" kwota={k} />
+  <Reklama slot="pod-wynikiem" />
+  <article class="tresc">
+    <h2 id="sklad">Ile zostaje z {K} brutto – składnik po składniku?</h2>
+    <p>Wyliczenie dla pierwszego miesiąca {rok} r.: praca w miejscu zamieszkania (koszty 250 zł), złożony PIT-2, bez PPK i ulg.</p>
+    <table>
+      <thead><tr><th>Pozycja</th><th>Kwota</th><th>% brutto</th></tr></thead>
+      <tbody>
+        <tr><td>Wynagrodzenie brutto</td><td>{zl(m.brutto)}</td><td>100%</td></tr>
+        <tr><td>Składka emerytalna 9,76%</td><td>−{zl(m.emerytalna)}</td><td>{proc(m.emerytalna)}</td></tr>
+        <tr><td>Składka rentowa 1,5%</td><td>−{zl(m.rentowa)}</td><td>{proc(m.rentowa)}</td></tr>
+        <tr><td>Składka chorobowa 2,45%</td><td>−{zl(m.chorobowa)}</td><td>{proc(m.chorobowa)}</td></tr>
+        <tr><td>Składka zdrowotna 9%</td><td>−{zl(m.zdrowotna)}</td><td>{proc(m.zdrowotna)}</td></tr>
+        <tr><td>Zaliczka na PIT</td><td>−{zl(m.zaliczka)}</td><td>{proc(m.zaliczka)}</td></tr>
+        <tr><td><b>Na rękę</b></td><td><b>{zl(m.netto)}</b></td><td><b>{proc(m.netto)}</b></td></tr>
+      </tbody>
+    </table>
+    <p>Zaliczkę liczy się od podstawy {kw(m.podstawa)} zł (brutto minus składki społeczne i koszty 250 zł, po zaokrągleniu): 12% to {zl(Math.round(m.podstawa * 12) / 100)}, minus 300 zł kwoty zmniejszającej, po zaokrągleniu {zl(m.zaliczka)}. Jak to działa krok po kroku, wyjaśniamy przy <a href={`/praca/${glowna.data.slug}/`}>kalkulatorze wynagrodzeń</a>.</p>
+
+    <h2 id="warianty">Ile wynosi netto z {K} brutto w różnych sytuacjach?</h2>
+    <table>
+      <thead><tr><th>Sytuacja</th><th>Na rękę</th><th>Różnica</th></tr></thead>
+      <tbody>{warianty.map((w) => <tr><td>{w.opis}</td><td>{zl(w.netto)}</td><td>{w.roznica === 0 ? '–' : `${w.roznica > 0 ? '+' : '−'}${zl(Math.abs(w.roznica))}`}</td></tr>)}</tbody>
+    </table>
+    <p>Ulga dla młodych obejmuje też rodziców co najmniej czworga dzieci, osoby wracające z zagranicy i pracujących seniorów – wszystkie cztery mają wspólny limit {kw(stawki.stale.ulga_dla_mlodych_limit)} zł przychodu w roku. Z PPK na rękę jest mniej, ale na konto co miesiąc trafia {zl(Math.round(k * 0.035 * 100) / 100)}. Bez PIT-2 nadpłaconą kwotę (do 3600 zł) odzyskasz w zeznaniu rocznym.</p>
+    {nast && <p>W {nast} r. stawki składek, skala podatku i kwota zmniejszająca się nie zmieniają, więc pierwsza wypłata będzie taka sama. {roznicaNast === 0 ? <>Rocznie też wyjdzie tyle samo.</> : <>Rocznie na rękę trafi {zl(R2!.suma.netto)} – o {zl(Math.abs(roznicaNast))} {roznicaNast > 0 ? 'więcej' : 'mniej'}, bo wyższy limit składek ZUS ({kw(limit30(nast))} zł) przesuwa moment, w którym netto rośnie.</>}</p>}
+
+    <h2 id="koszt">Ile kosztuje pracodawcę {K} brutto?</h2>
+    <table>
+      <thead><tr><th>Składnik</th><th>Miesięcznie</th></tr></thead>
+      <tbody>
+        <tr><td>Pensja brutto</td><td>{zl(m.brutto)}</td></tr>
+        <tr><td>Emerytalna 9,76%</td><td>{zl(sp.emerytalna)}</td></tr>
+        <tr><td>Rentowa 6,5%</td><td>{zl(sp.rentowa)}</td></tr>
+        <tr><td>Wypadkowa 1,67%</td><td>{zl(sp.wypadkowa)}</td></tr>
+        <tr><td>Fundusz Pracy i Solidarnościowy 2,45%</td><td>{sp.fp ? zl(sp.fp) : '0 zł (poniżej płacy minimalnej)'}</td></tr>
+        <tr><td>FGŚP 0,1%</td><td>{zl(sp.fgsp)}</td></tr>
+        <tr><td><b>Koszt pracodawcy</b></td><td><b>{zl(m.kosztPracodawcy)}</b></td></tr>
+      </tbody>
+    </table>
+    <p>Rocznie to <b>{zl(R.suma.kosztPracodawcy)}</b>, z czego do pracownika trafia na rękę {zl(R.suma.netto)}. Firmy z większą liczbą pracowników mogą mieć inną składkę wypadkową (od 0,67% do 3,33%).</p>
+
+    <h2 id="rok">Czy przy {K} brutto netto zmienia się w trakcie roku?</h2>
+    {zmienia ? (
+      <>
+        <p>Tak. {R.miesiacProgu >= 0 && <>Dochód od początku roku przekroczy {kw(progDo)} zł w <b>{MIESIACE_W[R.miesiacProgu]}</b> – od tej pory pracodawca pobiera zaliczkę 32% od nadwyżki. </>}{R.miesiacLimitu >= 0 && <>W <b>{MIESIACE_W[R.miesiacLimitu]}</b> suma pensji przekroczy limit 30-krotności ({kw(limit30(rok))} zł), więc do końca roku nie płaci się składki emerytalnej i rentowej – netto rośnie. </>}</p>
+        <table>
+          <thead><tr><th>Miesiąc</th><th>Na rękę</th><th>Zaliczka PIT</th></tr></thead>
+          <tbody>{R.miesiace.map((q, j) => <tr><td>{MIESIACE[j]}</td><td>{zl(q.netto)}</td><td>{zl(q.zaliczka)}</td></tr>)}</tbody>
+        </table>
+        <p>Przez cały rok na rękę trafi <b>{zl(R.suma.netto)}</b>, średnio {zl(Math.round((R.suma.netto / 12) * 100) / 100)} miesięcznie.</p>
+      </>
+    ) : (
+      <p>Nie. Dochód za cały rok wyniesie ok. {kw(dochRok)} zł, czyli mniej niż próg {kw(progDo)} zł, a suma pensji nie przekroczy limitu składek ZUS ({kw(limit30(rok))} zł). Na rękę co miesiąc trafi tyle samo – rocznie <b>{zl(R.suma.netto)}</b>. {R.miesiace[0].zaliczka > 0 && <>Do drugiego progu brakuje ok. {kw(Math.max(0, Math.round((progDo - dochRok) / 12)))} zł dochodu miesięcznie.</>}</p>
+    )}
+
+    <h2 id="umowy">Ile to netto z {K} brutto na zleceniu i umowie o dzieło?</h2>
+    <table>
+      <thead><tr><th>Umowa</th><th>Na rękę</th><th>Koszt firmy</th></tr></thead>
+      <tbody>{umowy.map((u) => <tr><td>{u.nazwa}</td><td>{zl(u.netto)}</td><td>{zl(u.koszt)}</td></tr>)}</tbody>
+    </table>
+    <p>Wszystkie warianty z PIT-2 (kwota zmniejszająca 300 zł). Na zleceniu i dziele koszty uzyskania przychodu to 20% kwoty, a dzieło nie jest oskładkowane – dlatego na rękę zostaje więcej, ale bez prawa do urlopu, L4 i emerytury z tych pieniędzy. Szczegóły policzysz w kalkulatorach <a href="/praca/umowa-zlecenie/">umowy zlecenia</a> i <a href="/praca/umowa-o-dzielo/">umowy o dzieło</a>.</p>
+
+    <h2 id="godzina">Ile to na godzinę i rocznie?</h2>
+    <p>Pełny etat w {rok} r. to {kw(godzRok)} godzin pracy, średnio {godzMies.toLocaleString('pl-PL')} godziny w miesiącu. Przy {K} brutto daje to <b>{zl(Math.round((k / godzMies) * 100) / 100)} brutto</b> i <b>{zl(Math.round((m.netto / godzMies) * 100) / 100)} na rękę za godzinę</b>. Rocznie pensja wynosi {zl(k * 12)} brutto i {zl(R.suma.netto)} netto.{k >= minRok ? '' : ` Uwaga: to mniej niż płaca minimalna w ${rok} r. (${kw(minRok)} zł) – tyle może zarabiać osoba na części etatu.`}</p>
+
+    <h2 id="inne">Ile to netto przy innych pensjach?</h2>
+    <table>
+      <thead><tr><th>Brutto</th><th>Na rękę</th></tr></thead>
+      <tbody>{tabSasiedzi.map((s) => <tr><td><a href={adresKwoty(s.k)}>{kw(s.k)} zł brutto</a></td><td>{zl(s.netto)}</td></tr>)}</tbody>
+    </table>
+    <p>Wszystkie wyliczenia: {KWOTY_STRON.filter((x) => x !== k).map((x, j, a) => <><a href={adresKwoty(x)}>{kw(x)} zł</a>{j < a.length - 1 ? ', ' : '.'}</>)}</p>
+  </article>
+  <Reklama slot="przed-faq" />
+  <Faq faq={faq} />
+  <section class="powiazane">
+    <h2>Podobne kalkulatory</h2>
+    <ul class="fiszki">
+      <Fiszka href={`/praca/${glowna.data.slug}/`} tytul={glowna.data.nazwa_krotka ?? glowna.data.title} sekcja="praca" />
+      <Fiszka href="/praca/umowa-zlecenie/" tytul="Kalkulator umowy zlecenia" sekcja="praca" />
+      <Fiszka href="/praca/zwolnienie-lekarskie/" tytul="Kalkulator L4" sekcja="praca" />
+    </ul>
+  </section>
+  <Autor autor={glowna.data.autor} updated={glowna.data.updated} zrodla={glowna.data.zrodla} />
+
+  <Fragment slot="sidebar">
+    <div class="sidebar-kalk" data-sekcja="praca">
+      <small>{K} brutto</small>
+      <b>{zl(m.netto)} na rękę</b>
+      <a class="przycisk" href="#kalkulator">Zmień ustawienia →</a>
+    </div>
+    <nav class="sidebar-spis" aria-label="Spis treści">
+      <small>Na tej stronie</small>
+      <ol>
+        <li><a href="#sklad">Składnik po składniku</a></li>
+        <li><a href="#warianty">Różne sytuacje</a></li>
+        <li><a href="#koszt">Koszt pracodawcy</a></li>
+        <li><a href="#rok">Zmiany w trakcie roku</a></li>
+        <li><a href="#umowy">Zlecenie i dzieło</a></li>
+        <li><a href="#godzina">Na godzinę i rocznie</a></li>
+        <li><a href="#inne">Inne pensje</a></li>
+        <li><a href="#faq">Najczęściej zadawane pytania</a></li>
+      </ol>
+    </nav>
+  </Fragment>
+</Base>

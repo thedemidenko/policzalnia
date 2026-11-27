@@ -16,9 +16,12 @@ export const limit30 = (rok: number) => rokDane(rok).limit_30_krotnosci.wartosc 
 export const LIMIT_ULGI = stawki.stale.ulga_dla_mlodych_limit;
 export const LIMIT_KUP_AUTORSKICH = 120000;
 export const WYPADKOWA = stawki.stale.skladki.wypadkowa_domyslna.pracodawca;
+/** Kwoty brutto z gotowymi stronami „X brutto ile to netto” (/praca/kalkulator-wynagrodzen/<kwota>-brutto-ile-to-netto/). */
+export const KWOTY_STRON = [4806, 4950, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 18000, 20000, 25000, 30000];
+export const adresKwoty = (k: number) => `/praca/kalkulator-wynagrodzen/${k}-brutto-ile-to-netto/`;
 export const MIESIACE = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
-const OD = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
-const W = ['styczniu', 'lutym', 'marcu', 'kwietniu', 'maju', 'czerwcu', 'lipcu', 'sierpniu', 'wrześniu', 'październiku', 'listopadzie', 'grudniu'];
+export const MIESIACE_OD = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
+export const MIESIACE_W = ['styczniu', 'lutym', 'marcu', 'kwietniu', 'maju', 'czerwcu', 'lipcu', 'sierpniu', 'wrześniu', 'październiku', 'listopadzie', 'grudniu'];
 
 /** Zwolnienie z PIT do 85 528 zł przychodu w roku (jeden wspólny limit dla wszystkich czterech ulg). */
 export type Zwolnienie = 'brak' | 'mlodzi' | 'rodzina' | 'powrot' | 'senior';
@@ -167,9 +170,9 @@ export function obliczRok(x: DaneWynagrodzenia): WynikRoczny {
   const etat = x.etat && x.etat > 0 ? x.etat : 1;
   if (brutto > 0 && brutto < r2(min * etat) - 0.004)
     uwagi.push(`Pensja jest niższa niż płaca minimalna w ${x.rok} r. dla tego wymiaru etatu – ${r2(min * etat).toLocaleString('pl-PL')} zł brutto (${min.toLocaleString('pl-PL')} zł za pełny etat).`);
-  if (miesiacProgu >= 0) uwagi.push(`Od ${OD[miesiacProgu]} dochód od początku roku przekroczy ${(p.progi[0].do ?? 0).toLocaleString('pl-PL')} zł i pracodawca zacznie pobierać zaliczkę według stawki ${Math.round(p.progi[1].stawka * 100)}% – na rękę dostaniesz wtedy mniej.`);
-  if (miesiacLimitu >= 0) uwagi.push(`W ${W[miesiacLimitu]} suma pensji przekroczy limit 30-krotności (${lim.toLocaleString('pl-PL')} zł) – do końca roku nie płacisz składki emerytalnej i rentowej, więc netto rośnie.`);
-  if (zw && miesiacKoncaUlgi >= 0) uwagi.push(`Limit zerowego PIT (${LIMIT_ULGI.toLocaleString('pl-PL')} zł przychodu w roku) wyczerpie się w ${W[miesiacKoncaUlgi]} – od tej pory pracodawca pobiera zaliczkę na podatek.`);
+  if (miesiacProgu >= 0) uwagi.push(`Od ${MIESIACE_OD[miesiacProgu]} dochód od początku roku przekroczy ${(p.progi[0].do ?? 0).toLocaleString('pl-PL')} zł i pracodawca zacznie pobierać zaliczkę według stawki ${Math.round(p.progi[1].stawka * 100)}% – na rękę dostaniesz wtedy mniej.`);
+  if (miesiacLimitu >= 0) uwagi.push(`W ${MIESIACE_W[miesiacLimitu]} suma pensji przekroczy limit 30-krotności (${lim.toLocaleString('pl-PL')} zł) – do końca roku nie płacisz składki emerytalnej i rentowej, więc netto rośnie.`);
+  if (zw && miesiacKoncaUlgi >= 0) uwagi.push(`Limit zerowego PIT (${LIMIT_ULGI.toLocaleString('pl-PL')} zł przychodu w roku) wyczerpie się w ${MIESIACE_W[miesiacKoncaUlgi]} – od tej pory pracodawca pobiera zaliczkę na podatek.`);
   if (zw) uwagi.push('Ulga zerowego PIT zwalnia tylko z podatku – składki ZUS i zdrowotną płacisz w całości.');
   if (pit2 === 0 && !zw) uwagi.push('Bez PIT-2 pracodawca nie odlicza 300 zł miesięcznie – nadpłatę (do 3600 zł) odzyskasz w zeznaniu rocznym.');
   if (x.ppk) uwagi.push('Wpłata pracodawcy do PPK jest Twoim przychodem – zwiększa zaliczkę na podatek, choć nie trafia na konto.');

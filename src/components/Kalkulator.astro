@@ -58,11 +58,13 @@ const KOMPONENTY = {
   'umowy-terminowe': UmowyTerminowe, 'odsetki-zus': OdsetkiZus, 'dieta-zagraniczna': DietaZagraniczna, 'maly-zus': MalyZus, 'wspolne-rozliczenie': WspolneRozliczenie, ryczalt: Ryczalt, wynagrodzenie: Wynagrodzenie,
 } satisfies Record<KluczKalkulatora, unknown>;
 
-interface Props { klucz: KluczKalkulatora }
+interface Props { klucz: KluczKalkulatora; kwota?: number }
 const K = KOMPONENTY[Astro.props.klucz];
+// kwota startowa (np. na stronach „X brutto ile to netto”) – komponenty bez tej opcji ją pomijają
+const opcje = Astro.props.kwota ? { kwota: Astro.props.kwota } : {};
 ---
 <section class="kalkulator" id="kalkulator" aria-label="Kalkulator">
-  <K />
+  <K {...opcje} />
   <div class="akcje">
     <button type="button" class="przycisk glowny" data-udostepnij>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>

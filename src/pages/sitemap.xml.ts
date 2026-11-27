@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { KWOTY_STRON, adresKwoty } from '../lib/wynagrodzenie';
 
 const SITE = 'https://policzalnia.pl';
 const iso = (d?: Date) => (d ? `<lastmod>${d.toISOString().slice(0, 10)}</lastmod>` : '');
@@ -15,6 +16,7 @@ export async function GET() {
     ['/', max([...kalk.map((e) => e.data.updated), ...datyPor])],
     ...dzialy.map((d) => [`/${d.data.slug}/`, max(kalk.filter((e) => e.data.sekcja === d.data.slug).map((e) => e.data.updated))]),
     ...kalk.map((e) => [`/${e.data.sekcja}/${e.data.slug}/`, e.data.updated]),
+    ...KWOTY_STRON.map((k) => [adresKwoty(k), kalk.find((e) => e.data.slug === 'kalkulator-wynagrodzen')?.data.updated]),
     ['/poradniki/', max(datyPor)],
     ...por.map((p) => [`/poradniki/${p.data.slug}/`, p.data.updated ?? p.data.date]),
     ...strony.map((s) => [`/${s.data.slug}/`, undefined]),

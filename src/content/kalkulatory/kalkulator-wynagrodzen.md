@@ -67,16 +67,18 @@ Pensja na rękę z umowy o pracę w pierwszym miesiącu roku – przy kosztach 2
 
 | Brutto | Składki ZUS | Zdrowotna | Zaliczka PIT | Na rękę | Koszt firmy |
 | --- | --- | --- | --- | --- | --- |
-| 4806 zł (minimalna) | 658,91 zł | 373,24 zł | 168 zł | **3605,85 zł** | 5790,28 zł |
-| 5000 zł | 685,50 zł | 388,31 zł | 188 zł | **3738,19 zł** | 6024,00 zł |
-| 6000 zł | 822,60 zł | 465,97 zł | 291 zł | **4420,43 zł** | 7228,80 zł |
-| 7000 zł | 959,70 zł | 543,63 zł | 395 zł | **5101,67 zł** | 8433,60 zł |
-| 8000 zł | 1096,80 zł | 621,29 zł | 498 zł | **5783,91 zł** | 9638,40 zł |
-| 9000 zł | 1233,90 zł | 698,95 zł | 602 zł | **6465,15 zł** | 10 843,20 zł |
-| 10 000 zł | 1371,00 zł | 776,61 zł | 705 zł | **7147,39 zł** | 12 048,00 zł |
-| 12 000 zł | 1645,20 zł | 931,93 zł | 913 zł | **8509,87 zł** | 14 457,60 zł |
-| 15 000 zł | 2056,50 zł | 1164,92 zł | 1223 zł | **10 555,58 zł** | 18 072,00 zł |
-| 20 000 zł | 2742,00 zł | 1553,22 zł | 1741 zł | **13 963,78 zł** | 24 096,00 zł |
+| [4806 zł](/praca/kalkulator-wynagrodzen/4806-brutto-ile-to-netto/) (minimalna) | 658,91 zł | 373,24 zł | 168 zł | **3605,85 zł** | 5790,28 zł |
+| [5000 zł](/praca/kalkulator-wynagrodzen/5000-brutto-ile-to-netto/) | 685,50 zł | 388,31 zł | 188 zł | **3738,19 zł** | 6024,00 zł |
+| [6000 zł](/praca/kalkulator-wynagrodzen/6000-brutto-ile-to-netto/) | 822,60 zł | 465,97 zł | 291 zł | **4420,43 zł** | 7228,80 zł |
+| [7000 zł](/praca/kalkulator-wynagrodzen/7000-brutto-ile-to-netto/) | 959,70 zł | 543,63 zł | 395 zł | **5101,67 zł** | 8433,60 zł |
+| [8000 zł](/praca/kalkulator-wynagrodzen/8000-brutto-ile-to-netto/) | 1096,80 zł | 621,29 zł | 498 zł | **5783,91 zł** | 9638,40 zł |
+| [9000 zł](/praca/kalkulator-wynagrodzen/9000-brutto-ile-to-netto/) | 1233,90 zł | 698,95 zł | 602 zł | **6465,15 zł** | 10 843,20 zł |
+| [10 000 zł](/praca/kalkulator-wynagrodzen/10000-brutto-ile-to-netto/) | 1371,00 zł | 776,61 zł | 705 zł | **7147,39 zł** | 12 048,00 zł |
+| [12 000 zł](/praca/kalkulator-wynagrodzen/12000-brutto-ile-to-netto/) | 1645,20 zł | 931,93 zł | 913 zł | **8509,87 zł** | 14 457,60 zł |
+| [15 000 zł](/praca/kalkulator-wynagrodzen/15000-brutto-ile-to-netto/) | 2056,50 zł | 1164,92 zł | 1223 zł | **10 555,58 zł** | 18 072,00 zł |
+| [20 000 zł](/praca/kalkulator-wynagrodzen/20000-brutto-ile-to-netto/) | 2742,00 zł | 1553,22 zł | 1741 zł | **13 963,78 zł** | 24 096,00 zł |
+
+Rozpisane wyliczenia – składnik po składniku, koszt pracodawcy, wynik do 26 lat, z PPK, na zleceniu i dziele oraz wypłaty w kolejnych miesiącach – znajdziesz dla kwot: [4806 zł](/praca/kalkulator-wynagrodzen/4806-brutto-ile-to-netto/), [4950 zł](/praca/kalkulator-wynagrodzen/4950-brutto-ile-to-netto/), [5000 zł](/praca/kalkulator-wynagrodzen/5000-brutto-ile-to-netto/), [5500 zł](/praca/kalkulator-wynagrodzen/5500-brutto-ile-to-netto/), [6000 zł](/praca/kalkulator-wynagrodzen/6000-brutto-ile-to-netto/), [6500 zł](/praca/kalkulator-wynagrodzen/6500-brutto-ile-to-netto/), [7000 zł](/praca/kalkulator-wynagrodzen/7000-brutto-ile-to-netto/), [7500 zł](/praca/kalkulator-wynagrodzen/7500-brutto-ile-to-netto/), [8000 zł](/praca/kalkulator-wynagrodzen/8000-brutto-ile-to-netto/), [8500 zł](/praca/kalkulator-wynagrodzen/8500-brutto-ile-to-netto/), [9000 zł](/praca/kalkulator-wynagrodzen/9000-brutto-ile-to-netto/), [9500 zł](/praca/kalkulator-wynagrodzen/9500-brutto-ile-to-netto/), [10 000 zł](/praca/kalkulator-wynagrodzen/10000-brutto-ile-to-netto/), [11 000 zł](/praca/kalkulator-wynagrodzen/11000-brutto-ile-to-netto/), [12 000 zł](/praca/kalkulator-wynagrodzen/12000-brutto-ile-to-netto/), [13 000 zł](/praca/kalkulator-wynagrodzen/13000-brutto-ile-to-netto/), [14 000 zł](/praca/kalkulator-wynagrodzen/14000-brutto-ile-to-netto/), [15 000 zł](/praca/kalkulator-wynagrodzen/15000-brutto-ile-to-netto/), [16 000 zł](/praca/kalkulator-wynagrodzen/16000-brutto-ile-to-netto/), [18 000 zł](/praca/kalkulator-wynagrodzen/18000-brutto-ile-to-netto/), [20 000 zł](/praca/kalkulator-wynagrodzen/20000-brutto-ile-to-netto/), [25 000 zł](/praca/kalkulator-wynagrodzen/25000-brutto-ile-to-netto/), [30 000 zł](/praca/kalkulator-wynagrodzen/30000-brutto-ile-to-netto/).
 
 Przy pensjach od 12 000 zł w górę netto pod koniec roku spada – więcej o tym niżej. Na rękę zostaje zwykle **ok. 70–75% brutto**, a pracodawca płaci **ok. 120,5% brutto**.
 
