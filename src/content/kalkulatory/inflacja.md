@@ -46,7 +46,7 @@ draft: false
 Kalkulator ma trzy tryby:
 
 - **Wartość pieniądza** – wpisz kwotę i wybierz dwie daty (rok albo konkretny miesiąc). Zobaczysz, ile ta kwota jest warta w drugiej dacie, jaka była inflacja w tym czasie, ile wynosiła średnio rocznie i ile była warta dzisiejsza kwota wtedy. Możesz liczyć też wstecz – wybierz późniejszy rok jako „od”.
-- **Pensja realnie** – wpisz pensję z wcześniejszej daty i obecną. Kalkulator powie, czy realnie zarabiasz więcej, ile musiałbyś zarabiać, żeby nadążyć za cenami, i ile brakuje.
+- **Pensja realnie** – wpisz pensję z wcześniejszej daty i obecną. Kalkulator powie, czy realnie zarabiasz więcej, ile trzeba by zarabiać, żeby nadążyć za cenami, i ile brakuje.
 - **W przyszłości** – sprawdzisz, ile będą warte twoje pieniądze za kilka lub kilkanaście lat przy wybranej inflacji.
 
 Dane pochodzą z GUS: **wskaźniki roczne od 1950 r.** i **miesięczne od stycznia 1982 r.** do ostatniego opublikowanego miesiąca. Kwoty sprzed 1995 r. kalkulator przelicza z uwzględnieniem **denominacji** (10 000 starych zł = 1 zł).
@@ -106,7 +106,7 @@ Pełną tabelę od 1950 r. i odczyty z ostatnich 12 miesięcy znajdziesz pod kal
 
 ## Czy twoja pensja realnie wzrosła?
 
-**Przykład.** W styczniu 2020 r. zarabiałeś 6000 zł, w październiku 2026 r. – 8000 zł. Podwyżka nominalnie: 33,3%. Ceny w tym czasie wzrosły o 51,2%, więc żeby kupić tyle samo, potrzebowałbyś **9069 zł**. Realnie zarabiasz o **11,8% mniej** niż w 2020 r. – brakuje 1069 zł.
+**Przykład.** Pensja w styczniu 2020 r.: 6000 zł, w październiku 2026 r. – 8000 zł. Podwyżka nominalnie: 33,3%. Ceny w tym czasie wzrosły o 51,2%, więc żeby kupić tyle samo, potrzeba by **9069 zł**. Realnie zarabiasz o **11,8% mniej** niż w 2020 r. – brakuje 1069 zł.
 
 Wzór: **zmiana realna = (pensja teraz ÷ pensja wtedy) ÷ (1 + inflacja) − 1**. Tak samo sprawdzisz realną zmianę emerytury, czynszu, ceny mieszkania czy wartości oszczędności.
 

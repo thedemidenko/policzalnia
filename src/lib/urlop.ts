@@ -80,7 +80,7 @@ export function obliczUrlop(d: DaneUrlopu): WynikUrlopu {
     if (d.dataDziesieciu < pocz) baza = 26;
     else if (d.dataDziesieciu <= kon) {
       baza = 26;
-      uwagi.push(`Od ${pl(d.dataDziesieciu)} masz 10 lat stażu – w tym roku przysługuje wymiar 26 dni. Jeśli wykorzystałeś już urlop w niższym wymiarze, dostaniesz urlop uzupełniający (art. 158 KP).`);
+      uwagi.push(`Od ${pl(d.dataDziesieciu)} masz 10 lat stażu – w tym roku przysługuje wymiar 26 dni. Jeśli urlop w niższym wymiarze jest już wykorzystany, dostaniesz urlop uzupełniający (art. 158 KP).`);
     }
   }
 

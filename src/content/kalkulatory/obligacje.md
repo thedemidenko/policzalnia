@@ -48,7 +48,7 @@ draft: false
 3. Podaj **inflację w kolejnych latach** – jedną liczbę albo kilka po średniku, np. „3,5; 3; 2,5”. Dla ROR i DOR liczy się **stopa referencyjna NBP**.
 4. Zaznacz **IKE/IKZE**, jeśli kupujesz w ramach konta emerytalnego (bez podatku), albo **800+**, żeby zobaczyć obligacje rodzinne ROS i ROD.
 
-Pod wynikiem znajdziesz **porównanie wszystkich serii** na ten sam okres, tabelę „**gdybyś wykupił po kolejnych latach**” i listę wypłat. W „Dokupuję co miesiąc” sprawdzisz regularne kupowanie obligacji za stałą kwotę.
+Pod wynikiem znajdziesz **porównanie wszystkich serii** na ten sam okres, tabelę „**wykup po kolejnych latach**” i listę wypłat. W „Dokupuję co miesiąc” sprawdzisz regularne kupowanie obligacji za stałą kwotę.
 
 ## Oprocentowanie obligacji skarbowych – grudzień 2026
 
@@ -101,7 +101,7 @@ Według listów emisyjnych:
 - **ROR, DOR**: co miesiąc **O = 100 × r / 12**.
 - Od drugiego okresu: **r = inflacja + marża** (COI, EDO, ROS, ROD) albo **stopa NBP + marża** (ROR, DOR). Inflacja to wskaźnik ogłoszony przez GUS w miesiącu przed początkiem okresu; ujemną traktuje się jak 0.
 
-**Przykład – EDO, 10 000 zł, wykup po 5 latach, inflacja 3%.** 100 obligacji. Oprocentowanie: 5,35% w 1. roku, potem 3% + 2% = 5%. Wartość jednej obligacji po 5 latach: 100 × 1,0535 × 1,05⁴ = 128,05 zł. Opłata za wcześniejszy wykup 3 zł → 125,05 zł. Odsetki 2505 zł, podatek 19% = 475,95 zł. **Dostajesz 12 029,05 zł.** Gdybyś poczekał do końca (10 lat), dostałbyś 15 137,83 zł.
+**Przykład – EDO, 10 000 zł, wykup po 5 latach, inflacja 3%.** 100 obligacji. Oprocentowanie: 5,35% w 1. roku, potem 3% + 2% = 5%. Wartość jednej obligacji po 5 latach: 100 × 1,0535 × 1,05⁴ = 128,05 zł. Opłata za wcześniejszy wykup 3 zł → 125,05 zł. Odsetki 2505 zł, podatek 19% = 475,95 zł. **Dostajesz 12 029,05 zł.** Przy czekaniu do końca (10 lat) byłoby 15 137,83 zł.
 
 ## Wcześniejszy wykup obligacji – ile tracisz?
 
@@ -112,7 +112,7 @@ EDO (1 obligacja, 100 zł, inflacja 3%) – ile dostaniesz netto przy wykupie po
 | Netto | 101,90 zł | 106,17 zł | 110,65 zł | 115,35 zł | 120,29 zł | 125,48 zł | 130,92 zł | 136,64 zł | 142,64 zł | 151,37 zł |
 
 - W **EDO, TOS, ROS i ROD** opłata nie może przekroczyć narosłych odsetek – nawet przy wykupie po miesiącu odzyskasz 100 zł.
-- W **COI, ROR i DOR** ograniczenie działa tylko w pierwszym okresie. Później opłata jest pobierana w całości – przy wykupie COI na początku 2. roku dostaniesz ok. 98,38 zł za obligację (opłata 2 zł zjada kapitał, choć wcześniej dostałeś odsetki za 1. rok).
+- W **COI, ROR i DOR** ograniczenie działa tylko w pierwszym okresie. Później opłata jest pobierana w całości – przy wykupie COI na początku 2. roku dostaniesz ok. 98,38 zł za obligację (opłata 2 zł zjada kapitał, choć wcześniej wypłacono odsetki za 1. rok).
 - **OTS** przed terminem: bez opłaty, ale bez odsetek.
 - Wykup jest możliwy najwcześniej 7 dni po zakupie; pieniądze wpływają po 5 dniach roboczych od dyspozycji.
 

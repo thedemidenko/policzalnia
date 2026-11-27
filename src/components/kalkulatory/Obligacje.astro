@@ -130,7 +130,7 @@ const opis = (s: (typeof SYMBOLE)[number]) => {
 
     const n = Math.floor(d.kwota / 100);
     const t = TYPY[sym];
-    $('ob-lata-sum').textContent = `${sym}: gdybyś wykupił po kolejnych latach`;
+    $('ob-lata-sum').textContent = `${sym}: wykup po kolejnych latach`;
     $('ob-lata-d').hidden = t.mies < 12;
     $('ob-lata-t').innerHTML = wykupPoLatach(sym, z).map((r) => `<tr${r.rok * 12 === Math.min(H, t.mies) ? ' class="aktywny"' : ''}><td>${r.rok}.${r.rok * 12 >= t.mies ? ' (wykup)' : ''}</td><td>${r.stopa.toFixed(2).replace('.', ',')}%</td><td>${zl(r.netto)}</td><td>${zl(r.netto * n)}</td></tr>`).join('');
 

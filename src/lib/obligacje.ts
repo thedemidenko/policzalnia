@@ -174,7 +174,7 @@ export function oblicz(d: DaneObligacji) {
 }
 export type WynikObligacji = ReturnType<typeof oblicz>;
 
-/** Ile dostaniesz netto z 1 obligacji (100 zł) przy wykupie po kolejnych latach – tabela „gdybyś wykupił”. */
+/** Ile dostaniesz netto z 1 obligacji (100 zł) przy wykupie po kolejnych latach – tabela „wykup po kolejnych latach”. */
 export function wykupPoLatach(sym: Symbol, z: Zalozenia) {
   const t = TYPY[sym];
   const lata = Math.max(1, Math.round(t.mies / 12));

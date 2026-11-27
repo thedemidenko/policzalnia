@@ -4,9 +4,9 @@ sekcja: oszczedzanie
 title: Kalkulator inwestycyjny - S&P 500 i złoto historycznie, prognoza i stopa zwrotu
 nazwa_krotka: Kalkulator inwestycyjny
 meta_title: Kalkulator inwestycyjny - S&P 500, złoto, ETF i stopa zwrotu | Policzalnia
-meta_description: Sprawdź, ile miałbyś dziś, inwestując w S&P 500 albo złoto od wybranego miesiąca – w złotych lub dolarach, jednorazowo lub co miesiąc. Prognoza z ryzykiem (2000 symulacji), średnioroczna stopa zwrotu, podatek Belki, IKE i inflacja.
+meta_description: Sprawdź, ile byłoby dziś warte inwestowanie w S&P 500 albo złoto od wybranego miesiąca – w złotych lub dolarach, jednorazowo lub co miesiąc. Prognoza z ryzykiem (2000 symulacji), średnioroczna stopa zwrotu, podatek Belki, IKE i inflacja.
 kalkulator: inwestycje
-lead: Kalkulator ma trzy tryby. „Gdybym inwestował” pokazuje na prawdziwych danych, ile byłoby dziś warte 10 000 zł albo 500 zł miesięcznie w S&P 500 lub złocie. „Ile zarobię” symuluje 2000 możliwych przyszłości i pokazuje nie tylko średni wynik, ale też, jak źle i jak dobrze może pójść. „Stopa zwrotu” policzy, ile rocznie zarobiła twoja inwestycja – po podatku i inflacji.
+lead: Kalkulator ma trzy tryby. „Co by było, gdyby…” pokazuje na prawdziwych danych, ile byłoby dziś warte 10 000 zł albo 500 zł miesięcznie w S&P 500 lub złocie. „Ile zarobię” symuluje 2000 możliwych przyszłości i pokazuje nie tylko średni wynik, ale też, jak źle i jak dobrze może pójść. „Stopa zwrotu” policzy, ile rocznie zarobiła twoja inwestycja – po podatku i inflacji.
 faq:
   - pytanie: Ile miałbym dziś, inwestując 10 000 zł w S&P 500?
     odpowiedz: Od stycznia 2010 r. – ok. 104 700 zł po podatku Belki (15,1% rocznie), od stycznia 2016 r. – 39 400 zł, od stycznia 2020 r. – 23 400 zł (stan na październik 2026 r., z dywidendami, w złotych). Od 2002 r. było to 84 900 zł, choć po drodze inwestycja traciła nawet 39%.
@@ -43,7 +43,7 @@ draft: false
 
 ## Jak działa kalkulator inwestycyjny?
 
-**„Gdybym inwestował”** – wybierz S&P 500 albo złoto (w złotych lub w dolarach), miesiąc startu i końca, kwotę na start i ewentualną wpłatę co miesiąc. Kalkulator kupuje „jednostki” po ówczesnych cenach i pokazuje:
+**„Co by było, gdyby…”** – wybierz S&P 500 albo złoto (w złotych lub w dolarach), miesiąc startu i końca, kwotę na start i ewentualną wpłatę co miesiąc. Kalkulator kupuje „jednostki” po ówczesnych cenach i pokazuje:
 
 - ile masz na koniec po podatku Belki (albo bez podatku w IKE),
 - ile wynosił roczny zwrot (IRR) i ile zostało ponad inflację,
@@ -54,9 +54,9 @@ W „Koszty i podatek” doliczysz prowizję od zakupu i roczną opłatę fundus
 
 **„Ile zarobię”** – wybierz rodzaj inwestycji (ustawi typowy zwrot i zmienność) albo wpisz własne założenia. Kalkulator symuluje 2000 możliwych przebiegów rynku i pokazuje wynik słaby (1 na 10 przypadków jest gorszy), najbardziej prawdopodobny (mediana) i dobry (1 na 10 jest lepszy) oraz szansę, że stracisz.
 
-**„Stopa zwrotu”** – wpisz, ile zainwestowałeś, ile jest warte teraz, otrzymane dywidendy lub odsetki, prowizje i daty. Dostaniesz ROI, średnioroczną stopę zwrotu (CAGR) przed i po podatku oraz realną – po inflacji GUS.
+**„Stopa zwrotu”** – wpisz, ile zainwestowano, ile jest warte teraz, otrzymane dywidendy lub odsetki, prowizje i daty. Dostaniesz ROI, średnioroczną stopę zwrotu (CAGR) przed i po podatku oraz realną – po inflacji GUS.
 
-## Ile miałbyś dziś? S&P 500 i złoto od 2002 roku
+## Ile byłoby dziś warte? S&P 500 i złoto od 2002 roku
 
 10 000 zł zainwestowane jednorazowo, wycena na październik 2026 r., po podatku Belki (w nawiasie: zwrot roczny i największy spadek po drodze):
 
@@ -106,7 +106,7 @@ Domyślne założenia dla rodzajów inwestycji (zwrot ± zmienność rocznie): a
 | CAGR po podatku Belki | z wartości po 19% od zysku | 5,17% |
 | Realnie | po odjęciu inflacji GUS (51,2% w tym czasie) | −1,08% |
 
-ROI mówi, ile zarobiłeś łącznie, CAGR – ile średnio rocznie, więc tylko CAGR pozwala porównać inwestycje trwające różnie długo. Przy regularnych wpłatach właściwą miarą jest **IRR** (wewnętrzna stopa zwrotu, w Excelu XIRR) – uwzględnia, że część pieniędzy pracowała krócej. Tak liczy tryb „Gdybym inwestował”.
+ROI mówi, ile zarobiono łącznie, CAGR – ile średnio rocznie, więc tylko CAGR pozwala porównać inwestycje trwające różnie długo. Przy regularnych wpłatach właściwą miarą jest **IRR** (wewnętrzna stopa zwrotu, w Excelu XIRR) – uwzględnia, że część pieniędzy pracowała krócej. Tak liczy tryb „Co by było, gdyby…”.
 
 ## Podatek Belki, IKE i koszty
 

@@ -134,7 +134,7 @@ Częstsza kapitalizacja zawsze daje więcej, ale różnica między miesięczną 
 
 - **Lokata, konto oszczędnościowe** – bank pobiera 19% od odsetek przy każdej kapitalizacji, więc procent składany działa na kwocie po podatku.
 - **Fundusze, ETF akumulujące, akcje** – 19% płacisz dopiero od zysku przy sprzedaży. Do tego czasu pracuje cały zysk, co po latach daje wyraźnie więcej.
-- **IKE** – brak podatku przy wypłacie po 60. roku życia (lub 55, jeśli nabyłeś prawa emerytalne). Limit wpłat: 28 260 zł w 2026 r. i 30 099 zł w 2027 r.
+- **IKE** – brak podatku przy wypłacie po 60. roku życia (lub 55 przy nabytych prawach emerytalnych). Limit wpłat: 28 260 zł w 2026 r. i 30 099 zł w 2027 r.
 - **IKZE** – wpłaty odliczasz od dochodu w PIT, a przy wypłacie po 65. roku życia płacisz 10% od całej kwoty. Limit: 11 304 zł w 2026 r. (16 956 zł dla przedsiębiorców) i 12 039,60 zł w 2027 r. (18 059,40 zł).
 - **OKI** (od 2027 r.) – zamiast podatku Belki podatek od wartości aktywów ponad limit zwolnienia.
 

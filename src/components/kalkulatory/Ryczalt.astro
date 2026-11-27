@@ -124,7 +124,7 @@ const opcjeStawek = STAWKI.map((s) => ({ id: s.id, n: s.nazwa }));
     wyn.hidden = false;
     wyn.innerHTML = traf.length
       ? traf.map((d) => `<li><button type="button" data-s="${d.s}"><strong>${stawka(d.s)!.id === 'najem' ? '8,5% / 12,5%' : proc(stawka(d.s)!.stawka)}</strong> ${d.n} <small>${d.k}</small></button></li>`).join('')
-      : '<li class="ry-brak">Nie znalazłem – większość usług to 8,5%, handel 3%, produkcja i budowlanka 5,5%. W razie wątpliwości sprawdź kod PKWiU usługi.</li>';
+      : '<li class="ry-brak">Brak wyników – większość usług to 8,5%, handel 3%, produkcja i budowlanka 5,5%. W razie wątpliwości sprawdź kod PKWiU usługi.</li>';
   });
   wyn.addEventListener('click', (e) => {
     const b = (e.target as HTMLElement).closest('button');

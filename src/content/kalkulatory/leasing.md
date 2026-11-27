@@ -23,7 +23,7 @@ faq:
   - pytanie: Czy wykup samochodu z leasingu jest kosztem?
     odpowiedz: Jeśli wykupujesz auto do firmy – tak. Cena wykupu staje się wartością początkową środka trwałego. Do 10 000 zł możesz ją zaliczyć do kosztów jednorazowo, powyżej – przez amortyzację.
   - pytanie: Czy sprzedaż auta wykupionego z leasingu trzeba opodatkować?
-    odpowiedz: Tak, jeśli sprzedasz je przed upływem 6 lat od wycofania z firmy – także gdy wykupiłeś je prywatnie. Cena sprzedaży jest wtedy przychodem z działalności. Po 6 latach sprzedaż jest wolna od podatku.
+    odpowiedz: Tak, jeśli sprzedasz je przed upływem 6 lat od wycofania z firmy – także po prywatnym wykupie. Cena sprzedaży jest wtedy przychodem z działalności. Po 6 latach sprzedaż jest wolna od podatku.
   - pytanie: Co to jest suma opłat w leasingu?
     odpowiedz: Opłata wstępna, wszystkie raty i wykup wyrażone jako procent ceny auta (netto). Suma opłat 115% oznacza, że za auto za 100 000 zł zapłacisz łącznie 115 000 zł. Kalkulator przeliczy sumę opłat z oferty na oprocentowanie roczne.
   - pytanie: Czy osoba prywatna może wziąć samochód w leasing?

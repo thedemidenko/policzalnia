@@ -15,7 +15,7 @@ faq:
   - pytanie: Ile umów na czas określony można podpisać z jednym pracodawcą?
     odpowiedz: Trzy. Czwarta umowa terminowa z tym samym pracodawcą staje się z mocy prawa umową na czas nieokreślony od dnia jej zawarcia – nawet jeśli łącznie nie minęło 33 miesięcy. Aneks wydłużający umowę liczy się jako nowa umowa.
   - pytanie: Czy przerwa w zatrudnieniu zeruje limit 33 miesięcy?
-    odpowiedz: Nie. Od 2016 r. przepisy nie przewidują przerwy, która zerowałaby limit. Jeśli pracowałeś 8 miesięcy, a po 10 miesiącach przerwy wróciłeś na 12 miesięcy, masz 20 miesięcy i 2 umowy z limitu.
+    odpowiedz: Nie. Od 2016 r. przepisy nie przewidują przerwy, która zerowałaby limit. Jeśli pierwsza umowa trwała 8 miesięcy, a po 10 miesiącach przerwy była kolejna na 12 miesięcy, masz 20 miesięcy i 2 umowy z limitu.
   - pytanie: Czy umowa na okres próbny wlicza się do limitu 3 umów?
     odpowiedz: Nie. Do limitu 33 miesięcy i 3 umów liczą się tylko umowy na czas określony. Okres próbny wlicza się natomiast do stażu u pracodawcy, od którego zależy długość okresu wypowiedzenia.
   - pytanie: Jaki jest okres wypowiedzenia umowy na czas określony?

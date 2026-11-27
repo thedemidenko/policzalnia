@@ -15,7 +15,7 @@ faq:
   - pytanie: Czy IKZE opłaca się przy niskich zarobkach?
     odpowiedz: Ulga podatkowa – nie zawsze. Jeśli twój dochód nie przekracza 30 000 zł (kwota wolna), nie płacisz podatku, więc odliczenie nic nie zwróci. Przy dochodzie 35 000 zł z 11 304 zł wpłaty odzyskasz tylko 600 zł. W takiej sytuacji lepsze jest zwykle IKE – bez 10% podatku przy wypłacie.
   - pytanie: Kiedy dostanę zwrot podatku z IKZE?
-    odpowiedz: Po rozliczeniu PIT za rok, w którym wpłaciłeś pieniądze – czyli wiosną następnego roku. Wpłaty z 2026 r. odliczysz w PIT za 2026 r. (składanym od 15 lutego do 30 kwietnia 2027 r.). Wpłata musi zostać zaksięgowana na IKZE do 31 grudnia.
+    odpowiedz: Po rozliczeniu PIT za rok, w którym wpłata trafiła na IKZE – czyli wiosną następnego roku. Wpłaty z 2026 r. odliczysz w PIT za 2026 r. (składanym od 15 lutego do 30 kwietnia 2027 r.). Wpłata musi zostać zaksięgowana na IKZE do 31 grudnia.
   - pytanie: Czy przedsiębiorca na ryczałcie może odliczyć IKZE?
     odpowiedz: Tak. Wpłaty na IKZE odliczasz od przychodu (art. 11 ustawy o ryczałcie), więc zwrot to wpłata pomnożona przez twoją stawkę – np. 16 956 zł × 12% = 2034,72 zł albo × 8,5% = 1441,26 zł.
   - pytanie: Jak opodatkowana jest wypłata z IKZE?
@@ -109,7 +109,7 @@ Wnioski:
 
 ## Wypłata z IKZE – 10% po 65. roku życia
 
-- Wypłata z 10% ryczałtem: po ukończeniu **65 lat** i wpłatach w co najmniej **5 latach kalendarzowych** (art. 34a ustawy o IKE i IKZE). Możesz wypłacić wszystko naraz albo w ratach – w ratach przez co najmniej 10 lat (krócej, jeśli wpłacałeś krócej niż 10 lat).
+- Wypłata z 10% ryczałtem: po ukończeniu **65 lat** i wpłatach w co najmniej **5 latach kalendarzowych** (art. 34a ustawy o IKE i IKZE). Możesz wypłacić wszystko naraz albo w ratach – w ratach przez co najmniej 10 lat (krócej, jeśli wpłaty trwały krócej niż 10 lat).
 - **Zwrot przed 65. rokiem życia**: cała kwota z IKZE staje się przychodem i jest opodatkowana według skali razem z innymi dochodami – tracisz więc korzyść z ulgi, a często i więcej.
 - Po śmierci oszczędzającego pieniądze trafiają do wskazanych osób – mogą je przenieść na własne IKZE albo wypłacić (z 10% ryczałtem).
 

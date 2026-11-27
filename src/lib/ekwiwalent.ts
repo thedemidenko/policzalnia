@@ -73,7 +73,7 @@ export function obliczEkwiwalent(x: DaneEkwiwalentu): WynikEkwiwalentu {
     wymiarWRoku = u.dni;
     dni = Math.max(0, r2(u.dni + Math.max(0, x.zalegly ?? 0) - Math.max(0, x.wykorzystany ?? 0)));
     uwagi.push(`Urlop proporcjonalny za ${rok} r.: ${u.dni} dni (miesiące pracy w roku × 1/12 wymiaru, w górę).`);
-    if ((x.wykorzystany ?? 0) > u.dni + (x.zalegly ?? 0)) uwagi.push('Wykorzystałeś więcej urlopu, niż przysługiwało – pracodawca nie może potrącić za to z pensji.');
+    if ((x.wykorzystany ?? 0) > u.dni + (x.zalegly ?? 0)) uwagi.push('Wykorzystano więcej urlopu, niż przysługiwało – pracodawca nie może potrącić za to z pensji.');
   }
   const godziny = r2(dni * norma);
   const zaDzien = r2(podstawa / wsp), zaGodzine = r2(zaDzien / norma);

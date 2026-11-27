@@ -206,7 +206,7 @@ const coIle: [string, string][] = [['1', 'co miesiąc'], ['3', 'co kwartał'], [
     inw.hidden = !w.inwestycja || w.wynik.nadplaty === 0;
     if (w.inwestycja) inw.innerHTML = w.inwestycja.lepsze === 'nadplata'
       ? `<strong>Nadpłata wygrywa</strong> z inwestowaniem tych samych pieniędzy na ${val('inw')}%${el('belka').checked ? ' (po podatku Belki)' : ''} – do końca pierwotnego okresu kredytu zostaje ci o ok. ${zl(w.inwestycja.roznica)} więcej.`
-      : `<strong>Inwestowanie wygrywa</strong> – przy ${val('inw')}%${el('belka').checked ? ' po podatku Belki' : ''} do końca pierwotnego okresu kredytu miałbyś o ok. ${zl(w.inwestycja.roznica)} więcej. Pamiętaj, że zysk z inwestycji nie jest pewny.`;
+      : `<strong>Inwestowanie wygrywa</strong> – przy ${val('inw')}%${el('belka').checked ? ' po podatku Belki' : ''} do końca pierwotnego okresu kredytu zostałoby ci ok. ${zl(w.inwestycja.roznica)} więcej. Pamiętaj, że zysk z inwestycji nie jest pewny.`;
 
     $('n-war-t').innerHTML = w.warianty.map((x) => `<tr${x.skutek === d.skutek ? ' class="aktywny"' : ''}><td>${NAZWY[x.skutek]}</td><td>${zl(x.rataPo)}</td><td>${x.rat}</td><td>${zl(x.odsetki)}</td><td>${zl(x.oszczednosc)}</td></tr>`).join('');
     $('n-lata-t').innerHTML = w.lata.map((l) => `<tr><td>${l.rok}.</td><td>${zl(l.raty)}</td><td>${zl(l.odsetki)}</td><td>${zl(l.nadplaty)}</td><td>${zl(l.saldo)}</td></tr>`).join('');

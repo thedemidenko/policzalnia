@@ -106,7 +106,7 @@ Przy ratach malejących strategia mix (płacisz stale pierwszą ratę 2750 zł) 
 - przy **stałym oprocentowaniu** – w okresie obowiązywania stałej stopy, nie więcej niż koszty banku związane z wcześniejszą spłatą,
 - po 3 latach (przy zmiennej stopie) nadpłata jest **bezpłatna**. Wiele banków nie pobiera opłaty w ogóle – sprawdź tabelę opłat i umowę.
 
-**Kredyt gotówkowy i inny konsumencki** (art. 50 ustawy o kredycie konsumenckim): prowizja jest możliwa tylko przy **stałym oprocentowaniu** i gdy w ciągu 12 miesięcy spłacasz przed terminem więcej niż trzykrotność przeciętnego wynagrodzenia. Wynosi maksymalnie **1%** (0,5%, gdy do końca umowy został rok lub mniej). Bank musi też **obniżyć koszty kredytu** – prowizję, ubezpieczenie i inne opłaty – o część przypadającą na okres, o który skróciłeś umowę (art. 49).
+**Kredyt gotówkowy i inny konsumencki** (art. 50 ustawy o kredycie konsumenckim): prowizja jest możliwa tylko przy **stałym oprocentowaniu** i gdy w ciągu 12 miesięcy spłacasz przed terminem więcej niż trzykrotność przeciętnego wynagrodzenia. Wynosi maksymalnie **1%** (0,5%, gdy do końca umowy został rok lub mniej). Bank musi też **obniżyć koszty kredytu** – prowizję, ubezpieczenie i inne opłaty – o część przypadającą na okres, o który skrócono umowę (art. 49).
 
 ## Nadpłacać kredyt czy inwestować?
 

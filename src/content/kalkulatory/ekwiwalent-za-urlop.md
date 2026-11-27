@@ -22,8 +22,8 @@ faq:
     odpowiedz: Nie. Pracownik nie może zrzec się urlopu, a ekwiwalent przysługuje tylko wtedy, gdy umowa się kończy. Wyjątek – gdy od razu podpisujesz kolejną umowę z tym samym pracodawcą i uzgodnicie, że wykorzystasz urlop w jej trakcie; wtedy ekwiwalentu nie ma.
   - pytanie: Czy ekwiwalent należy się za urlop zaległy z poprzednich lat?
     odpowiedz: Tak, za cały niewykorzystany urlop – bieżący i zaległy, jeśli się nie przedawnił. Wszystkie dni liczy się według współczynnika z roku, w którym kończy się umowa.
-  - pytanie: Co jeśli wykorzystałem więcej urlopu, niż mi przysługiwało?
-    odpowiedz: Przy odejściu w trakcie roku może się okazać, że wykorzystałeś więcej dni niż urlop proporcjonalny. Pracodawca nie może za to potrącić pieniędzy z pensji – nadwyżka przepada na jego niekorzyść.
+  - pytanie: Co, jeśli wykorzystano więcej urlopu, niż przysługiwało?
+    odpowiedz: Przy odejściu w trakcie roku może się okazać, że wykorzystany urlop przekracza urlop proporcjonalny. Pracodawca nie może za to potrącić pieniędzy z pensji – nadwyżka przepada na jego niekorzyść.
 powiazane:
   - kalkulator-urlopu
   - staz-pracy
@@ -88,16 +88,16 @@ Stosuje się współczynnik z roku, w którym kończy się umowa – także do u
 | Premie kwartalne, półroczne, roczne | średnia z 12 miesięcy przed odejściem |
 | Nagroda jubileuszowa, odprawa, wynagrodzenie za urlop i chorobowe, jednorazowe nagrody | nie wlicza się |
 
-Jeśli w ciągu 3 miesięcy przed odejściem chorowałeś albo byłeś na urlopie, składniki zmienne przelicza się tak, jakbyś przepracował pełny okres.
+Jeśli w ciągu 3 miesięcy przed odejściem była choroba albo urlop, składniki zmienne przelicza się tak, jakby przepracowano pełny okres.
 
 ## Kiedy przysługuje ekwiwalent za urlop?
 
 Ekwiwalent należy się, gdy **umowa o pracę się kończy**, a pracownik nie wykorzystał całego urlopu – bez względu na to, kto ją wypowiedział i w jakim trybie. Obejmuje urlop proporcjonalny za rok odejścia i zaległy urlop z lat poprzednich.
 
-Ekwiwalentu **nie ma**, gdy od razu podpisujesz kolejną umowę z tym samym pracodawcą i uzgodnicie, że wykorzystasz urlop w jej trakcie. Pracodawca może też wysłać cię na urlop w okresie wypowiedzenia – wtedy ekwiwalent przysługuje tylko za dni, których nie zdążyłeś wykorzystać.
+Ekwiwalentu **nie ma**, gdy od razu podpisujesz kolejną umowę z tym samym pracodawcą i uzgodnicie, że wykorzystasz urlop w jej trakcie. Pracodawca może też wysłać cię na urlop w okresie wypowiedzenia – wtedy ekwiwalent przysługuje tylko za dni, których nie udało się wykorzystać.
 
 Liczbę dni wykorzystanego urlopu pracodawca wpisuje do **świadectwa pracy**. Nowy pracodawca liczy na tej podstawie twój urlop w roku zmiany pracy.
 
 ## Co, jeśli pracodawca nie wypłacił ekwiwalentu?
 
-Ekwiwalent jest wymagalny w dniu rozwiązania umowy. Jeśli go nie dostałeś, wezwij pracodawcę do zapłaty na piśmie, a potem możesz złożyć skargę do Państwowej Inspekcji Pracy albo pozew do sądu pracy. Roszczenie **przedawnia się po 3 latach** od dnia, w którym umowa się skończyła. Od spóźnionej wypłaty należą się odsetki ustawowe za opóźnienie – policzysz je w [kalkulatorze odsetek](/oszczedzanie/kalkulator-odsetek/).
+Ekwiwalent jest wymagalny w dniu rozwiązania umowy. Jeśli nie został wypłacony, wezwij pracodawcę do zapłaty na piśmie, a potem możesz złożyć skargę do Państwowej Inspekcji Pracy albo pozew do sądu pracy. Roszczenie **przedawnia się po 3 latach** od dnia, w którym umowa się skończyła. Od spóźnionej wypłaty należą się odsetki ustawowe za opóźnienie – policzysz je w [kalkulatorze odsetek](/oszczedzanie/kalkulator-odsetek/).

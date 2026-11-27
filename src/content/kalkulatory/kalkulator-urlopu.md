@@ -64,7 +64,7 @@ Staż urlopowy to wszystkie okresy pracy (bez względu na przerwy) plus lata szk
 
 ## Kiedy przysługuje 26 dni urlopu?
 
-Prawo do 26 dni nabywasz w dniu, w którym staż urlopowy osiąga 10 lat – i od razu za cały ten rok. Jeśli wcześniej wykorzystałeś już 20 dni, pracodawca musi dać ci **urlop uzupełniający**, czyli brakujące 6 dni (art. 158 Kodeksu pracy).
+Prawo do 26 dni nabywasz w dniu, w którym staż urlopowy osiąga 10 lat – i od razu za cały ten rok. Jeśli wcześniej wykorzystano już 20 dni, pracodawca musi dać ci **urlop uzupełniający**, czyli brakujące 6 dni (art. 158 Kodeksu pracy).
 
 ## Jak liczy się urlop proporcjonalny?
 

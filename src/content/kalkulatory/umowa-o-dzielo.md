@@ -40,7 +40,7 @@ draft: false
 ## Jak działa kalkulator umowy o dzieło?
 
 1. Od kwoty brutto odejmuje **koszty uzyskania przychodu** – 20% albo 50% za przeniesienie praw autorskich. Możesz też zaznaczyć, że prawa autorskie dotyczą tylko części wynagrodzenia (np. 80%).
-2. Od dochodu zaokrąglonego do złotych liczy **zaliczkę na podatek 12%** i pomniejsza ją o kwotę z PIT-2, jeśli go złożyłeś.
+2. Od dochodu zaokrąglonego do złotych liczy **zaliczkę na podatek 12%** i pomniejsza ją o kwotę z PIT-2, jeśli został złożony.
 3. Przy kwotach do 200 zł stosuje **ryczałt 12%**, a przy dziele u własnego pracodawcy dolicza **składki ZUS i zdrowotną**.
 
 Wybierz „na rękę”, żeby policzyć odwrotnie – ile trzeba wpisać w umowę, żeby dostać konkretną kwotę netto.

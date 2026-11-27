@@ -30,7 +30,7 @@ const przyczyny: [string, string][] = [['choroba', 'choroba (80%)'], ['ciaza', '
     <select id="l-przyczyna" name="przyczyna">{przyczyny.map(([k, e]) => <option value={k}>{e}</option>)}</select>
     <small>Pobyt w szpitalu jest płatny tak samo – 80% (stawkę 70% zniesiono w 2022 r.).</small>
   </div>
-  <label class="przelacznik" data-tylko="uop"><input type="checkbox" name="po50" value="1" /> Skończyłem 50 lat przed tym rokiem (pracodawca płaci tylko 14 dni)</label>
+  <label class="przelacznik" data-tylko="uop"><input type="checkbox" name="po50" value="1" /> 50 lat ukończone przed tym rokiem (pracodawca płaci tylko 14 dni)</label>
   <label class="przelacznik"><input type="checkbox" name="krotko" value="1" /> <span>Ubezpieczenie chorobowe trwa krócej niż <b data-wyczekiwanie>30</b> dni</span></label>
 </form>
 <div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">

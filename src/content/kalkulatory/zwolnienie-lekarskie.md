@@ -13,7 +13,7 @@ faq:
   - pytanie: Ile płatne jest L4 w szpitalu?
     odpowiedz: 80%, tak samo jak zwykłe zwolnienie. Niższa stawka 70% za pobyt w szpitalu została zniesiona 1 stycznia 2022 r. – część kalkulatorów i poradników wciąż ją podaje.
   - pytanie: Kto płaci za L4 – pracodawca czy ZUS?
-    odpowiedz: Pracodawca płaci wynagrodzenie chorobowe za pierwsze 33 dni choroby w roku (14 dni, jeśli skończyłeś 50 lat przed tym rokiem). Od kolejnego dnia przysługuje zasiłek chorobowy z ZUS. Osobom na zleceniu i w działalności zasiłek wypłaca ZUS od pierwszego dnia.
+    odpowiedz: Pracodawca płaci wynagrodzenie chorobowe za pierwsze 33 dni choroby w roku (14 dni po ukończeniu 50 lat – od roku następnego). Od kolejnego dnia przysługuje zasiłek chorobowy z ZUS. Osobom na zleceniu i w działalności zasiłek wypłaca ZUS od pierwszego dnia.
   - pytanie: Czy od L4 płaci się składki?
     odpowiedz: Nie. Od wynagrodzenia chorobowego i zasiłku nie odprowadza się składek ZUS ani składki zdrowotnej – pobiera się tylko zaliczkę na podatek. Dlatego na rękę dostajesz więcej niż 80% zwykłej pensji netto, zwykle ok. 90%.
   - pytanie: Ile najdłużej można być na L4?
@@ -51,7 +51,7 @@ Wybierz rodzaj umowy, wpisz średnie wynagrodzenie z ostatnich 12 miesięcy i li
 4. sprawdzi **okres zasiłkowy** (182 albo 270 dni) i **okres wyczekiwania** (30 albo 90 dni),
 5. pokaże kwotę **na rękę** (co najmniej – po zaliczce na podatek bez ulg) i **o ile mniej** dostaniesz niż pensję za te dni.
 
-Jeśli w tym roku byłeś już na zwolnieniu, wpisz liczbę tamtych dni – od nich zależy, kiedy kończy się limit pracodawcy.
+Jeśli w tym roku było już zwolnienie, wpisz liczbę tamtych dni – od nich zależy, kiedy kończy się limit pracodawcy.
 
 ## Ile płatne jest L4 w 2026 roku?
 
@@ -79,7 +79,7 @@ Limit 14 dni dotyczy pracownika od roku następującego po roku, w którym skoń
 
 **Przykład 1 – dwa tygodnie choroby.** Pensja 6000 zł brutto: podstawa 6000 − 13,71% = 5177,40 zł, za dzień 5177,40 ÷ 30 × 80% = 138,06 zł. Za 14 dni: **1932,84 zł brutto** od pracodawcy.
 
-**Przykład 2 – cały miesiąc na L4.** Pensja 7000 zł brutto: za dzień 161,07 zł, za 30 dni **4832,10 zł brutto**. Od tej kwoty nie płaci się składek ZUS ani zdrowotnej, tylko podatek: przy PIT-2 i zwykłych kosztach (250 zł) zaliczka wynosi 250 zł. Na rękę: **ok. 4582 zł** – przy zwykłej pensji 7000 zł dostałbyś ok. 5102 zł. Miesiąc na L4 to więc ok. **90% zwykłej pensji netto**, choć brutto tylko 69%.
+**Przykład 2 – cały miesiąc na L4.** Pensja 7000 zł brutto: za dzień 161,07 zł, za 30 dni **4832,10 zł brutto**. Od tej kwoty nie płaci się składek ZUS ani zdrowotnej, tylko podatek: przy PIT-2 i zwykłych kosztach (250 zł) zaliczka wynosi 250 zł. Na rękę: **ok. 4582 zł** – przy zwykłej pensji 7000 zł na rękę byłoby ok. 5102 zł. Miesiąc na L4 to więc ok. **90% zwykłej pensji netto**, choć brutto tylko 69%.
 
 **Przykład 3 – długie zwolnienie.** Pracownik miał już w tym roku 25 dni L4 i dostaje kolejne 20 dni. Pracodawca zapłaci za 8 dni (do limitu 33), a za pozostałe 12 dni zasiłek z ZUS – w tej samej wysokości.
 

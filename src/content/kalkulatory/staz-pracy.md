@@ -53,7 +53,7 @@ Kalkulator sumuje okresy pracy tak, jak robią to działy kadr:
 Wynik pokazuje w trzech wersjach:
 
 - **staż pracy łącznie** – według zasad od 2026 r., ze zleceniami i działalnością;
-- **staż z samych umów o pracę** – tak, jak liczono go do końca 2025 r. (gdy wpisałeś inne okresy);
+- **staż z samych umów o pracę** – tak, jak liczono go do końca 2025 r. (gdy wpisano też inne okresy);
 - **staż urlopowy** – razem z latami szkoły, z wymiarem urlopu 20 albo 26 dni.
 
 Jeśli wciąż pracujesz (pole „Do” zostaw puste), a nie masz jeszcze 10 lat stażu urlopowego, kalkulator pokaże **dzień, od którego przysługuje ci 26 dni urlopu**.
@@ -104,7 +104,7 @@ Do stażu, od którego zależy wymiar urlopu, dolicza się okres nauki – ale t
 
 **Przykład 2.** Absolwent technikum 5-letniego pracuje od 1 października 2023 r. Na dzień 24 listopada 2026 r. ma 3 lata, 1 miesiąc i 24 dni pracy, a razem ze szkołą 8 lat, 1 miesiąc i 24 dni stażu urlopowego. 26 dni urlopu będzie mu przysługiwać od 30 września 2028 r.
 
-**Praca w czasie nauki.** Jeśli pracowałeś, zanim skończyłeś szkołę, wlicza się albo lata nauki, albo praca w tym czasie – co jest korzystniejsze (art. 155 § 2). **Przykład 3:** ktoś pracował od 1.10.2010 do 30.09.2015 r., a studia skończył 30.06.2014 r. Wariant z nauką to 8 lat plus 1 rok i 3 miesiące pracy po dyplomie, czyli 9 lat i 3 miesiące. Wariant z samą pracą to 5 lat, więc wybiera się pierwszy. W kalkulatorze wpisz datę ukończenia szkoły w sekcji „Pracowałeś w trakcie nauki?”.
+**Praca w czasie nauki.** Jeśli praca trwała jeszcze w czasie szkoły, wlicza się albo lata nauki, albo praca w tym czasie – co jest korzystniejsze (art. 155 § 2). **Przykład 3:** ktoś pracował od 1.10.2010 do 30.09.2015 r., a studia skończył 30.06.2014 r. Wariant z nauką to 8 lat plus 1 rok i 3 miesiące pracy po dyplomie, czyli 9 lat i 3 miesiące. Wariant z samą pracą to 5 lat, więc wybiera się pierwszy. W kalkulatorze wpisz datę ukończenia szkoły w sekcji „Praca w trakcie nauki?”.
 
 ## Od czego zależy staż pracy?
 
@@ -117,13 +117,13 @@ Do stażu, od którego zależy wymiar urlopu, dolicza się okres nauki – ale t
 
 Do okresu wypowiedzenia liczy się staż u obecnego pracodawcy. Od 2026 r. obejmuje on także zlecenia albo usługi z działalności wykonywane wcześniej na rzecz tej samej firmy (art. 302¹ § 8 KP).
 
-Gdy w trakcie roku przekroczysz próg 10 lat, a wykorzystałeś już urlop w wymiarze 20 dni, przysługuje ci **urlop uzupełniający** – 6 dni (art. 158 KP).
+Gdy w trakcie roku przekroczysz próg 10 lat, a urlop w wymiarze 20 dni jest już wykorzystany, przysługuje ci **urlop uzupełniający** – 6 dni (art. 158 KP).
 
 ## Jak uzyskać zaświadczenie o stażu z ZUS?
 
 1. Zaloguj się na eZUS (dawniej PUE ZUS).
 2. W menu wybierz **„Kreator wniosku «stażowe»”** i utwórz nowy wniosek – część danych będzie już wypełniona.
 3. Wyślij wniosek. Zaświadczenie o okresach zlecenia, działalności czy ulgi na start trafi na twój profil w eZUS.
-4. Przekaż zaświadczenie pracodawcy. Do każdego okresu sprawdź, czy daty zgadzają się z tym, co wpisałeś w kalkulatorze.
+4. Przekaż zaświadczenie pracodawcy. Do każdego okresu sprawdź, czy daty zgadzają się z tym, co wpisano w kalkulatorze.
 
 Okresów zatrudnienia na etacie nie potwierdza ZUS – do tego służą **świadectwa pracy**.

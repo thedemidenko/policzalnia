@@ -6,14 +6,14 @@ nazwa_krotka: Kalkulator IKE
 meta_title: Kalkulator IKE 2026 - zysk, limit 28 260 zł i IKE czy IKZE | Policzalnia
 meta_description: Policz, ile uzbierasz na IKE i ile zaoszczędzisz na podatku Belki – przy ETF, obligacjach i lokacie. Limit IKE 2026 i 2027, ile możesz jeszcze wpłacić w tym roku, warunki wypłaty i porównanie IKE, IKZE i zwykłego konta.
 kalkulator: ike
-lead: Wpisz, ile chcesz odkładać co miesiąc, swój wiek i stopę zwrotu, a kalkulator pokaże, ile będziesz mieć na IKE w wieku 60 lat i ile więcej niż na zwykłym koncie, gdzie zapłaciłbyś podatek Belki. Porówna też IKE z IKZE przy twoim progu podatkowym i policzy, ile możesz jeszcze wpłacić w tym roku.
+lead: Wpisz, ile chcesz odkładać co miesiąc, swój wiek i stopę zwrotu, a kalkulator pokaże, ile będziesz mieć na IKE w wieku 60 lat i ile więcej niż na zwykłym koncie, gdzie obowiązuje podatek Belki. Porówna też IKE z IKZE przy twoim progu podatkowym i policzy, ile możesz jeszcze wpłacić w tym roku.
 faq:
   - pytanie: Jaki jest limit wpłat na IKE w 2026 i 2027 roku?
     odpowiedz: 28 260 zł w 2026 r. (2355 zł miesięcznie) i 30 099 zł w 2027 r. (2508,25 zł miesięcznie). Limit to trzykrotność prognozowanego przeciętnego wynagrodzenia na dany rok i obowiązuje na rok kalendarzowy – liczy się data zaksięgowania wpłaty.
   - pytanie: Ile zyskam na IKE?
     odpowiedz: Tyle, ile wyniósłby podatek Belki od zysku. Przy 500 zł miesięcznie przez 25 lat i 6% rocznie uzbierasz 339 790 zł – o 36 060 zł więcej niż w funduszu poza IKE i o 51 565 zł więcej niż na lokatach, od których podatek pobierany jest co roku.
   - pytanie: Kiedy można wypłacić pieniądze z IKE bez podatku?
-    odpowiedz: Po ukończeniu 60 lat (albo 55 lat, jeśli masz uprawnienia emerytalne), jeśli wpłacałeś na IKE w co najmniej 5 latach kalendarzowych albo ponad połowę pieniędzy wpłaciłeś co najmniej 5 lat przed wypłatą. Wypłata może być jednorazowa albo w ratach.
+    odpowiedz: Po ukończeniu 60 lat (albo 55 lat, jeśli masz uprawnienia emerytalne), jeśli wpłaty na IKE były w co najmniej 5 latach kalendarzowych albo ponad połowa pieniędzy trafiła na konto co najmniej 5 lat przed wypłatą. Wypłata może być jednorazowa albo w ratach.
   - pytanie: Co się stanie, gdy wypłacę pieniądze z IKE wcześniej?
     odpowiedz: To tzw. zwrot – od zysku zapłacisz 19% podatku Belki, czyli tyle, ile poza IKE. Możesz też zrobić częściowy zwrot – wtedy podatek płacisz od zysku przypadającego na wypłacaną część, a reszta zostaje na IKE.
   - pytanie: IKE czy IKZE – co się bardziej opłaca?
@@ -43,15 +43,15 @@ draft: false
 
 ## Jak działa kalkulator IKE?
 
-**Tryb „ile zyskam na IKE”** – wpisz miesięczną wpłatę (albo zaznacz „pełny limit co roku”), swój wiek, wiek wypłaty i oczekiwaną stopę zwrotu. Wybierz, w co inwestujesz – od tego zależy, ile zapłaciłbyś podatku poza IKE:
+**Tryb „ile zyskam na IKE”** – wpisz miesięczną wpłatę (albo zaznacz „pełny limit co roku”), swój wiek, wiek wypłaty i oczekiwaną stopę zwrotu. Wybierz, w co inwestujesz – od tego zależy, ile podatku trzeba by zapłacić poza IKE:
 
 - **ETF, akcje, fundusze** – podatek Belki raz, przy sprzedaży,
 - **obligacje skarbowe (EDO)** – podatek co 10 lat, przy wykupie,
 - **lokata, konto** – podatek co roku, od każdej kapitalizacji.
 
-Kalkulator pokaże kwotę na IKE, ile miałbyś bez IKE, ile zostaje dzięki zwolnieniu z podatku i ile dostałbyś przy zwrocie przed 60. rokiem życia. Sprawdzi też warunki wypłaty bez podatku i porówna IKE z IKZE przy twojej stawce PIT.
+Kalkulator pokaże kwotę na IKE, ile byłoby bez IKE, ile zostaje dzięki zwolnieniu z podatku i ile wypłacisz przy zwrocie przed 60. rokiem życia. Sprawdzi też warunki wypłaty bez podatku i porówna IKE z IKZE przy twojej stawce PIT.
 
-**Tryb „ile mogę wpłacić”** – wybierz rok i wpisz, ile już wpłaciłeś. Kalkulator policzy, ile zostało do limitu i ile wpłacać miesięcznie do końca roku.
+**Tryb „ile mogę wpłacić”** – wybierz rok i wpisz, ile już wpłacono w tym roku. Kalkulator policzy, ile zostało do limitu i ile wpłacać miesięcznie do końca roku.
 
 ## Limity IKE i IKZE w 2026 i 2027 roku
 
@@ -91,7 +91,7 @@ Wpłacając pełny limit co roku przez 25 lat (przy wzroście limitu 4% rocznie)
 Wypłata bez podatku przysługuje (art. 34 ustawy o IKE i IKZE), gdy jednocześnie:
 
 1. masz **60 lat** albo **55 lat i uprawnienia emerytalne**,
-2. wpłacałeś na IKE w co najmniej **5 dowolnych latach kalendarzowych** albo ponad **połowę wartości wpłat** zrobiłeś co najmniej 5 lat przed wnioskiem o wypłatę.
+2. wpłaty na IKE były w co najmniej **5 dowolnych latach kalendarzowych** albo ponad **połowa wartości wpłat** trafiła na konto co najmniej 5 lat przed wnioskiem o wypłatę.
 
 Pieniądze możesz wypłacić jednorazowo albo w ratach – w obu przypadkach bez podatku. Jeśli nie spełniasz warunków, wypłata to **zwrot**: od zysku płacisz 19% podatku, tak jak poza IKE. W przykładzie wyżej zwrot dałby 303 730 zł zamiast 339 790 zł. Możliwy jest też **częściowy zwrot** – reszta pieniędzy zostaje na IKE.
 

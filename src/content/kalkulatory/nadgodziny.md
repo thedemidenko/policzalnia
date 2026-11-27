@@ -19,7 +19,7 @@ faq:
   - pytanie: Ile wynosi dodatek za pracę w nocy w 2026 roku?
     odpowiedz: 20% stawki godzinowej z płacy minimalnej (4806 zł) – zależnie od liczby godzin pracy w miesiącu od 5,22 zł (lipiec, 184 godziny) do 6,01 zł (miesiące po 160 godzin). Należy się za każdą godzinę między 21 a 7, także nadliczbową, obok dodatku 100%.
   - pytanie: Czy praca w sobotę to nadgodziny?
-    odpowiedz: Nie zawsze. Jeśli w sobotę wolną z rozkładu pracowałeś ponad normę, pracodawca musi przede wszystkim dać ci inny dzień wolny do końca okresu rozliczeniowego. Dopiero gdy tego nie zrobi, za przekroczenie normy tygodniowej należy się dodatek 100%.
+    odpowiedz: Nie zawsze. Jeśli praca w sobotę wolną z rozkładu przekroczyła normę, pracodawca musi przede wszystkim dać ci inny dzień wolny do końca okresu rozliczeniowego. Dopiero gdy tego nie zrobi, za przekroczenie normy tygodniowej należy się dodatek 100%.
   - pytanie: Czy na pół etatu przysługuje dodatek za nadgodziny?
     odpowiedz: Za godziny ponad twój wymiar, ale poniżej normy pełnego etatu (tzw. ponadwymiarowe), dodatek przysługuje dopiero po przekroczeniu limitu, który musi być wpisany w umowie. Powyżej 8 godzin na dobę albo 40 godzin tygodniowo to już zwykłe nadgodziny z dodatkiem 50% lub 100%.
   - pytanie: Czy kierownik dostaje pieniądze za nadgodziny?
@@ -82,7 +82,7 @@ Pełny wymiar czasu pracy z listą świąt znajdziesz w [kalkulatorze dni robocz
 
 ## Czas wolny zamiast pieniędzy za nadgodziny
 
-- **Na twój pisemny wniosek** – pracodawca może dać tyle samo czasu wolnego, ile przepracowałeś nadgodzin (10 nadgodzin = 10 godzin wolnego).
+- **Na twój pisemny wniosek** – pracodawca może dać tyle samo czasu wolnego, ile przepracowano nadgodzin (10 nadgodzin = 10 godzin wolnego).
 - **Bez wniosku** – pracodawca może sam wyznaczyć czas wolny, ale o połowę dłuższy (10 nadgodzin = 15 godzin wolnego), do końca okresu rozliczeniowego. Nie może przy tym obniżyć ci pensji za pełny miesiąc.
 
 W obu przypadkach dodatku 50% ani 100% już się nie wypłaca.

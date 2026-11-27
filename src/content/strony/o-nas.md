@@ -24,4 +24,4 @@ Policzalnia to zbiór darmowych kalkulatorów dla osób pracujących na etacie, 
 
 Kalkulatory i opisy przygotowuje **Redakcja Policzalni**. Wzory sprawdzamy z tekstami ustaw i rozporządzeń oraz z oficjalnymi kalkulatorami instytucji publicznych. Szczegóły opisujemy na stronie [Metodologia](/metodologia/).
 
-Znalazłeś błąd albo brakuje Ci kalkulatora? Napisz na [kontakt@policzalnia.pl](mailto:kontakt@policzalnia.pl).
+Widzisz błąd albo brakuje kalkulatora? Napisz na [kontakt@policzalnia.pl](mailto:kontakt@policzalnia.pl).

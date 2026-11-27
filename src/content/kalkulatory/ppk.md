@@ -11,7 +11,7 @@ faq:
   - pytanie: Ile wynosi wpłata do PPK z pensji?
     odpowiedz: Ty wpłacasz 2% pensji brutto, pracodawca 1,5%. Przy 8000 zł brutto to 160 zł od ciebie i 120 zł od pracodawcy, czyli 280 zł miesięcznie na koncie PPK. Na rękę dostajesz o ok. 174 zł mniej, bo od wpłaty pracodawcy płacisz też podatek (14,40 zł).
   - pytanie: Czy PPK się opłaca?
-    odpowiedz: Tak, prawie zawsze – na każdą złotówkę z twojej kieszeni dostajesz wpłatę pracodawcy, dopłaty państwa i zysk funduszu. Przy 8000 zł brutto i 35 latach oszczędzania (5% rocznie) za 76 tys. zł z twojej kieszeni uzbierasz ok. 234 tys. zł. Nawet natychmiastowy zwrot daje więcej, niż wpłaciłeś.
+    odpowiedz: Tak, prawie zawsze – na każdą złotówkę z twojej kieszeni dostajesz wpłatę pracodawcy, dopłaty państwa i zysk funduszu. Przy 8000 zł brutto i 35 latach oszczędzania (5% rocznie) za 76 tys. zł z twojej kieszeni uzbierasz ok. 234 tys. zł. Nawet natychmiastowy zwrot daje więcej, niż wynosiły twoje wpłaty.
   - pytanie: Ile dostanę przy zwrocie z PPK przed 60. rokiem życia?
     odpowiedz: Twoje wpłaty z zyskiem i 70% wpłat pracodawcy z zyskiem, minus 19% podatku od zysku. 30% wpłat pracodawcy trafia na twoje konto w ZUS, a wpłata powitalna i dopłaty roczne wracają do państwa. Przy 8000 zł brutto po 5 latach to ok. 17 144 zł zwrotu wobec 11 111 zł z twojej kieszeni.
   - pytanie: Czy wypłata z PPK po 60. roku życia jest opodatkowana?
@@ -116,7 +116,7 @@ Pensja 8000 zł brutto, 5% rocznie:
 | 5 latach | 21 504 zł | 17 144 zł | 2585 zł | 11 111 zł |
 | 10 latach | 52 143 zł | 40 939 zł | 6295 zł | 23 991 zł |
 
-Nawet zwrot daje więcej, niż wydałeś z własnej kieszeni – dzięki 70% wpłat pracodawcy. Najwięcej tracisz jednak na tym, że pieniądze przestają pracować, a dopłaty państwa przepadają.
+Nawet zwrot daje więcej, niż kosztował cię z własnej kieszeni – dzięki 70% wpłat pracodawcy. Najwięcej tracisz jednak na tym, że pieniądze przestają pracować, a dopłaty państwa przepadają.
 
 ## Dopłata roczna i obniżona wpłata – progi 2026 i 2027
 

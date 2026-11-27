@@ -1,4 +1,4 @@
-// Kalkulator inwestycyjny: (1) historia – „co by było, gdybym inwestował” na prawdziwych danych (S&P 500 z dywidendami,
+// Kalkulator inwestycyjny: (1) historia – „co by było, gdyby…” na prawdziwych danych (S&P 500 z dywidendami,
 // złoto, w USD i PLN), (2) prognoza – symulacja Monte Carlo (percentyle wyniku, szansa straty), (3) stopa zwrotu – ROI, CAGR.
 // Dane: R. Shiller (S&P 500, CPI USA), Bank Światowy (złoto), NBP (USD/PLN), GUS (inflacja w Polsce – lib/inflacja).
 import dane from '../data/inwestycje.json';
