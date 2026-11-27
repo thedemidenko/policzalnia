@@ -5,6 +5,47 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // koniec umowy o pracę: okres wypowiedzenia (art. 36 KP), odprawa (art. 8 ustawy o zwolnieniach grupowych),
+  // zasiłek dla bezrobotnych (ustawa o rynku pracy – kwoty od 1.06.2026, 90 dni karencji przy własnym wypowiedzeniu/porozumieniu)
+  'koniec-umowy': async () => {
+    const { placaMinimalna } = await import('./ppk');
+    return (el) => {
+      const sposoby: [string, string][] = [['wygasa', 'umowa wygasa w terminie'], ['pracodawca', 'wypowiada pracodawca'], ['porozumienie-firma', 'porozumienie – przyczyny firmy'], ['pracownik', 'wypowiada pracownik'], ['porozumienie', 'porozumienie – inne przyczyny']];
+      el.innerHTML = `<h3>Kończy się umowa – co ci przysługuje?</h3>
+        <label>Jak kończy się umowa<select data-i="s">${sposoby.map(([v, n]) => `<option value="${v}"${v === (el.dataset.sposob ?? 'pracodawca') ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
+        <label>Staż u tego pracodawcy <output data-o="u"></output><input type="range" min="1" max="180" step="1" value="${el.dataset.staz ?? 30}" data-i="u"></label>
+        <label>Pensja brutto <output data-o="p"></output><input type="range" min="4800" max="20000" step="100" value="${el.dataset.pensja ?? 7000}" data-i="p"></label>
+        <label>Firma zatrudnia co najmniej 20 osób<select data-i="f"><option value="1">tak</option><option value="0">nie</option></select></label>
+        <label>Twój staż pracy łącznie<select data-i="z"><option value="0.8">poniżej 5 lat</option><option value="1" selected>5–20 lat</option><option value="1.2">ponad 20 lat</option></select></label>
+        <div class="wz-slupki" data-o="lista"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const okres = (m: number) => `${m >= 12 ? `${Math.floor(m / 12)} ${Math.floor(m / 12) === 1 ? 'rok' : Math.floor(m / 12) < 5 ? 'lata' : 'lat'}` : ''}${m >= 12 && m % 12 ? ' ' : ''}${m % 12 ? `${m % 12} mies.` : ''}`;
+      const licz = () => {
+        const s = i('s').value, m = +i('u').value, p = +i('p').value, duza = i('f').value === '1', z = +i('z').value;
+        o('u').textContent = okres(m); o('p').textContent = zl(p);
+        const wyp = m < 6 ? '2 tygodnie' : m < 36 ? '1 miesiąc' : '3 miesiące';
+        const zFirmy = s === 'pracodawca' || s === 'porozumienie-firma';
+        const pm = placaMinimalna(new Date().getFullYear());
+        const odprawa = zFirmy && duza ? Math.min(p * (m < 24 ? 1 : m <= 96 ? 2 : 3), 15 * pm) : 0;
+        const zas1 = Math.round(1783.9 * z * 100) / 100, zas2 = Math.round(1400.9 * z * 100) / 100;
+        const karencja = s === 'pracownik' || s === 'porozumienie';
+        const wiersze: [string, string, number][] = [
+          ['Okres wypowiedzenia', s === 'wygasa' ? 'brak – koniec w terminie' : s.startsWith('porozumienie') ? 'brak – data z porozumienia' : wyp, 0],
+          ['Odprawa', odprawa ? zl(odprawa) : '0 zł', 2],
+          ['Zasiłek dla bezrobotnych', karencja ? 'po 90 dniach od rejestracji' : 'od 8. dnia po rejestracji', 1],
+          ['Zasiłek – pierwsze 90 dni', `${zas1.toLocaleString('pl-PL', { minimumFractionDigits: 2 })} zł brutto/mies.`, 1],
+          ['Zasiłek – później', `${zas2.toLocaleString('pl-PL', { minimumFractionDigits: 2 })} zł brutto/mies.`, 1],
+        ];
+        o('lista').innerHTML = wiersze.map(([n, v]) => `<div class="ws-wiersz wz-tekst"><span class="ws-et">${n}</span><b>${v}</b></div>`).join('');
+        o('werdykt').textContent = odprawa ? `Odprawa: ${zl(odprawa)}` : zFirmy && !duza ? 'Bez odprawy – firma poniżej 20 osób' : 'Bez odprawy';
+        o('opis').textContent = `${s === 'wygasa' ? 'Gdy umowa po prostu wygasa, odprawa nie przysługuje. ' : ''}Odprawa: 1, 2 albo 3 pensje (staż do 2 lat, 2–8 lat, ponad 8 lat), najwyżej 15 płac minimalnych (${zl(15 * pm)}). Zasiłek: jeśli w ostatnich 18 miesiącach przepracowano co najmniej 365 dni z co najmniej płacą minimalną; kwoty od 1 czerwca 2026 r.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // delegacja zagraniczna – szybka kalkulacja należności (lib kalkulatora diety zagranicznej), kurs NBP pobierany na żywo
   'delegacja-zagraniczna': async () => {
     const { obliczDieteZagraniczna, KRAJE } = await import('./dieta-zagraniczna');

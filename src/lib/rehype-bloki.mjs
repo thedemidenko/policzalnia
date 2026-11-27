@@ -61,7 +61,7 @@ function linia({ meta, wiersze }) {
     return `<polyline points="${pkt}" class="wl-linia" pathLength="1" style="--k:var(--w${i % 6})"/><circle cx="${x(s.v.length - 1).toFixed(1)}" cy="${y(s.v.at(-1)).toFixed(1)}" r="4.5" class="wl-pkt" style="--k:var(--w${i % 6})"/>`;
   }).join('');
   const legenda = serie.map((s, i) => `<span style="--k:var(--w${i % 6})"><i></i>${esc(s.n)}: <b>${esc(fmt(s.v.at(-1), jedn))}</b></span>`).join('');
-  const tabela = `<table class="sr-only"><thead><tr><th></th>${os.map((e) => `<th>${esc(e)}</th>`).join('')}</tr></thead><tbody>${serie.map((s) => `<tr><th>${esc(s.n)}</th>${s.v.map((v) => `<td>${esc(fmt(v, jedn))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  const tabela = `<div class="sr-only"><table><thead><tr><th></th>${os.map((e) => `<th>${esc(e)}</th>`).join('')}</tr></thead><tbody>${serie.map((s) => `<tr><th>${esc(s.n)}</th>${s.v.map((v) => `<td>${esc(fmt(v, jedn))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;  // div, bo tabela ignoruje overflow:hidden i rozpychała stronę na telefonie
   return `<figure class="wykres wykres-linia" data-anim>${meta.tytul ? `<figcaption>${esc(meta.tytul)}</figcaption>` : ''}<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(meta.tytul ?? 'Wykres')}">${siatka}${osX}${linie}</svg><div class="wl-legenda">${legenda}</div>${tabela}${meta.zrodlo ? `<p class="wykres-zrodlo">${esc(meta.zrodlo)}</p>` : ''}</figure>`;
 }
 

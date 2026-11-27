@@ -206,6 +206,7 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .tabela-tresc > table { margin: 0; min-width: 100%; }
 .tresc th { font-weight: 700; background: color-mix(in srgb, var(--zakreslacz) 45%, var(--kartka)); text-align: left; }
 .tresc th, .tresc td { padding: 10px 14px; border-bottom: 1px solid var(--linia); font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) { .tresc th, .tresc td { padding: 8px 9px; } }
 .tresc tr:last-child td { border-bottom: 0; }
 .tresc blockquote { margin: 1.5em 0; padding: 14px 18px; border-left: 4px solid var(--dlugopis); background: var(--kartka); border-radius: 0 10px 10px 0; }
 .tresc code { font: .9em var(--mono); background: var(--kartka); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--linia); }
@@ -520,5 +521,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .widzet select { font: inherit; font-size: .95rem; padding: 8px 10px; border: 1.5px solid var(--tusz); border-radius: 8px; background: var(--kartka); color: inherit; }
 .widzet .wz-slupki { margin-top: 14px; display: grid; gap: 8px; }
 .widzet .wz-slupki .ws-pasek i { transition: width .35s ease; transform: none; }
+.widzet .wz-tekst { grid-template-columns: minmax(6.5em, 1fr) minmax(0, 1.3fr); padding: 6px 0; border-bottom: 1px dashed var(--linia, #ddd); } .widzet .wz-tekst b { white-space: normal; text-align: right; }
+.widzet select, .widzet input { max-width: 100%; min-width: 0; box-sizing: border-box; }
 .widzet label + label { margin-top: 8px; }
 .widzet output { font: 600 .9rem var(--mono); color: var(--dlugopis); }

@@ -102,3 +102,5 @@ Jeśli umowa terminowa kończy się wcześniej niż okres wypowiedzenia, ustaje 
 - Umowa terminowa, która rozwiązałaby się po upływie **trzeciego miesiąca ciąży**, przedłuża się do dnia porodu (poza umową na zastępstwo).
 - Przy umowie na czas określony przysługują te same prawa co przy umowie bezterminowej: urlop (policzysz go w [kalkulatorze urlopu](/praca/kalkulator-urlopu/)), ekwiwalent za niewykorzystany urlop, staż pracy i okres wypowiedzenia.
 - W umowie zawartej jako wyjątek od limitu pracodawca musi wpisać jej cel albo obiektywne przyczyny (art. 29 § 1¹ KP) – jeśli tego nie zrobi, trudno mu będzie wykazać, że umowa nie wlicza się do limitu.
+
+Wszystkie prawa na umowie terminowej – wypowiedzenie i odwołanie do sądu, ciążę, L4, wniosek o umowę na stałe, odprawę i zasiłek po końcu umowy – opisujemy w poradniku [Umowa na czas określony – prawa pracownika](/poradniki/umowa-na-czas-okreslony/).
