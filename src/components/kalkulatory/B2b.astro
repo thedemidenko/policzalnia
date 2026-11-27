@@ -1,0 +1,156 @@
+---
+import { STAWKI } from '../../lib/ryczalt';
+const rok = new Date().getFullYear();
+const formy: [string, string][] = [
+  ...STAWKI.filter((s) => s.id !== 'najem' && s.stawka >= 5.5).map((s) => [`r${s.id}`, `ryczałt ${s.nazwa.replace(/^[\d,]+% – /, `${String(s.stawka).replace('.', ',')}% – `)}`] as [string, string]),
+  ['liniowy', 'podatek liniowy 19%'],
+  ['skala', 'skala (12% i 32%)'],
+];
+---
+<form id="k-b2b" class="pola" autocomplete="off">
+  <div class="pole-para">
+    <div class="pole">
+      <label for="b-brutto">Etat: pensja brutto</label>
+      <div class="kwota" data-jedn="zł"><input id="b-brutto" name="brutto" type="text" inputmode="decimal" value="10000" /></div>
+    </div>
+    <div class="pole">
+      <label for="b-fakt">B2B: faktura netto</label>
+      <div class="kwota" data-jedn="zł"><input id="b-fakt" name="faktura" type="text" inputmode="decimal" value="13000" /></div>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="b-forma">Opodatkowanie na B2B</label>
+      <select id="b-forma" name="forma">{formy.map(([k, e]) => <option value={k} selected={k === 'r12'}>{e}</option>)}</select>
+    </div>
+    <div class="pole">
+      <label for="b-rok">Rok</label>
+      <select id="b-rok" name="rok"><option value={String(rok)}>{rok}</option><option value={String(rok + 1)}>{rok + 1}</option></select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="b-etap">ZUS na B2B</label>
+      <select id="b-etap" name="etap"><option value="start">ulga na start</option><option value="pref">preferencyjny</option><option value="mzp">Mały ZUS Plus</option><option value="pelny" selected>pełny ZUS</option></select>
+    </div>
+    <div class="pole">
+      <label for="b-koszty">Koszty firmy miesięcznie</label>
+      <div class="kwota" data-jedn="zł"><input id="b-koszty" name="koszty" type="text" inputmode="decimal" value="300" aria-describedby="b-koszty-pod" /></div>
+      <small id="b-koszty-pod">Księgowość, sprzęt, oprogramowanie – netto.</small>
+    </div>
+  </div>
+  <div class="pole" data-mzp hidden>
+    <label for="b-mzp">Podstawa Małego ZUS Plus</label>
+    <div class="kwota" data-jedn="zł"><input id="b-mzp" name="mzp" type="text" inputmode="decimal" value="3000" /></div>
+  </div>
+  <div class="pole">
+    <label for="b-dni">Dni wolne bez faktury w roku</label>
+    <input id="b-dni" name="dni" type="text" inputmode="numeric" value="0" aria-describedby="b-dni-pod" />
+    <small id="b-dni-pod">Na etacie masz 20 lub 26 dni płatnego urlopu – na B2B za dni wolne zwykle nie płacą. Wpisz np. 26.</small>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="chorobowe" value="1" checked /> B2B: dobrowolna składka chorobowa (prawo do L4)</label>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji etatu</summary>
+    <label class="przelacznik"><input type="checkbox" name="dojazd" value="1" /> Dojazd z innej miejscowości (koszty 300 zł)</label>
+    <label class="przelacznik"><input type="checkbox" name="ppk" value="1" /> Oszczędzam w PPK</label>
+    <label class="przelacznik"><input type="checkbox" name="mlodzi" value="1" /> Mam mniej niż 26 lat (ulga dla młodych – tylko na etacie)</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Etat na rękę</dt><dd id="b-uop"></dd>
+    <dt id="b-b2b-et">B2B na rękę</dt><dd id="b-b2b"></dd>
+    <dt>Koszt pracodawcy</dt><dd id="b-koszt"></dd>
+    <dt>Faktura</dt><dd id="b-fakt-dd"></dd>
+    <dt>Próg opłacalności</dt><dd id="b-prog"></dd>
+  </dl>
+  <ul class="uwagi" id="b-uwagi" hidden></ul>
+  <div class="suma"><span id="b-suma-et">B2B daje więcej</span><strong id="b-wynik" data-glowny="Różnica miesięcznie"></strong></div>
+  <div class="stopka-paragonu" id="b-stopka">policzalnia.pl · średnio miesięcznie</div>
+</div></div>
+
+<div class="rozbicie zus-podsumowanie">
+  <p class="struktura-tytul">Etat czy B2B – co dostajesz w roku?</p>
+  <div class="tabela-przewijana"><table class="tabela-b2b"><thead><tr><th></th><th>Etat</th><th>B2B</th></tr></thead><tbody id="b-tab"></tbody></table></div>
+  <p class="pit37" id="b-info"></p>
+</div>
+
+<details class="rozbicie" open>
+  <summary>B2B w każdej formie opodatkowania</summary>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Forma</th><th>Na rękę miesięcznie</th><th>Podatek i zdrowotna w roku</th><th>Próg opłacalności</th></tr></thead><tbody id="b-formy"></tbody></table></div>
+</details>
+<script>
+  import { obliczB2B, obliczUoP, progOplacalnosci, type DaneB2B, type FormaB2B } from '../../lib/b2b';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-b2b') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (['dojazd', 'ppk', 'mlodzi'].some((k) => p.get(k) === '1')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const zl0 = (n: number) => zl(Math.round(n)).replace(/,00\s/, ' ');
+
+  const przelicz = () => {
+    const rok = +val('rok');
+    const f = val('forma');
+    const forma: FormaB2B = f.startsWith('r') ? 'ryczalt' : (f as FormaB2B);
+    const stawkaRyczaltu = f.startsWith('r') ? parseFloat(f.slice(1)) : undefined;
+    const etap = val('etap') as DaneB2B['etap'];
+    form.querySelector<HTMLElement>('[data-mzp]')!.hidden = etap !== 'mzp';
+    const bazaB2B = { rok, forma, stawkaRyczaltu, etap, podstawaMzp: liczba(val('mzp')), chorobowe: el('chorobowe').checked, koszty: liczba(val('koszty')), dniBezFaktury: Math.round(liczba(val('dni'))) };
+    const faktura = liczba(val('faktura'));
+    const u = obliczUoP({ rok, brutto: liczba(val('brutto')), podwyzszoneKoszty: el('dojazd').checked, ppk: el('ppk').checked, zwolnienie: el('mlodzi').checked ? 'mlodzi' : 'brak' });
+    const b = obliczB2B({ ...bazaB2B, faktura });
+    const prog = progOplacalnosci(u.naReke, bazaB2B);
+    const roznica = Math.round((b.naRekeMies - u.naRekeMies) * 100) / 100;
+
+    ustawKwote($('b-uop'), u.naRekeMies);
+    ustawKwote($('b-b2b'), b.naRekeMies);
+    ustawKwote($('b-koszt'), u.kosztMies);
+    ustawKwote($('b-fakt-dd'), faktura);
+    $('b-prog').textContent = `${zl0(prog)} faktury`;
+    $('b-suma-et').textContent = roznica >= 0 ? 'B2B daje więcej' : 'Etat daje więcej';
+    ustawKwote($('b-wynik'), Math.abs(roznica));
+    $('b-stopka').textContent = `policzalnia.pl · ${rok} · średnio miesięcznie, z rocznym PIT`;
+
+    const uwagi: string[] = [];
+    if (faktura < u.kosztMies) uwagi.push(`Faktura jest niższa niż koszt etatu dla pracodawcy (${zl(u.kosztMies)}) – przy przejściu na B2B firma oszczędza, a Ty bierzesz na siebie ZUS i ryzyko.`);
+    if (el('mlodzi').checked) uwagi.push('Ulga dla młodych zwalnia z PIT tylko pensję z etatu (i zlecenia) – przychodu z działalności nie obejmuje.');
+    if (forma !== 'skala') uwagi.push(`Przy fakturach dla byłego pracodawcy za te same czynności co na etacie w ${forma === 'ryczalt' ? `${rok - 1} lub ${rok} r.` : `${rok} r.`} ${forma === 'ryczalt' ? 'ryczałt' : 'podatek liniowy'} przepada – obowiązuje skala. Nie ma też ulgi na start ani preferencyjnego ZUS.`);
+    if (b.naReke + b.koszty > 1000000) uwagi.push('Przy dochodzie ponad 1 mln zł dochodzi 4% daniny solidarnościowej – kalkulator jej nie uwzględnia.');
+    const ul = $('b-uwagi'); ul.hidden = !uwagi.length; ul.innerHTML = uwagi.map((x) => `<li>${x}</li>`).join('');
+
+    const wiersz = (a: string, e: string, f2: string) => `<tr><td>${a}</td><td>${e}</td><td>${f2}</td></tr>`;
+    $('b-tab').innerHTML = [
+      wiersz('Na rękę miesięcznie (średnio)', `<b>${zl(u.naRekeMies)}</b>`, `<b>${zl(b.naRekeMies)}</b>`),
+      wiersz('Na rękę w roku', zl(u.naReke), zl(b.naReke)),
+      wiersz('Koszt dla firmy w roku', zl(u.kosztPracodawcy), zl(b.przychod)),
+      wiersz('Składki na emeryturę w roku', zl(u.emerytalna), zl(b.emerytalna)),
+      wiersz('Pieniądze za miesiąc L4', `${zl(u.zasilek)} (80%)`, b.zasilek ? `${zl(b.zasilek)} (zasiłek ZUS)` : '0 zł – bez chorobowej'),
+      wiersz('Płatny urlop', `26 dni (wartość ${zl0(u.urlop)} brutto)`, bazaB2B.dniBezFaktury ? `0 dni – ${bazaB2B.dniBezFaktury} dni bez faktury wliczone` : '0 dni – nieuwzględnione'),
+      wiersz('Okres wypowiedzenia, odprawa, ochrona', 'tak – Kodeks pracy', 'według umowy'),
+    ].join('');
+    const info: string[] = [`<b>Próg opłacalności:</b> przy tych ustawieniach B2B daje tyle co etat od faktury <b>${zl0(prog)}</b> miesięcznie – to ${Math.round((prog / u.kosztMies) * 100)}% kosztu etatu dla pracodawcy.`];
+    if (!bazaB2B.dniBezFaktury) {
+      const z26 = obliczB2B({ ...bazaB2B, faktura, dniBezFaktury: 26 });
+      const p26 = progOplacalnosci(u.naReke, { ...bazaB2B, dniBezFaktury: 26 });
+      info.push(`Jeśli na B2B weźmiesz 26 dni urlopu bez faktury, zostanie średnio ${zl(z26.naRekeMies)}, a próg wzrośnie do ${zl0(p26)}.`);
+    }
+    $('b-info').innerHTML = info.join(' ');
+
+    const warianty: [string, Partial<DaneB2B>][] = [
+      [`Ryczałt ${String(stawkaRyczaltu ?? 12).replace('.', ',')}%`, { forma: 'ryczalt', stawkaRyczaltu: stawkaRyczaltu ?? 12 }],
+      ['Podatek liniowy 19%', { forma: 'liniowy' }],
+      ['Skala 12% / 32%', { forma: 'skala' }],
+    ];
+    $('b-formy').innerHTML = warianty.map(([n, w]) => {
+      const q = obliczB2B({ ...bazaB2B, ...w, faktura } as DaneB2B);
+      const pr = progOplacalnosci(u.naReke, { ...bazaB2B, ...w } as DaneB2B);
+      const wyb = w.forma === forma;
+      return `<tr${wyb ? ' class="inny"' : ''}><td>${n}</td><td><b>${zl(q.naRekeMies)}</b></td><td>${zl(q.podatek + q.zdrowotna)}</td><td>${zl0(pr)}</td></tr>`;
+    }).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>

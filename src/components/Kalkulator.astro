@@ -31,6 +31,7 @@ import WspolneRozliczenie from './kalkulatory/WspolneRozliczenie.astro';
 import Ryczalt from './kalkulatory/Ryczalt.astro';
 import Wynagrodzenie from './kalkulatory/Wynagrodzenie.astro';
 import SkladkiZus from './kalkulatory/SkladkiZus.astro';
+import B2b from './kalkulatory/B2b.astro';
 
 const KOMPONENTY = {
   vat: Vat,
@@ -56,7 +57,7 @@ const KOMPONENTY = {
   inflacja: Inflacja,
   inwestycje: Inwestycje,
   ikze: Ikze,
-  'umowy-terminowe': UmowyTerminowe, 'odsetki-zus': OdsetkiZus, 'dieta-zagraniczna': DietaZagraniczna, 'maly-zus': MalyZus, 'wspolne-rozliczenie': WspolneRozliczenie, ryczalt: Ryczalt, wynagrodzenie: Wynagrodzenie, 'skladki-zus': SkladkiZus,
+  'umowy-terminowe': UmowyTerminowe, 'odsetki-zus': OdsetkiZus, 'dieta-zagraniczna': DietaZagraniczna, 'maly-zus': MalyZus, 'wspolne-rozliczenie': WspolneRozliczenie, ryczalt: Ryczalt, wynagrodzenie: Wynagrodzenie, 'skladki-zus': SkladkiZus, b2b: B2b,
 } satisfies Record<KluczKalkulatora, unknown>;
 
 interface Props { klucz: KluczKalkulatora; kwota?: number }
