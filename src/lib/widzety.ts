@@ -5,6 +5,42 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // PPK – zostać czy wypisać się: koszt z własnej kieszeni vs PPK (wypłata po 60 albo zwrot) vs samodzielne odkładanie tych samych pieniędzy
+  'ppk-zostac-czy-wypisac': async () => {
+    const { obliczPPK } = await import('./ppk');
+    return (el) => {
+      const horyzonty: [string, number][] = [['do 60. roku życia', 0], ['zwrot po 1 roku', 1], ['zwrot po 4 latach', 4], ['zwrot po 10 latach', 10]];
+      el.innerHTML = `<h3>Zostać w PPK czy się wypisać – policz</h3>
+        <label>Pensja brutto <output data-o="b"></output><input type="range" min="3000" max="20000" step="100" value="${el.dataset.brutto ?? 8000}" data-i="b"></label>
+        <label>Twój wiek <output data-o="w"></output><input type="range" min="18" max="69" step="1" value="${el.dataset.wiek ?? 35}" data-i="w"></label>
+        <label>Wynik funduszu rocznie <output data-o="r"></output><input type="range" min="-10" max="8" step="0.5" value="${el.dataset.stopa ?? 5}" data-i="r"></label>
+        <label>Kiedy wypłacasz<select data-i="h">${horyzonty.map(([n, v]) => `<option value="${v}">${n}</option>`).join('')}</select></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const licz = () => {
+        const b = +i('b').value, wiek = +i('w').value, r = +i('r').value, h = +i('h').value;
+        o('b').textContent = zl(b); o('w').textContent = `${wiek} lat`; o('r').textContent = `${r.toLocaleString('pl-PL')}%`;
+        // po 60. r.ż. wypłata bez potrąceń; wcześniej – zwrot (art. 105)
+        const w = obliczPPK({ brutto: b, wiek, wiekWyplaty: h === 0 ? Math.max(60, wiek + 1) : wiek + h, stopa: r });
+        const zwrotPrzed60 = !w.po60;
+        const ppk = w.po60 ? w.wartosc : w.zwrot.naKonto;
+        const wyniki: [string, number, number][] = [
+          ['Z twojej kieszeni (wpłaty + PIT)', w.kosztTwoj, 2],
+          [w.po60 ? 'PPK – wypłata po 60. r.ż.' : 'PPK – zwrot na konto', ppk, 0],
+          ['Te same pieniądze odkładane samodzielnie', w.sam, 1],
+        ];
+        const max = Math.max(...wyniki.map((x) => x[1]), 1);
+        o('s').innerHTML = wyniki.map(([n, v, k]) => `<div class="ws-wiersz"><span class="ws-et">${n}</span><span class="ws-pasek"><i style="--w:${((v / max) * 100).toFixed(1)}%;--k:var(--w${k})"></i></span><b>${zl(v)}</b></div>`).join('');
+        const lat = Math.round(w.lat);
+        o('werdykt').textContent = w.przewaga >= 0 ? `Zostając w PPK, masz o ${zl(w.przewaga)} więcej` : `Samodzielnie o ${zl(-w.przewaga)} więcej`;
+        o('opis').textContent = `${lat} ${lat === 1 ? 'rok' : lat < 5 ? 'lata' : 'lat'} oszczędzania, wpłaty podstawowe 2% + 1,5%, płace +3% rocznie.${zwrotPrzed60 ? ' Przy zwrocie 30% wpłat pracodawcy trafia do ZUS, dopłaty państwa wracają, od zysku płacisz 19%.' : ''}${wiek >= 55 ? ' Po 55. roku życia do PPK zapisujesz się tylko na wniosek.' : ''} Samodzielnie: ten sam koszt odkładany na ten sam procent z podatkiem Belki.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // nadpłacać kredyt czy inwestować: lib kalkulatora nadpłaty (te same miesięczne wydatki w obu scenariuszach)
   'nadplata-czy-inwestycja': async () => {
     const { obliczNadplate } = await import('./nadplata');
