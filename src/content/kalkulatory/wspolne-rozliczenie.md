@@ -37,7 +37,7 @@ zrodla:
   - nazwa: Ordynacja podatkowa – art. 63 (zaokrąglanie)
     url: https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19970370926
 autor: redakcja
-updated: 2026-11-26
+updated: 2026-11-27
 draft: false
 ---
 
@@ -120,4 +120,4 @@ Jeśli podatek jest niższy niż ulga, nadwyżka wraca jako zwrot – do wysoko�
 
 ## Czy skala podatkowa zmieni się w 2027 roku?
 
-Rozliczenie za 2026 r. liczy się według obecnej skali: 12% do 120 000 zł, 32% od nadwyżki, kwota zmniejszająca podatek 3600 zł. Sejm uchwalił zmianę skali od 2027 r. (12% do 130 000 zł, 24% do 150 000 zł, 32% powyżej), ale ustawa czeka na decyzję prezydenta. Dla PIT za 2027 r. kalkulator liczy według obecnej skali i zaznacza to w wyniku – po ostatecznej decyzji zaktualizujemy stawki.
+Rozliczenie za 2026 r. liczy się według obecnej skali: 12% do 120 000 zł, 32% od nadwyżki, kwota zmniejszająca podatek 3600 zł. Sejm uchwalił zmianę skali od 2027 r. (12% do 130 000 zł, 24% do 150 000 zł, 32% powyżej), ale **27 listopada 2026 r. prezydent ją zawetował**. W 2027 r. zostaje więc ta sama skala co dziś – i tak liczy kalkulator dla PIT za 2027 r.

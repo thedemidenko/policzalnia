@@ -25,9 +25,9 @@
       "zdrowotna_ryczalt_podstawa": { "wartosc": null, "status": "NIEZNANE", "uwagi": "GUS ok. 20-22.01.2027" },
       "zdrowotna_liniowy_limit_odliczenia": { "wartosc": null, "status": "NIEZNANE", "uwagi": "obwieszczenie MF w XII" },
       "pit": {
-        "status": "USTAWA",
-        "uwagi": "Ustawa z 5.11.2026 czeka na podpis prezydenta (termin 27.11.2026). Przy wecie obowiązuje wariant 'bez_zmian'.",
-        "wariant": "do_decyzji",
+        "status": "OBOW",
+        "uwagi": "Prezydent zawetował ustawę z 5.11.2026 (druk 3293) 27.11.2026 – zostaje obecna skala. Sejm może odrzucić weto 3/5 głosów; rząd zapowiada ponowny projekt.",
+        "wariant": "bez_zmian",
         "warianty": {
           "nowa_skala": {
             "progi": [{ "do": 130000, "stawka": 0.12 }, { "do": 150000, "stawka": 0.24 }, { "do": null, "stawka": 0.32 }],

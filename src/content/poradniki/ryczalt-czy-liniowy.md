@@ -2,13 +2,13 @@
 slug: ryczalt-czy-liniowy
 title: Ryczałt czy podatek liniowy w 2027 roku? Liczymy, co się opłaca i do kiedy zdecydować
 meta_title: Ryczałt czy liniowy 2027 - co wybrać i do kiedy | Policzalnia
-meta_description: "Ryczałt czy liniowy w 2027 roku? Progi kosztów dla każdej stawki, porównanie ze skalą, nowy limit ryczałtu i termin zmiany formy do 20 lutego."
-lead: Wybór formy opodatkowania na 2027 rok trzeba zgłosić najpóźniej do 20 lutego – a w tym roku decyzja jest trudniejsza niż zwykle, bo ważą się nowe przepisy o limicie ryczałtu. Pokazujemy, przy jakich kosztach ryczałt przestaje się opłacać, kiedy wygrywa liniowy, a kiedy skala, i co zmieni podpis albo weto prezydenta.
+meta_description: "Ryczałt czy liniowy w 2027 roku? Progi kosztów dla każdej stawki, porównanie ze skalą, limit ryczałtu po wecie i termin zmiany formy do 20 lutego."
+lead: Wybór formy opodatkowania na 2027 rok trzeba zgłosić najpóźniej do 20 lutego – Pokazujemy, przy jakich kosztach ryczałt przestaje się opłacać, kiedy wygrywa liniowy, a kiedy skala – i co dla tego wyboru oznacza weto prezydenta, które zatrzymało obniżenie limitu ryczałtu i nową skalę PIT.
 sekcja: firma
 w_skrocie:
   - "O wyborze decydują <b>koszty</b>: przy ryczałcie 12% (IT) i przychodzie 20 000 zł miesięcznie liniowy wygrywa dopiero przy kosztach powyżej ok. <b>26% przychodu</b>."
   - "Przy niższych przychodach (ok. 10 000 zł miesięcznie) często najlepsza jest <b>skala</b> – dzięki kwocie wolnej i niższej składce zdrowotnej."
-  - "Limit ryczałtu na 2027 r. to dziś 2 mln euro (ok. 8,75 mln zł). Ustawa czekająca na decyzję prezydenta obniża go do 250 tys. euro (ok. 1,09 mln zł)."
+  - "Limit ryczałtu na 2027 r. zostaje: <b>2 mln euro</b> (ok. 8,75 mln zł). Prezydent zawetował 27 listopada 2026 r. ustawę, która obniżała go do 250 tys. euro."
   - "Formę opodatkowania na 2027 r. zgłaszasz w CEIDG do <b>20 lutego 2027 r.</b> Jeśli nic nie zrobisz, zostajesz przy obecnej."
 kalkulatory: [ryczalt, maly-zus-plus, wspolne-rozliczenie]
 czytaj_tez: [zaleglosci-w-zus, ike-czy-ikze]
@@ -20,7 +20,7 @@ faq:
   - pytanie: Do kiedy można zmienić formę opodatkowania na 2027 rok?
     odpowiedz: Do 20 lutego 2027 r. – jeśli pierwszy przychód w 2027 r. osiągniesz w styczniu. Jeśli później, masz czas do 20. dnia miesiąca następującego po miesiącu pierwszego przychodu, a gdy pierwszy przychód przypadnie w grudniu – do końca roku. Zmianę zgłasza się we wniosku o zmianę wpisu w CEIDG.
   - pytanie: Jaki jest limit ryczałtu w 2027 roku?
-    odpowiedz: "Według obecnych przepisów ryczałt w 2027 r. może wybrać ten, kto w 2026 r. miał przychody do 2 mln euro, czyli ok. 8,75 mln zł po kursie z 1 października 2026 r. Ustawa uchwalona w listopadzie 2026 r. obniża ten limit do 250 tys. euro (ok. 1,09 mln zł) – wejdzie w życie tylko, jeśli podpisze ją prezydent."
+    odpowiedz: "Ryczałt w 2027 r. może wybrać ten, kto w 2026 r. miał przychody do 2 mln euro, czyli ok. 8,75 mln zł po kursie z 1 października 2026 r. Ustawa obniżająca limit do 250 tys. euro (ok. 1,09 mln zł) została 27 listopada 2026 r. zawetowana przez prezydenta, więc limit się nie zmienia."
   - pytanie: Kiedy lepsza jest skala niż ryczałt i liniowy?
     odpowiedz: Przy niższych dochodach, zwykle do ok. 10–12 tys. zł miesięcznie, i przy wysokich kosztach. Skala daje kwotę wolną 30 000 zł, wspólne rozliczenie z małżonkiem i ulgę na dzieci, a składka zdrowotna wynosi 9% dochodu. Liniowy opłaca się zwykle dopiero przy wysokich dochodach.
   - pytanie: Czy na ryczałcie można odliczyć koszty?
@@ -36,8 +36,8 @@ zrodla:
     url: https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19910800350
   - nazwa: NBP – kurs średni EUR z 1 października 2026 r. (tabela 191/A/NBP/2026)
     url: https://nbp.pl/statystyka-i-sprawozdawczosc/kursy/tabela-a/
-  - nazwa: Infor.pl – zmiany w PIT, CIT i ryczałcie od 2027 r., decyzja prezydenta do 27 listopada
-    url: https://ksiegowosc.infor.pl/wiadomosci/7706344,zmiany-w-pit-cit-ryczalcie-od-2027-r-decyzja-prezydenta-nawrockiego-do-27-listopada-przedsiebiorcy-powinni-przeliczyc-dwa-warianty.html
+  - nazwa: Infor.pl – prezydent wetuje nową skalę PIT, niższy limit ryczałtu i wyższy CIT (27.11.2026)
+    url: https://ksiegowosc.infor.pl/wiadomosci/7694942,podatki-2027-prezydent-nawrocki-wetuje-nowa-skale-podatkowa-pit-nizszy-limit-ryczaltu-i-wyzsza-stawke-cit.html
   - nazwa: Rzeczpospolita – dobre dla podatników zmiany w skali PIT, złe w ryczałcie
     url: https://pro.rp.pl/podatki/art45379451-dobre-dla-podatnikow-zmiany-w-skali-pit-zle-w-ryczalcie-sejm-uchwalil-nowelizacje
 autor: redakcja
@@ -49,8 +49,8 @@ draft: false
 ```liczby
 20 lutego 2027 | ostatni dzień na zmianę formy (przy przychodzie w styczniu)
 ok. 26% | koszty, przy których liniowy dogania ryczałt 12% (20 000 zł/mies.)
-2 mln euro | obecny limit przychodów na ryczałcie
-250 tys. euro | limit według ustawy czekającej na decyzję prezydenta
+2 mln euro | limit przychodów na ryczałcie – bez zmian po wecie
+ok. 8,75 mln zł | limit w złotych dla przychodów z 2026 r.
 ```
 
 ## Czym różnią się ryczałt, liniowy i skala?
@@ -133,19 +133,19 @@ Przy takich kosztach ryczałt przegrywa wyraźnie, a skala wygrywa dzięki kwoci
 
 ![Programista pracuje przy laptopie – ryczałt 12% na B2B](../../assets/poradniki/ryczalt-czy-liniowy/programista.jpg)
 
-## Co zmienia ustawa czekająca na decyzję prezydenta?
+## Co oznacza weto prezydenta dla wyboru na 2027 rok?
 
-5 listopada 2026 r. Sejm uchwalił pakiet zmian w PIT, CIT i ryczałcie, który 27 listopada czekał jeszcze na decyzję prezydenta. Dla wyboru formy opodatkowania na 2027 r. najważniejsze są dwie zmiany:
+5 listopada 2026 r. Sejm uchwalił pakiet zmian w PIT, CIT i ryczałcie, ale **27 listopada 2026 r. prezydent go zawetował**. W 2027 r. obowiązują więc obecne przepisy:
 
-| | Weto (obecne przepisy) | Podpis (nowa ustawa) |
+| | Obowiązuje w 2027 r. (po wecie) | Zawetowana ustawa |
 | --- | --- | --- |
 | Limit przychodów na ryczałcie | 2 mln euro – ok. 8,75 mln zł | 250 tys. euro – ok. 1,09 mln zł |
 | Skala PIT | 12% do 120 000 zł, 32% powyżej | 12% do 130 000 zł, 24% do 150 000 zł, 32% powyżej |
 | Liniowy | 19% | 19% (bez zmian) |
 
-Limit ryczałtu liczy się według przychodów z poprzedniego roku – po kursie euro z pierwszego dnia roboczego października (4,3770 zł w 2026 r.). Jeśli ustawa wejdzie w życie, ryczałt w 2027 r. straci każdy, kto w 2026 r. miał przychody powyżej ok. 1,09 mln zł – według Ministerstwa Finansów to ok. 43 tys. przedsiębiorców. Musi on wtedy wybrać między liniowym a skalą.
+Limit ryczałtu liczy się według przychodów z poprzedniego roku – po kursie euro z pierwszego dnia roboczego października (4,3770 zł w 2026 r.). Na 2027 r. to ok. **8,75 mln zł** przychodu w 2026 r. Ok. 43 tys. przedsiębiorców z przychodami powyżej 1,09 mln zł, którzy straciliby ryczałt według zawetowanej ustawy, może przy nim zostać.
 
-Nowa skala z progiem 24% poprawiłaby z kolei wynik skali dla dochodów od 120 000 do 150 000 zł rocznie – przy takich dochodach warto przeliczyć skalę jeszcze raz. Liniowy i stawki ryczałtu się nie zmieniają. **Po decyzji prezydenta zaktualizujemy ten poradnik.**
+Nie będzie też progu 24% – dochód z działalności na skali powyżej 120 000 zł rocznie nadal płaci 32%, co przy wyższych dochodach przemawia za liniowym albo ryczałtem. Sejm może odrzucić weto większością 3/5 głosów, a rząd zapowiedział, że wróci do zmian – jeśli przepisy się zmienią, zaktualizujemy poradnik i kalkulatory.
 
 ## Do kiedy wybrać formę opodatkowania na 2027 rok?
 
@@ -214,5 +214,5 @@ Ta sama zasada „byłego pracodawcy” dotyczy podatku liniowego – przy usłu
 2. Sprawdź **stawkę ryczałtu** dla swoich usług w [kalkulatorze ryczałtu](/firma/ryczalt/) i porównaj wynik z liniowym i skalą.
 3. Zestaw koszty z progiem z tabeli wyżej – jeśli jesteś blisko granicy, weź pod uwagę planowane inwestycje.
 4. Uwzględnij **rodzinę** – przy wspólnym rozliczeniu i ulgach skala bywa najlepsza.
-5. Sprawdź, czy nie przekraczasz **limitu ryczałtu** – po decyzji prezydenta może to być już 1,09 mln zł przychodu w 2026 r.
+5. Sprawdź, czy nie przekraczasz **limitu ryczałtu** – na 2027 r. to 2 mln euro, czyli ok. 8,75 mln zł przychodu w 2026 r.
 6. Zgłoś zmianę w **CEIDG do 20 lutego 2027 r.** albo pozostań przy obecnej formie.

@@ -39,7 +39,7 @@ zrodla:
   - nazwa: podatki.gov.pl – ulga na IKZE
     url: https://www.podatki.gov.pl/ulgi/ulga-na-ikze-pit
 autor: redakcja
-updated: 2026-11-26
+updated: 2026-11-27
 draft: false
 ---
 
@@ -72,7 +72,7 @@ Maksymalny zwrot przy pełnym limicie (gdy cała wpłata mieści się w jednej s
 | firma, ryczałt 8,5% | 1441,26 zł | 1535,05 zł |
 | firma, ryczałt 15% | 2543,40 zł | 2708,91 zł |
 
-Skala podatku na 2027 r. może się zmienić (ustawa czeka na decyzję prezydenta). Jeśli wejdzie w życie, kalkulator uwzględni nowe progi.
+Skala podatku na 2027 r. się nie zmienia – prezydent zawetował 27 listopada 2026 r. ustawę z nowymi progami, więc zostaje 12% do 120 000 zł i 32% powyżej.
 
 ## Dlaczego zwrot nie zawsze wynosi 12% albo 32%?
 
