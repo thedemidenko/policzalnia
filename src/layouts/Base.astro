@@ -57,5 +57,20 @@ const sekcja = Astro.url.pathname.split('/')[1];
         <p>© {new Date().getFullYear()} {site.name}. Wyniki kalkulatorów mają charakter informacyjny i nie stanowią porady podatkowej.</p>
       </div>
     </footer>
+    <script>
+      // menu działów na telefonie: zanikanie przy krawędziach, aktywny dział widoczny bez przewijania
+      const menu = document.querySelector<HTMLElement>('.menu');
+      if (menu) {
+        const akt = menu.querySelector<HTMLElement>('[aria-current]');
+        if (akt && menu.scrollWidth > menu.clientWidth) menu.scrollLeft = akt.offsetLeft - (menu.clientWidth - akt.offsetWidth) / 2;
+        const stan = () => {
+          menu.classList.toggle('na-poczatku', menu.scrollLeft <= 4);
+          menu.classList.toggle('na-koncu', menu.scrollLeft + menu.clientWidth >= menu.scrollWidth - 4);
+        };
+        menu.addEventListener('scroll', stan, { passive: true });
+        addEventListener('resize', stan);
+        stan();
+      }
+    </script>
   </body>
 </html>

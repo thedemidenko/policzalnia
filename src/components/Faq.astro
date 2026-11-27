@@ -3,7 +3,7 @@ interface Props { faq: { pytanie: string; odpowiedz: string }[] }
 const { faq } = Astro.props;
 ---
 {faq.length > 0 && (
-  <section class="faq">
+  <section class="faq" id="faq">
     <h2>Najczęściej zadawane pytania</h2>
     {faq.map((f) => (<details><summary>{f.pytanie}</summary><p>{f.odpowiedz}</p></details>))}
   </section>

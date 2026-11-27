@@ -37,8 +37,8 @@ const przyczyny: [string, string][] = [['choroba', 'choroba (80%)'], ['ciaza', '
   <dl>
     <dt>Podstawa</dt><dd id="l-podstawa"></dd>
     <dt>Za 1 dzień</dt><dd id="l-dzien"></dd>
-    <dt data-u>Pracodawca</dt><dd data-u id="l-prac"></dd>
-    <dt>ZUS</dt><dd id="l-zus"></dd>
+    <dt data-u id="l-prac-et">Pracodawca</dt><dd data-u id="l-prac"></dd>
+    <dt id="l-zus-et">ZUS</dt><dd id="l-zus"></dd>
     <dt>Na rękę (min.)</dt><dd id="l-netto"></dd>
     <dt data-u>Mniej niż pensja</dt><dd data-u id="l-mniej"></dd>
   </dl>
@@ -78,8 +78,8 @@ const przyczyny: [string, string][] = [['choroba', 'choroba (80%)'], ['ciaza', '
     ustawKwote($('l-podstawa'), w.podstawa);
     ustawKwote($('l-dzien'), w.stawkaDzienna);
     document.querySelectorAll<HTMLElement>('.paragon [data-u]').forEach((x) => (x.hidden = f !== 'uop'));
-    $('l-prac').textContent = `${w.dniPracodawca} dni · ${zl(w.kwotaPracodawca)}`;
-    $('l-zus').textContent = `${w.dniZus} dni · ${zl(w.kwotaZus)}`;
+    $('l-prac-et').textContent = `Pracodawca (${w.dniPracodawca} dni)`; $('l-prac').textContent = zl(w.kwotaPracodawca);
+    $('l-zus-et').textContent = `ZUS (${w.dniZus} dni)`; $('l-zus').textContent = zl(w.kwotaZus);
     ustawKwote($('l-netto'), w.nettoMin);
     ustawKwote($('l-mniej'), w.mniejNizPensja ?? 0);
     ustawKwote($('l-razem'), w.razem);

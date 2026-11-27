@@ -17,7 +17,7 @@
   --paragon: #fbf7e8;
   --paragon-tusz: #26262b;
   --cien: 0 1px 0 rgba(23,25,43,.06), 0 10px 30px -12px rgba(23,25,43,.22);
-  --praca: #2a3bd1; --firma: #e2552d; --kredyty: #10875f; --oszczedzanie: #8a3ec9; --poradniki: #b8860b;
+  --praca: #2a3bd1; --firma: #c2410c; --kredyty: #0e7a56; --oszczedzanie: #8a3ec9; --poradniki: #8b6508; /* kontrast ≥ 4,5:1 na białym i papierze */
   --font: 'Bricolage Grotesque Variable', system-ui, sans-serif;
   --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
   --r: 14px;
@@ -90,12 +90,17 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .logo svg { flex: none; }
 .logo:hover { color: var(--tusz); }
 .menu { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
-.menu a { white-space: nowrap; color: var(--tusz); text-decoration: none; font-weight: 550; font-size: .95rem; padding: 6px 12px; border-radius: 999px; border: 1.5px solid transparent; }
+.menu a { white-space: nowrap; color: var(--tusz); text-decoration: none; font-weight: 550; font-size: .95rem; padding: 8px 12px; border-radius: 999px; border: 1.5px solid transparent; }
 .menu a:hover { border-color: var(--tusz); }
 .menu a[aria-current] { background: var(--tusz); color: var(--papier); }
 @media (max-width: 760px) {
   .top-in { flex-wrap: wrap; padding-top: 10px; }
-  .menu { order: 3; width: calc(100% + 32px); margin: 0 -16px; padding: 0 16px 10px; }
+  .menu { order: 3; width: calc(100% + 32px); margin: 0 -16px; padding: 0 16px 10px; scroll-snap-type: x proximity; scroll-padding: 0 16px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 44px), transparent);
+            mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 44px), transparent); }
+  .menu.na-poczatku { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent); }
+  .menu.na-koncu { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px); mask-image: linear-gradient(to right, transparent 0, #000 16px); }
+  .menu a { scroll-snap-align: start; padding: 10px 14px; }
 }
 
 /* ===== Okruszki, lead ===== */
@@ -104,7 +109,7 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .okruszki a { color: var(--olowek); text-decoration: none; }
 .okruszki a:hover { color: var(--dlugopis); }
 .lead { font-size: 1.15rem; color: var(--olowek); max-width: 60ch; }
-.etykieta { display: inline-block; font: 600 .75rem/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; padding: 6px 10px; border-radius: 999px; color: #fff; background: var(--kolor, var(--tusz)); }
+.etykieta { display: inline-block; margin-top: 10px; font: 600 .75rem/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; padding: 6px 10px; border-radius: 999px; color: #fff; background: var(--kolor, var(--tusz)); }
 
 /* ===== Kalkulator: kartka + paragon ===== */
 .kalkulator {
@@ -165,17 +170,17 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
   --zab: 9px;
   mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--zab)) 100%;
 }
-.paragon::before { content: "— PARAGON NIEFISKALNY —"; display: block; text-align: center; font-size: .7rem; letter-spacing: .12em; opacity: .55; margin-bottom: 12px; }
-.paragon dl { margin: 0; display: grid; grid-template-columns: 1fr auto; row-gap: 6px; }
+.paragon::before { content: "— PARAGON NIEFISKALNY —"; display: block; text-align: center; font-size: .75rem; letter-spacing: .12em; opacity: .55; margin-bottom: 12px; }
+.paragon dl { margin: 0; display: grid; grid-template-columns: minmax(min-content, 1fr) auto; row-gap: 6px; }
 .paragon dt { display: flex; gap: 6px; min-width: 0; }
 .paragon dt::after { content: ""; flex: 1; border-bottom: 2px dotted currentColor; opacity: .3; translate: 0 -5px; min-width: 12px; }
-.paragon dd { margin: 0; text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; padding-left: 6px; }
+.paragon dd { margin: 0; text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; padding-left: 6px; min-width: 0; }
 .paragon .minus { opacity: .8; }
 .paragon .suma { margin-top: 14px; padding-top: 12px; border-top: 2px dashed currentColor; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
 .paragon .suma span { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: .82rem; }
 .paragon .suma strong { font-size: clamp(1.6rem, 4vw, 2rem); letter-spacing: -.03em; line-height: 1.1; background: linear-gradient(transparent 55%, var(--zakreslacz) 55% 90%, transparent 90%); padding: 0 4px; }
 @media (prefers-color-scheme: dark) { .paragon .suma strong { background: linear-gradient(transparent 55%, #e9f55f 55% 90%, transparent 90%); } }
-.paragon .stopka-paragonu { margin-top: 14px; font-size: .72rem; text-align: center; opacity: .55; letter-spacing: .04em; }
+.paragon .stopka-paragonu { margin-top: 14px; font-size: .75rem; text-align: center; opacity: .55; letter-spacing: .04em; }
 
 .akcje { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 4px; border-top: 1.5px dashed var(--linia); padding-top: 16px; }
 .przycisk { display: inline-flex; align-items: center; gap: 8px; font: 600 .92rem var(--font); padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--kartka); color: var(--tusz); cursor: pointer; text-decoration: none; transition: transform .12s, box-shadow .12s; }
@@ -229,8 +234,9 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .fiszka::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--kolor, var(--tusz)); }
 .fiszka:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--tusz); color: var(--tusz); }
 .fiszka b { font-size: 1.08rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
-.fiszka small { color: var(--olowek); font-size: .86rem; line-height: 1.45; }
-.fiszka .nr { font: 600 .72rem var(--mono); color: var(--olowek); letter-spacing: .06em; }
+.fiszka small { color: var(--olowek); font-size: .86rem; line-height: 1.45; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+@media (max-width: 560px) { .fiszka small { -webkit-line-clamp: 2; line-clamp: 2; } }
+.fiszka .nr { font: 600 .75rem var(--mono); color: var(--olowek); letter-spacing: .06em; }
 .fiszka .strzalka { margin-top: auto; padding-top: 6px; font: 600 .85rem var(--mono); color: var(--kolor, var(--dlugopis)); }
 [data-sekcja=praca] { --kolor: var(--praca); }
 [data-sekcja=firma] { --kolor: var(--firma); }
@@ -257,7 +263,7 @@ header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srg
 .dzial-naglowek { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 1.5px solid var(--tusz); padding-bottom: 10px; }
 .dzial-naglowek h2 { margin: 0; display: flex; align-items: center; gap: 12px; }
 .dzial-naglowek h2::before { content: ""; width: 14px; height: 14px; border-radius: 4px; background: var(--kolor); rotate: 45deg; flex: none; }
-.dzial-naglowek a { font: 600 .85rem var(--mono); text-decoration: none; }
+.dzial-naglowek a { font: 600 .85rem var(--mono); text-decoration: none; display: inline-block; padding: 10px 0; margin: -10px 0; } /* większy cel dotykowy */
 .wkrotce { color: var(--olowek); font-style: italic; }
 .brak-wynikow { display: none; padding: 20px; border: 1.5px dashed var(--tusz); border-radius: var(--r); margin-top: 24px; }
 
@@ -293,7 +299,8 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .wplata .usun { width: 40px; height: 40px; border-radius: 999px; border: 1.5px solid var(--tusz); background: var(--papier); color: var(--tusz); font-size: 1.2rem; cursor: pointer; }
 .przycisk.maly { padding: 7px 14px; font-size: .9rem; }
 .paragon dt[hidden], .paragon dd[hidden], .paragon [hidden] { display: none; }
-.paragon dt { white-space: nowrap; }
+.paragon dt { white-space: normal; line-height: 1.35; } /* etykieta może się zawinąć – nie nachodzi na kwotę */
+.paragon dd { white-space: normal; } /* kwoty mają twarde spacje – łamie się tylko opis po zwykłej spacji */
 .paragon .uwagi { margin: 12px 0 0; padding-left: 1.1em; font-size: .8rem; line-height: 1.4; }
 .paragon .uwagi li + li { margin-top: 4px; }
 .rozbicie .tabela-przewijana + .tabela-przewijana { margin-top: 12px; }
@@ -412,7 +419,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .wykres-ps .lg-w { background: color-mix(in srgb, var(--tusz) 22%, var(--papier)); }
 .wykres-ps .lg-z { background: var(--oszczedzanie); }
 @media print { .wykres-ps svg { height: 150px; } }
-#ob-por td small { display: block; color: var(--olowek); font-size: .78em; white-space: nowrap; }
+#ob-por td small { display: block; color: var(--tusz); opacity: .85; font-size: .75rem; white-space: nowrap; }
 .wykres-inf svg { height: 180px; border-bottom: 0; }
 .wykres-inf .os { stroke: var(--tusz); stroke-width: 1.5; }
 .wykres-iv .pas { fill: color-mix(in srgb, var(--oszczedzanie) 25%, transparent); stroke: none; }
@@ -434,7 +441,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .karta-poradnika.duza a:has(.kp-foto) { display: grid; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .karta-poradnika.duza a:has(.kp-foto) { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 26px; align-content: start; } .karta-poradnika.duza .kp-foto { grid-row: 1 / 7; margin: -26px 0 -22px -26px; width: calc(100% + 26px); height: calc(100% + 48px); aspect-ratio: auto; border-bottom: 0; border-right: 1.5px solid var(--tusz); } }
 @media (max-width: 899px) { .karta-poradnika.duza .kp-foto { margin: -26px -26px 8px; width: calc(100% + 52px); } }
-.kp-dzial { font: 600 .72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--kolor, var(--olowek)); }
+.kp-dzial { font: 600 .75rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--kolor, var(--olowek)); }
 .kp-tytul { font-size: 1.12rem; line-height: 1.28; letter-spacing: -.01em; }
 .kp-lead { font-size: .9rem; color: var(--olowek); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .kp-meta { margin-top: auto; padding-top: 4px; font: .78rem var(--mono); color: var(--olowek); }
@@ -446,7 +453,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 
 /* ===== Poradniki: artykuł ===== */
 .poradnik-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 10px; font: .8rem var(--mono); color: var(--olowek); }
-.poradnik-meta .pm-dzial { font-weight: 600; color: var(--na-dlugopisie, #fff); background: var(--kolor); padding: 3px 10px; border-radius: 999px; text-decoration: none; letter-spacing: .03em; }
+.poradnik-meta .pm-dzial { font-weight: 600; color: var(--na-dlugopisie, #fff); background: var(--kolor); padding: 5px 12px; display: inline-block; border-radius: 999px; text-decoration: none; letter-spacing: .03em; }
 .w-skrocie { margin: 24px 0 18px; padding: 16px 20px 14px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: color-mix(in srgb, var(--zakreslacz) 28%, var(--kartka)); }
 .w-skrocie > b { font: 700 .78rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .w-skrocie ul { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; }
@@ -467,7 +474,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .kalk-cta-dol { margin: 36px 0 8px; padding: 20px 22px; border-radius: var(--r); border: 1.5px solid var(--tusz); background: color-mix(in srgb, var(--kolor) 8%, var(--kartka)); display: grid; gap: 12px; justify-items: start; }
 .kalk-cta-dol p { margin: 0; }
 .sidebar-kalk { padding: 18px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: var(--kartka); border-top: 6px solid var(--kolor, var(--tusz)); display: grid; gap: 8px; justify-items: start; margin-bottom: 18px; }
-.sidebar-kalk small, .sidebar-spis small { font: .72rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--olowek); }
+.sidebar-kalk small, .sidebar-spis small { font: .75rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--olowek); }
 .sidebar-kalk b { font-size: 1.05rem; line-height: 1.3; }
 .sidebar-spis { padding: 4px 2px; }
 .sidebar-spis ol { margin: 8px 0 0; padding-left: 1.3em; display: grid; gap: 6px; font-size: .9rem; }
@@ -477,7 +484,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 
 .okladka { margin: 22px 0 6px; }
 .okladka img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border: 1.5px solid var(--tusz); border-radius: var(--r); display: block; }
-.okladka figcaption { font: .72rem var(--mono); color: var(--olowek); margin-top: 6px; }
+.okladka figcaption { font: .75rem var(--mono); color: var(--olowek); margin-top: 6px; }
 .tresc img { width: 100%; height: auto; border: 1.5px solid var(--tusz); border-radius: var(--r); display: block; margin: 1.4em 0 .4em; }
 .karta-poradnika a { overflow: hidden; }
 
@@ -487,7 +494,7 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .wykres { position: relative; }
 .wykres { margin: 1.8em 0; padding: 18px 20px 14px; border: 1.5px solid var(--tusz); border-radius: var(--r); background: var(--kartka); }
 .wykres figcaption { font-weight: 700; margin-bottom: 14px; line-height: 1.35; }
-.wykres-zrodlo { margin: 10px 0 0; font: .72rem var(--mono); color: var(--olowek); }
+.wykres-zrodlo { margin: 10px 0 0; font: .75rem var(--mono); color: var(--olowek); }
 .ws-dane { display: grid; gap: 10px; }
 .ws-wiersz { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .9rem; }
 .ws-et { line-height: 1.3; }
@@ -525,3 +532,6 @@ footer p { margin: 0; font-size: .85rem; opacity: .65; max-width: 70ch; }
 .widzet select, .widzet input { max-width: 100%; min-width: 0; box-sizing: border-box; }
 .widzet label + label { margin-top: 8px; }
 .widzet output { font: 600 .9rem var(--mono); color: var(--dlugopis); }
+
+/* małe dopiski w tabelach wyników – nie mniej niż 12 px */
+.kalkulator td small { font-size: .75rem; }

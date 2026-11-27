@@ -2,9 +2,12 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Fiszka from '../components/Fiszka.astro';
+import KartaPoradnika from '../components/KartaPoradnika.astro';
+import { DZIALY, czasCzytania } from '../lib/poradniki';
 import site from '../site.json';
 const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc - b.data.kolejnosc);
 const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'));
+const poradniki = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +(b.data.updated ?? b.data.date) - +(a.data.updated ?? a.data.date)).slice(0, 3);
 const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: 'https://policzalnia.pl/', inLanguage: 'pl-PL' };
 ---
 <Base title={`${site.name} - kalkulatory dla pracujących i JDG`} description="Kalkulatory wynagrodzeń, umów, urlopów, podatków, kredytów i oszczędności. Aktualne stawki, wynik od razu." schema={schema}>
@@ -49,6 +52,16 @@ const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: sit
     })}
     <p class="brak-wynikow" id="brak">Nie mamy jeszcze takiego kalkulatora. <a href="/kontakt/">Napisz, czego szukasz</a>, a dodamy go do listy.</p>
   </div>
+
+  {poradniki.length > 0 && (
+    <section class="dzial-blok" data-sekcja="poradniki" id="poradniki-glowna">
+      <div class="dzial-naglowek">
+        <h2>Najnowsze poradniki</h2>
+        <a href="/poradniki/">Wszystkie poradniki →</a>
+      </div>
+      <ul class="karty-poradnikow male">{poradniki.map((p) => <KartaPoradnika href={`/poradniki/${p.data.slug}/`} tytul={p.data.title} lead={p.data.lead} sekcja={p.data.sekcja} dzial={DZIALY[p.data.sekcja]} minuty={czasCzytania(p.body)} data={p.data.updated ?? p.data.date} okladka={p.data.okladka} />)}</ul>
+    </section>
+  )}
 </Base>
 <script>
   const input = document.getElementById('szukaj') as HTMLInputElement;
@@ -67,6 +80,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: sit
       blok.hidden = !!q && wBloku === 0; ile += wBloku;
     });
     brak.style.display = q && ile === 0 ? 'block' : 'none';
+    const por = document.getElementById('poradniki-glowna'); if (por) por.hidden = !!q;
     info.textContent = q ? (ile ? `Znaleziono: ${ile}` : '') : '';
   });
   input.addEventListener('keydown', (e) => {

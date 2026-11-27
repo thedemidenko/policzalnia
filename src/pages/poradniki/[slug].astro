@@ -136,9 +136,15 @@ const schema = graf(
   }), { threshold: 0.25 });
   document.querySelectorAll('[data-anim]').forEach((el) => io.observe(el));
   // widżety
-  document.querySelectorAll<HTMLElement>('[data-widzet]').forEach(async (el) => {
+  document.querySelectorAll<HTMLElement>('[data-widzet]').forEach(async (el, n) => {
     const w = WIDZETY[el.dataset.widzet ?? ''];
-    if (w) (await w())(el);
+    if (!w) return;
+    (await w())(el);
+    // <label> zawiera najpierw <output>, więc etykieta przypięłaby się do niego – wiążemy ją jawnie z polem
+    el.querySelectorAll('label').forEach((l, i) => {
+      const pole = l.querySelector<HTMLInputElement | HTMLSelectElement>('input, select');
+      if (pole && !pole.id) { pole.id = `wz${n}-${i}`; l.htmlFor = pole.id; }
+    });
   });
 </script>
 

@@ -16,7 +16,8 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const d = entry.data;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const spis = headings.filter((h) => h.depth === 2);
 const dzial = await getEntry('dzialy', d.sekcja);
 const url = `/${d.sekcja}/${d.slug}/`;
 const sciezka = [
@@ -65,4 +66,20 @@ const schema = graf(
     </section>
   )}
   <Autor autor={d.autor} updated={d.updated} zrodla={d.zrodla} />
+
+  <Fragment slot="sidebar">
+    {poradniki[0] && (
+      <div class="sidebar-kalk" data-sekcja="poradniki">
+        <small>Poradnik do tego tematu</small>
+        <b>{poradniki[0].data.title}</b>
+        <a class="przycisk" href={`/poradniki/${poradniki[0].data.slug}/`}>Czytaj →</a>
+      </div>
+    )}
+    {spis.length > 2 && (
+      <nav class="sidebar-spis" aria-label="Spis treści">
+        <small>Na tej stronie</small>
+        <ol>{spis.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}{d.faq.length > 0 && <li><a href="#faq">Najczęściej zadawane pytania</a></li>}</ol>
+      </nav>
+    )}
+  </Fragment>
 </Base>
