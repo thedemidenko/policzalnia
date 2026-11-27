@@ -1,92 +1,126 @@
 ---
-// Baner zgody na cookies + Google Analytics (tag Google GTM-P8JC9WHH) w trybie Consent Mode v2.
-// Tag Google ładuje się dopiero po kliknięciu „Akceptuję” (zgodnie z polityką prywatności).
-// Wybór zapisujemy w localStorage pod kluczem 'zgoda-cookies' ('tak' / 'nie').
+// Baner zgody na cookies + Google Analytics (tag Google GTM-P8JC9WHH) w zaawansowanym trybie Consent Mode v2:
+// tag ładuje się zawsze z domyślnym 'denied' (bez plików cookie), a po zgodzie dostaje 'granted'.
+// Trzy wybory: „Zarządzaj wyborem” (panel z kategoriami), „Tylko niezbędne”, „Akceptuj wszystkie”.
+// Wybór zapisujemy w localStorage pod kluczem 'zgoda-cookies' ('tak' = analityka, 'nie' = tylko niezbędne).
 // Link z atrybutem data-zgoda (np. w stopce) ponownie otwiera baner.
 const TAG = 'GTM-P8JC9WHH';
 ---
-<div class="zgoda" id="zgoda" role="dialog" aria-live="polite" aria-label="Zgoda na pliki cookie" hidden>
-  <p>
-    Chcemy używać Google Analytics (pliki cookie), żeby sprawdzać, które kalkulatory są przydatne. Włączymy je tylko za Twoją zgodą.
-    <a href="/polityka-prywatnosci/">Polityka prywatności</a>
-  </p>
-  <div class="zgoda-przyciski">
-    <button type="button" class="zgoda-nie" data-wybor="nie">Odrzucam</button>
-    <button type="button" class="zgoda-tak" data-wybor="tak">Akceptuję</button>
+<div class="zgoda" id="zgoda" role="dialog" aria-labelledby="zgoda-tytul" hidden>
+  <div class="zgoda-gora">
+    <div class="zgoda-tekst">
+      <p class="zgoda-tytul" id="zgoda-tytul">Szanujemy Twoją prywatność</p>
+      <p>Jeśli klikniesz „Akceptuj wszystkie”, zgadzasz się na analityczne pliki cookie (Google Analytics), dzięki którym widzimy, które kalkulatory są przydatne. Nie używamy reklamowych plików cookie. <a href="/polityka-prywatnosci/">Polityka prywatności</a></p>
+    </div>
+    <div class="zgoda-przyciski">
+      <button type="button" class="zgoda-btn" data-akcja="zarzadzaj" aria-expanded="false" aria-controls="zgoda-panel">Zarządzaj wyborem</button>
+      <button type="button" class="zgoda-btn" data-akcja="niezbedne">Tylko niezbędne</button>
+      <button type="button" class="zgoda-btn zgoda-glowny" data-akcja="wszystkie">Akceptuj wszystkie</button>
+    </div>
+  </div>
+  <div class="zgoda-panel" id="zgoda-panel" hidden>
+    <label class="zgoda-kat">
+      <span><strong>Niezbędne</strong><br />Zapamiętanie Twojego wyboru. Zawsze aktywne.</span>
+      <input type="checkbox" checked disabled />
+    </label>
+    <label class="zgoda-kat">
+      <span><strong>Analityczne</strong><br />Google Analytics: które strony są czytane i skąd przychodzą odwiedzający.</span>
+      <input type="checkbox" id="zgoda-analityka" />
+    </label>
+    <button type="button" class="zgoda-btn zgoda-glowny" data-akcja="zapisz">Zapisz wybór</button>
   </div>
 </div>
 <script is:inline define:vars={{ TAG }}>
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
   window.gtag = gtag;
-  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied' });
 
   var KLUCZ = 'zgoda-cookies';
-  var zaladowany = false;
   function czytaj() { try { return localStorage.getItem(KLUCZ); } catch (e) { return null; } }
   function zapisz(v) { try { localStorage.setItem(KLUCZ, v); } catch (e) {} }
-  function zaladujTag() {
-    if (zaladowany) return;
-    zaladowany = true;
-    gtag('consent', 'update', { analytics_storage: 'granted' });
-    gtag('js', new Date());
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtm.js?id=' + TAG;
-    document.head.appendChild(s);
-  }
+  var stan = czytaj();
+
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: stan === 'tak' ? 'granted' : 'denied'
+  });
+  gtag('js', new Date());
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtm.js?id=' + TAG;
+  document.head.appendChild(s);
+
   function usunCiasteczkaGa() {
+    var d = location.hostname.replace(/^www\./, '');
     document.cookie.split(';').forEach(function (c) {
       var n = c.split('=')[0].trim();
       if (/^_ga/.test(n)) {
-        var d = location.hostname.replace(/^www\./, '');
         document.cookie = n + '=; Max-Age=0; path=/; domain=.' + d;
         document.cookie = n + '=; Max-Age=0; path=/';
       }
     });
   }
+  function ustaw(analityka) {
+    var poprzedni = czytaj();
+    zapisz(analityka ? 'tak' : 'nie');
+    gtag('consent', 'update', { analytics_storage: analityka ? 'granted' : 'denied' });
+    if (!analityka && poprzedni === 'tak') usunCiasteczkaGa();
+    zamknij();
+  }
 
   var baner = document.getElementById('zgoda');
-  function pokaz() { baner.hidden = false; }
+  var panel = document.getElementById('zgoda-panel');
+  var przelacznik = document.getElementById('zgoda-analityka');
+  var btnZarzadzaj = baner.querySelector('[data-akcja="zarzadzaj"]');
+  function pokaz() { przelacznik.checked = czytaj() === 'tak'; baner.hidden = false; }
+  function zamknij() { baner.hidden = true; panel.hidden = true; btnZarzadzaj.setAttribute('aria-expanded', 'false'); }
+
   baner.addEventListener('click', function (e) {
-    var w = e.target.closest('[data-wybor]');
-    if (!w) return;
-    var wybor = w.getAttribute('data-wybor');
-    var poprzedni = czytaj();
-    zapisz(wybor);
-    baner.hidden = true;
-    if (wybor === 'tak') zaladujTag();
-    else if (poprzedni === 'tak') { usunCiasteczkaGa(); location.reload(); }
+    var b = e.target.closest('[data-akcja]');
+    if (!b) return;
+    var a = b.getAttribute('data-akcja');
+    if (a === 'zarzadzaj') {
+      panel.hidden = !panel.hidden;
+      btnZarzadzaj.setAttribute('aria-expanded', String(!panel.hidden));
+    } else if (a === 'niezbedne') ustaw(false);
+    else if (a === 'wszystkie') ustaw(true);
+    else if (a === 'zapisz') ustaw(przelacznik.checked);
   });
   document.addEventListener('click', function (e) {
-    var l = e.target.closest('[data-zgoda]');
-    if (!l) return;
+    if (!e.target.closest('[data-zgoda]')) return;
     e.preventDefault();
     pokaz();
   });
 
-  var stan = czytaj();
-  if (stan === 'tak') zaladujTag();
-  else if (stan !== 'nie') pokaz();
+  if (stan !== 'tak' && stan !== 'nie') pokaz();
 </script>
 <style>
   .zgoda {
-    position: fixed; z-index: 50; left: 1rem; right: 1rem; bottom: 1rem;
-    max-width: 40rem; margin: 0 auto; padding: 1rem 1.1rem;
+    position: fixed; z-index: 50; left: 0; right: 0; bottom: 0;
+    padding: 1rem clamp(1rem, 3vw, 2rem);
     background: var(--kartka); color: var(--tusz);
-    border: 1px solid var(--linia); border-radius: var(--r); box-shadow: var(--cien);
-    display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center;
-    font-size: .95rem; line-height: 1.45;
+    border-top: 1px solid var(--linia); box-shadow: 0 -10px 30px -12px rgba(23,25,43,.22);
+    font-size: .92rem; line-height: 1.45;
+    max-height: 90vh; overflow-y: auto;
   }
-  .zgoda[hidden] { display: none; }
-  .zgoda p { margin: 0; flex: 1 1 18rem; }
+  .zgoda[hidden], .zgoda-panel[hidden] { display: none; }
+  .zgoda-gora { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; justify-content: space-between; }
+  .zgoda-tekst { flex: 1 1 26rem; }
+  .zgoda p { margin: 0; }
+  .zgoda-tytul { font-weight: 700; font-size: 1rem; margin-bottom: .25rem !important; }
   .zgoda a { color: var(--dlugopis); }
   .zgoda-przyciski { display: flex; gap: .5rem; flex-wrap: wrap; }
-  .zgoda button {
+  .zgoda-btn {
     font: inherit; font-weight: 600; cursor: pointer;
-    padding: .55rem 1rem; border-radius: 999px; border: 1.5px solid var(--dlugopis);
+    padding: .55rem 1rem; border-radius: 999px;
+    border: 1.5px solid var(--dlugopis); background: transparent; color: var(--dlugopis);
   }
-  .zgoda-nie { background: transparent; color: var(--dlugopis); }
-  .zgoda-tak { background: var(--dlugopis); color: var(--na-dlugopisie); }
-  .zgoda button:hover { filter: brightness(1.08); }
+  .zgoda-glowny { background: var(--dlugopis); color: var(--na-dlugopisie); }
+  .zgoda-btn:hover { filter: brightness(1.08); }
+  .zgoda-panel { margin-top: 1rem; display: grid; gap: .6rem; justify-items: start; }
+  .zgoda-kat {
+    width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    padding: .75rem 1rem; border: 1px solid var(--linia); border-radius: var(--r); background: var(--papier);
+  }
+  .zgoda-kat input { width: 1.2rem; height: 1.2rem; accent-color: var(--dlugopis); flex: none; }
 </style>
