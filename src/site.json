@@ -2,6 +2,6 @@
   "name": "Policzalnia",
   "tagline": "Kalkulatory dla pracujących i JDG",
   "email": "kontakt@policzalnia.pl",
-  "noindex": true,
+  "noindex": false,
   "reklamy": false
 }

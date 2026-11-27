@@ -19,11 +19,13 @@ Administratorem danych osobowych jest właściciel serwisu policzalnia.pl (dalej
 
 **Korespondencja.** Jeśli do nas napiszesz, przetwarzamy Twój adres e-mail i treść wiadomości, aby odpowiedzieć i obsłużyć zgłoszenie. Podstawa prawna: prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO). Wiadomości przechowujemy przez czas potrzebny do obsługi sprawy, nie dłużej niż 3 lata.
 
-**Statystyki i reklamy – tylko za Twoją zgodą.** Jeśli w przyszłości włączymy narzędzia analityczne (np. Google Analytics) lub reklamy (np. Google AdSense), będą one uruchamiane dopiero po wyrażeniu przez Ciebie zgody w banerze cookies. Podstawa prawna: Twoja zgoda (art. 6 ust. 1 lit. a RODO). Zgodę możesz w każdej chwili wycofać. Przed uruchomieniem tych narzędzi uzupełnimy tę politykę o ich szczegóły.
+**Statystyki odwiedzin bez plików cookie.** Korzystamy z Cloudflare Web Analytics, żeby wiedzieć, ile osób odwiedza poszczególne strony i skąd przychodzą (np. z wyszukiwarki). Narzędzie nie zapisuje plików cookie, nie korzysta z pamięci przeglądarki i nie tworzy profili użytkowników – zbiera tylko zbiorcze, anonimowe dane o wizytach (odwiedzona strona, źródło wejścia, kraj, typ urządzenia i przeglądarki, czas ładowania strony). Podstawa prawna: nasz prawnie uzasadniony interes w ulepszaniu serwisu (art. 6 ust. 1 lit. f RODO).
+
+**Inne statystyki i reklamy – tylko za Twoją zgodą.** Jeśli w przyszłości włączymy narzędzia analityczne korzystające z plików cookie (np. Google Analytics) lub reklamy (np. Google AdSense), będą one uruchamiane dopiero po wyrażeniu przez Ciebie zgody w banerze cookies. Podstawa prawna: Twoja zgoda (art. 6 ust. 1 lit. a RODO). Zgodę możesz w każdej chwili wycofać. Przed uruchomieniem tych narzędzi uzupełnimy tę politykę o ich szczegóły.
 
 ## 3. Komu powierzamy dane?
 
-- **Cloudflare, Inc.** – sieć dostarczania treści i ochrona strony przed atakami;
+- **Cloudflare, Inc.** – sieć dostarczania treści, ochrona strony przed atakami i anonimowe statystyki odwiedzin (Cloudflare Web Analytics);
 - **GitHub, Inc.** – hosting plików strony;
 - **Google LLC** – obsługa poczty e-mail.
 
