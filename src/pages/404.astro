@@ -10,7 +10,7 @@ const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a,
 const por = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +(b.data.updated ?? b.data.date) - +(a.data.updated ?? a.data.date));
 const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc - b.data.kolejnosc);
 // najczęściej szukane kalkulatory – stała lista, uzupełniana resztą, gdyby któregoś zabrakło
-const popularne = ['zwolnienie-lekarskie', 'kalkulator-urlopu', 'umowa-zlecenie', 'kalkulator-vat', 'ryczalt', 'nadplata-kredytu']
+const popularne = ['kalkulator-wynagrodzen', 'zwolnienie-lekarskie', 'kalkulator-urlopu', 'umowa-zlecenie', 'kalkulator-vat', 'ryczalt']
   .map((s) => kalk.find((e) => e.data.slug === s)).filter((e) => !!e);
 ---
 <Base title={`Nie znaleziono strony | ${site.name}`} description="Ta strona nie istnieje albo zmieniła adres. Wyszukaj kalkulator lub poradnik Policzalni albo wybierz jeden z najpopularniejszych.">

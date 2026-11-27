@@ -1,0 +1,209 @@
+---
+import { placaMinimalna } from '../../lib/wynagrodzenie';
+const rok = new Date().getFullYear();
+const min = placaMinimalna(rok);
+const szybkie: [string, number][] = [['płaca minimalna', min], ['6000 zł', 6000], ['8000 zł', 8000], ['10 000 zł', 10000], ['15 000 zł', 15000]];
+const ulgi: [string, string][] = [
+  ['brak', 'nie przysługuje'],
+  ['mlodzi', 'do 26 lat (ulga dla młodych)'],
+  ['rodzina', 'rodzic 4+ dzieci'],
+  ['powrot', 'powrót z zagranicy'],
+  ['senior', 'pracujący senior'],
+];
+const ppkProcenty = (od: number, do_: number, krok: number) => { const t: number[] = []; for (let v = od; v <= do_ + 1e-9; v += krok) t.push(Math.round(v * 10) / 10); return t; };
+---
+<form id="k-wyn" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Znam kwotę</legend>
+    <label><input type="radio" name="kierunek" value="brutto" checked /><span>brutto</span></label>
+    <label><input type="radio" name="kierunek" value="netto" /><span>na rękę</span></label>
+    <label><input type="radio" name="kierunek" value="koszt" /><span>koszt firmy</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="w-kwota" id="w-kwota-et">Pensja brutto miesięcznie</label>
+      <div class="kwota" data-jedn="zł"><input id="w-kwota" name="kwota" type="text" inputmode="decimal" value="7000" /></div>
+    </div>
+    <div class="pole">
+      <label for="w-rok">Rok</label>
+      <select id="w-rok" name="rok"><option value={String(rok)}>{rok}</option><option value={String(rok + 1)}>{rok + 1}</option></select>
+    </div>
+  </div>
+  <div class="szybkie" role="group" aria-label="Szybki wybór kwoty">
+    {szybkie.map(([t, v]) => <button type="button" class="przycisk maly" data-kwota={v}>{t}</button>)}
+  </div>
+  <div class="pole">
+    <label for="w-ulga">Zerowy PIT</label>
+    <select id="w-ulga" name="ulga" aria-describedby="w-ulga-pod">{ulgi.map(([k, e]) => <option value={k}>{e}</option>)}</select>
+    <small id="w-ulga-pod">Zwolnienie z podatku do 85 528 zł przychodu w roku – jeden limit dla wszystkich czterech ulg.</small>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="dojazd" value="1" /> Dojeżdżam do pracy z innej miejscowości (koszty 300 zł zamiast 250 zł)</label>
+  <label class="przelacznik"><input type="checkbox" name="ppk" value="1" /> Oszczędzam w PPK</label>
+  <details class="wplaty" data-wiecej>
+    <summary>Więcej opcji</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="w-pit2">PIT-2 (kwota zmniejszająca)</label>
+        <select id="w-pit2" name="pit2"><option value="300">złożony – 300 zł</option><option value="150">u 2 pracodawców – 150 zł</option><option value="100">u 3 pracodawców – 100 zł</option><option value="0">nie złożony</option></select>
+      </div>
+      <div class="pole">
+        <label for="w-etat">Wymiar etatu</label>
+        <select id="w-etat" name="etat"><option value="1">pełny etat</option><option value="0.75">3/4 etatu</option><option value="0.5">1/2 etatu</option><option value="0.25">1/4 etatu</option></select>
+      </div>
+    </div>
+    <div class="pole-para" data-ppk-opcje>
+      <div class="pole">
+        <label for="w-ppkp">PPK – Twoja wpłata</label>
+        <select id="w-ppkp" name="ppkp">{ppkProcenty(0.5, 4, 0.5).map((v) => <option value={String(v)} selected={v === 2}>{v.toLocaleString('pl-PL')}%</option>)}</select>
+      </div>
+      <div class="pole">
+        <label for="w-ppkf">PPK – wpłata pracodawcy</label>
+        <select id="w-ppkf" name="ppkf">{ppkProcenty(1.5, 4, 0.5).map((v) => <option value={String(v)} selected={v === 1.5}>{v.toLocaleString('pl-PL')}%</option>)}</select>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="w-aut">Część za prawa autorskie</label>
+        <div class="kwota" data-jedn="%"><input id="w-aut" name="autorskie" type="text" inputmode="decimal" value="0" aria-describedby="w-aut-pod" /></div>
+        <small id="w-aut-pod">Od tej części koszty wynoszą 50% (do 120 000 zł w roku).</small>
+      </div>
+      <div class="pole">
+        <label for="w-wyp">Składka wypadkowa</label>
+        <div class="kwota" data-jedn="%"><input id="w-wyp" name="wypadkowa" type="text" inputmode="decimal" value="1,67" /></div>
+      </div>
+    </div>
+    <label class="przelacznik"><input type="checkbox" name="wiek" value="1" /> Kobieta 55+ / mężczyzna 60+ (pracodawca nie płaci Funduszu Pracy i FGŚP)</label>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Brutto</dt><dd id="w-brutto"></dd>
+    <dt>Składki ZUS</dt><dd id="w-zus"></dd>
+    <dt>Zdrowotna</dt><dd id="w-zdr"></dd>
+    <dt>Zaliczka PIT</dt><dd id="w-pit"></dd>
+    <dt id="w-ppk-et">PPK</dt><dd id="w-ppk"></dd>
+    <dt>Koszt firmy</dt><dd id="w-koszt"></dd>
+  </dl>
+  <ul class="uwagi" id="w-uwagi" hidden></ul>
+  <div class="suma"><span id="w-suma-et">Na rękę</span><strong id="w-wynik" data-glowny="Na rękę"></strong></div>
+  <div class="stopka-paragonu" id="w-stopka">policzalnia.pl · umowa o pracę</div>
+</div></div>
+
+<div class="struktura" id="w-struktura">
+  <p class="struktura-tytul">Na co idzie <b id="w-str-koszt"></b>, które płaci pracodawca?</p>
+  <div class="struktura-pasek" id="w-str-pasek" aria-hidden="true"></div>
+  <ul class="struktura-legenda" id="w-str-leg"></ul>
+</div>
+
+<details class="rozbicie" id="w-rok-det" open>
+  <summary id="w-rok-tyt">Wypłaty w kolejnych miesiącach</summary>
+  <div class="tabela-przewijana"><table class="tabela-roku">
+    <thead><tr><th>Miesiąc</th><th>Na rękę</th><th>Zaliczka PIT</th><th>Składki ZUS</th><th>Koszt firmy</th></tr></thead>
+    <tbody id="w-mies"></tbody>
+    <tfoot id="w-rok-suma"></tfoot>
+  </table></div>
+  <p class="pit37" id="w-pit37"></p>
+</details>
+
+<details class="rozbicie" id="w-rozbicie">
+  <summary>Szczegóły wyliczenia (pierwszy miesiąc)</summary>
+  <div class="tabela-przewijana"><table><tbody id="w-szczegoly"></tbody></table></div>
+</details>
+<script>
+  import { bruttoZKosztu, bruttoZNetto, MIESIACE, obliczRok, type Zwolnienie } from '../../lib/wynagrodzenie';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-wyn') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  // „Więcej opcji” otwarte, gdy link do wyliczenia zmienia któreś z ustawień domyślnych
+  const domyslne: Record<string, string> = { pit2: '300', etat: '1', autorskie: '0', wypadkowa: '1,67', wiek: '0', ppkp: '2', ppkf: '1.5' };
+  if (Object.entries(domyslne).some(([k, v]) => p.has(k) && p.get(k) !== v)) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const zlr = (n: number) => zl(n).replace(/,00\s/, ' ');
+
+  form.querySelectorAll<HTMLButtonElement>('[data-kwota]').forEach((b) => b.addEventListener('click', () => {
+    (form.querySelector('input[name="kierunek"][value="brutto"]') as HTMLInputElement).checked = true;
+    el('kwota').value = String(b.dataset.kwota).replace('.', ',');
+    form.dispatchEvent(new Event('change'));
+  }));
+
+  const przelicz = () => {
+    const ppk = el('ppk').checked;
+    form.querySelector<HTMLElement>('[data-ppk-opcje]')!.hidden = !ppk;
+    const opcje = {
+      rok: +val('rok'), podwyzszoneKoszty: el('dojazd').checked, pit2: +val('pit2'), zwolnienie: val('ulga') as Zwolnienie,
+      ppk, ppkPracownik: +val('ppkp') / 100, ppkPracodawca: +val('ppkf') / 100,
+      autorskie: Math.min(100, Math.max(0, liczba(val('autorskie')))) / 100, wypadkowa: Math.max(0, liczba(val('wypadkowa'))) / 100,
+      bezFp: el('wiek').checked, etat: +val('etat'),
+    };
+    const kierunek = val('kierunek');
+    const kwota = liczba(val('kwota'));
+    $('w-kwota-et').textContent = kierunek === 'netto' ? 'Ile chcesz dostać na rękę' : kierunek === 'koszt' ? 'Budżet pracodawcy na etat' : 'Pensja brutto miesięcznie';
+    const brutto = kierunek === 'netto' ? bruttoZNetto(kwota, opcje) : kierunek === 'koszt' ? bruttoZKosztu(kwota, opcje) : kwota;
+    const r = obliczRok({ ...opcje, brutto });
+    const m = r.miesiace[0];
+
+    const ul = $('w-uwagi');
+    ul.hidden = r.uwagi.length === 0; ul.innerHTML = r.uwagi.map((u) => `<li>${u}</li>`).join('');
+    ustawKwote($('w-brutto'), m.brutto);
+    ustawKwote($('w-zus'), m.spoleczne);
+    ustawKwote($('w-zdr'), m.zdrowotna);
+    ustawKwote($('w-pit'), m.zaliczka);
+    $('w-ppk-et').hidden = $('w-ppk').hidden = !ppk;
+    ustawKwote($('w-ppk'), m.ppkPracownika);
+    ustawKwote($('w-koszt'), m.kosztPracodawcy);
+    const g = $('w-wynik');
+    const etykieta = kierunek === 'brutto' ? 'Na rękę' : 'Brutto w umowie';
+    $('w-suma-et').textContent = etykieta; g.dataset.glowny = etykieta;
+    ustawKwote(g, kierunek === 'brutto' ? m.netto : m.brutto);
+    $('w-stopka').textContent = kierunek === 'brutto' ? `policzalnia.pl · umowa o pracę · ${opcje.rok}` : `policzalnia.pl · na rękę ${zl(m.netto)}`;
+
+    // struktura kosztu pracodawcy
+    const sp = m.skladkiPracodawcy;
+    const czesci: [string, number, string][] = [
+      ['Na rękę', m.netto, 'netto'], ['Twoje składki ZUS', m.spoleczne, 'zus'], ['Składka zdrowotna', m.zdrowotna, 'zdr'], ['Zaliczka na PIT', m.zaliczka, 'pit'],
+      ['Twoja wpłata do PPK', m.ppkPracownika, 'ppk'], ['PPK od pracodawcy', m.ppkPracodawcy, 'ppk2'],
+      ['Składki pracodawcy (ZUS, FP, FGŚP)', r2(sp.emerytalna + sp.rentowa + sp.wypadkowa + sp.fp + sp.fgsp), 'firma'],
+    ].filter((c) => (c[1] as number) > 0) as [string, number, string][];
+    const suma = m.kosztPracodawcy || 1;
+    $('w-str-koszt').textContent = zl(m.kosztPracodawcy);
+    $('w-str-pasek').innerHTML = czesci.map(([, v, k]) => `<span class="s-${k}" style="flex-grow:${v}"></span>`).join('');
+    $('w-str-leg').innerHTML = czesci.map(([t, v, k]) => `<li><i class="s-${k}"></i><span>${t}</span><b>${zl(v)}</b><small>${Math.round((v / suma) * 1000) / 10}%</small></li>`).join('');
+    $('w-struktura').hidden = !(m.brutto > 0);
+
+    // cały rok
+    const zmienne = r.miesiace.some((q) => q.netto !== m.netto);
+    $('w-rok-tyt').textContent = zmienne ? 'Wypłaty w kolejnych miesiącach – netto się zmienia' : 'Wypłaty w kolejnych miesiącach';
+    $('w-mies').innerHTML = r.miesiace.map((q, i) => {
+      const flagi = [i === r.miesiacProgu ? 'próg 32%' : '', i === r.miesiacLimitu ? 'limit ZUS' : '', i === r.miesiacKoncaUlgi && r.miesiacKoncaUlgi >= 0 ? 'koniec ulgi' : ''].filter(Boolean);
+      return `<tr${q.netto !== m.netto ? ' class="inny"' : ''}><td>${MIESIACE[i]}${flagi.length ? ` <small>${flagi.join(', ')}</small>` : ''}</td><td><b>${zl(q.netto)}</b></td><td>${zl(q.zaliczka)}</td><td>${zl(q.spoleczne)}</td><td>${zl(q.kosztPracodawcy)}</td></tr>`;
+    }).join('');
+    $('w-rok-suma').innerHTML = `<tr><td>Rok</td><td><b>${zl(r.suma.netto)}</b></td><td>${zl(r.suma.zaliczka)}</td><td>${zl(r.suma.spoleczne)}</td><td>${zl(r.suma.kosztPracodawcy)}</td></tr>`;
+    const d = r.pit37.roznica;
+    $('w-pit37').innerHTML = r.suma.brutto > 0
+      ? `<b>Zeznanie PIT-37 za ${opcje.rok} r.:</b> podatek ${zlr(r.pit37.podatek)}, pobrane zaliczki ${zlr(r.pit37.zaliczki)} – ` +
+        (Math.abs(d) < 10 ? `rozliczenie wyjdzie praktycznie na zero${Math.abs(d) >= 1 ? ` (${d > 0 ? 'zwrot' : 'dopłata'} ${zlr(Math.abs(d))})` : ''}.` : d > 0 ? `ok. <b>${zl(d)} zwrotu</b>.` : `ok. <b>${zl(-d)} dopłaty</b>.`) +
+        ' Bez innych dochodów, ulg i wspólnego rozliczenia.'
+      : '';
+
+    const wiersz = (a: string, b: number) => `<tr><td>${a}</td><td>${zl(b)}</td></tr>`;
+    $('w-szczegoly').innerHTML = [
+      wiersz('Wynagrodzenie brutto', m.brutto),
+      wiersz('Składka emerytalna 9,76%', m.emerytalna), wiersz('Składka rentowa 1,5%', m.rentowa), wiersz('Składka chorobowa 2,45%', m.chorobowa),
+      wiersz('Podstawa składki zdrowotnej', r2(m.brutto - m.spoleczne)), wiersz('Składka zdrowotna 9%', m.zdrowotna),
+      ...(m.ppkPracodawcy ? [wiersz('Wpłata pracodawcy do PPK (przychód)', m.ppkPracodawcy)] : []),
+      ...(m.zwolniony ? [wiersz('Przychód zwolniony z PIT (ulga)', m.zwolniony)] : []),
+      wiersz('Koszty uzyskania przychodu', m.koszty), wiersz('Podstawa opodatkowania (zaokrąglona)', m.podstawa),
+      wiersz(`Zaliczka na PIT (12%${opcje.pit2 ? ` − ${opcje.pit2} zł` : ''})`, m.zaliczka),
+      ...(m.ppkPracownika ? [wiersz('Twoja wpłata do PPK', m.ppkPracownika)] : []),
+      wiersz('Na rękę', m.netto),
+      wiersz('Pracodawca: emerytalna 9,76%', sp.emerytalna), wiersz('Pracodawca: rentowa 6,5%', sp.rentowa), wiersz(`Pracodawca: wypadkowa ${(opcje.wypadkowa * 100).toLocaleString('pl-PL')}%`, sp.wypadkowa),
+      wiersz('Fundusz Pracy i Solidarnościowy 2,45%', sp.fp), wiersz('FGŚP 0,1%', sp.fgsp), wiersz('Łączny koszt pracodawcy', m.kosztPracodawcy),
+    ].join('');
+  };
+  function r2(n: number) { return Math.round((n + Number.EPSILON) * 100) / 100; }
+  podlaczKalkulator(form, przelicz);
+</script>

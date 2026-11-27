@@ -23,7 +23,7 @@ faq:
   - pytanie: Czy od 2026 roku wszystkie zlecenia są oskładkowane?
     odpowiedz: Nie. Rząd planował w ramach KPO pełne oskładkowanie wszystkich umów zlecenia, ale z tego zrezygnował. Obowiązują dotychczasowe zasady zbiegu tytułów – także w 2027 r.
   - pytanie: Czy zmiany w PIT w 2027 roku wpływają na zlecenie?
-    odpowiedz: Na miesięczną wypłatę nie – zleceniodawca zawsze pobiera zaliczkę 12%. Nowe progi podatkowe (o ile wejdą w życie) zmienią tylko rozliczenie roczne osób z dochodem powyżej 120 000 zł.
+    odpowiedz: Na miesięczną wypłatę nie – zleceniodawca zawsze pobiera zaliczkę 12%. Skala też się nie zmienia – prezydent zawetował 27 listopada 2026 r. ustawę z nowymi progami, więc w 2027 r. zostaje 12% i 32% z progiem 120 000 zł.
 powiazane:
   - umowa-o-dzielo
   - kalkulator-wynagrodzen
@@ -37,7 +37,7 @@ zrodla:
   - nazwa: Rozporządzenie w sprawie minimalnego wynagrodzenia na 2027 r. (Dz.U. 2026 poz. 1213)
     url: https://eli.gov.pl/eli/DU/2026/1213
 autor: redakcja
-updated: 2026-11-25
+updated: 2026-11-27
 draft: false
 ---
 
