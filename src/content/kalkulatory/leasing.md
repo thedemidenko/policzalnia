@@ -3,8 +3,8 @@ slug: leasing
 sekcja: kredyty
 title: Kalkulator leasingu samochodu 2026 - rata, wykup, limit 100 000 zł i podatki
 nazwa_krotka: Kalkulator leasingu
-meta_title: Kalkulator leasingu samochodu 2026 - rata, wykup i limit 100 tys. zł | Policzalnia
-meta_description: Policz ratę leasingu auta, sumę opłat i oprocentowanie z oferty. Dla firmy – limit 100 000 zł, proporcja, VAT 50% lub 100%, rata po podatkach na skali, liniowym i ryczałcie. Także leasing konsumencki.
+meta_title: "Kalkulator leasingu samochodu 2026 - rata i wykup | Policzalnia"
+meta_description: "Policz ratę leasingu auta, sumę opłat i oprocentowanie. Dla firmy limit 100 000 zł, VAT 50% lub 100% i rata po podatkach. Także leasing konsumencki."
 kalkulator: leasing
 lead: Wpisz cenę auta, opłatę wstępną, wykup i okres, a kalkulator policzy ratę leasingu, sumę opłat i koszt finansowania. Dla firmy pokaże też, ile raty wrzucisz w koszty przy limicie 100 000 zł, ile VAT odliczysz i ile naprawdę zapłacisz po podatkach. Z oferty możesz przepisać samą ratę albo sumę opłat – policzymy, jakie to oprocentowanie.
 faq:

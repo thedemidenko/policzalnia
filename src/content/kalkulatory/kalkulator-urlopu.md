@@ -3,8 +3,8 @@ slug: kalkulator-urlopu
 sekcja: praca
 title: Kalkulator urlopu wypoczynkowego 2026 - ile dni urlopu ci przysługuje
 nazwa_krotka: Kalkulator urlopu
-meta_title: Kalkulator urlopu wypoczynkowego 2026 - wymiar 20 czy 26 dni | Policzalnia
-meta_description: Sprawdź, ile dni urlopu ci przysługuje przy pełnym i niepełnym etacie, po zmianie pracy w trakcie roku i w pierwszej pracy. Urlop proporcjonalny, godziny i dni, które ci zostały.
+meta_title: "Kalkulator urlopu 2026 - wymiar 20 czy 26 dni | Policzalnia"
+meta_description: "Sprawdź, ile dni urlopu ci przysługuje – na pełnym i niepełnym etacie, po zmianie pracy i w pierwszej pracy. Urlop proporcjonalny w dniach i godzinach."
 kalkulator: urlop
 lead: Wybierz swoją sytuację, etat i staż, a kalkulator policzy wymiar urlopu wypoczynkowego na ten rok – w dniach i godzinach, z urlopem proporcjonalnym po zmianie pracy i harmonogramem nabywania dni w pierwszej pracy.
 faq:

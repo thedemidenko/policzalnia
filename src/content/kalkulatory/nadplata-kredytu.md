@@ -3,8 +3,8 @@ slug: nadplata-kredytu
 sekcja: kredyty
 title: Kalkulator nadpłaty kredytu 2026 - ile zaoszczędzisz, krótszy okres czy niższa rata
 nazwa_krotka: Kalkulator nadpłaty kredytu
-meta_title: Kalkulator nadpłaty kredytu hipotecznego 2026 - okres czy rata | Policzalnia
-meta_description: Policz, ile zaoszczędzisz na nadpłacie kredytu hipotecznego lub gotówkowego. Nadpłata jednorazowa i cykliczna, raty równe i malejące, krótszy okres, niższa rata albo mix, prowizja i porównanie z inwestowaniem.
+meta_title: "Kalkulator nadpłaty kredytu 2026 - okres czy rata | Policzalnia"
+meta_description: "Policz, ile zaoszczędzisz na nadpłacie kredytu – jednorazowej lub co miesiąc. Krótszy okres, niższa rata albo mix, prowizja i porównanie z inwestowaniem."
 kalkulator: nadplata
 lead: Wpisz kapitał do spłaty, oprocentowanie i nadpłatę – jednorazową albo regularną – a kalkulator policzy, ile zaoszczędzisz na odsetkach, o ile skrócisz kredyt albo ile spadnie rata. Porównasz krótszy okres, niższą ratę i strategię mix, sprawdzisz wpływ zmiany oprocentowania i to, czy lepiej nadpłacać, czy inwestować.
 faq:

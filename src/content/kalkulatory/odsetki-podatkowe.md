@@ -3,8 +3,8 @@ slug: odsetki-podatkowe
 sekcja: firma
 title: Kalkulator odsetek podatkowych 2026 - za zwłokę w VAT, PIT i CIT
 nazwa_krotka: Kalkulator odsetek podatkowych
-meta_title: Kalkulator odsetek podatkowych 2026 - za zwłokę w VAT, PIT i CIT | Policzalnia
-meta_description: Policz odsetki od zaległości podatkowych według stawki 10,5%, obniżonej lub podwyższonej. Kilka zaległości naraz, wpłaty częściowe, próg 8,70 zł i zaokrąglenie jak w urzędzie.
+meta_title: "Kalkulator odsetek podatkowych 2026 - VAT, PIT | Policzalnia"
+meta_description: "Policz odsetki od zaległości podatkowych – stawka 10,5%, obniżona lub podwyższona, kilka zaległości, wpłaty częściowe i zaokrąglenie jak w urzędzie."
 kalkulator: odsetki-podatkowe
 lead: Wpisz kwotę zaległego podatku, termin płatności i dzień zapłaty, a kalkulator policzy odsetki za zwłokę tak, jak robi to urząd skarbowy – z podziałem na okresy stawek, zaokrągleniem do pełnych złotych i progiem 8,70 zł. Policzysz też kilka zaległości naraz i wpłaty częściowe.
 faq:

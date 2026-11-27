@@ -2,7 +2,7 @@
 slug: ryczalt-czy-liniowy
 title: Ryczałt czy podatek liniowy w 2027 roku? Liczymy, co się opłaca i do kiedy zdecydować
 meta_title: Ryczałt czy liniowy 2027 - co wybrać i do kiedy | Policzalnia
-meta_description: Ryczałt czy podatek liniowy w 2027 roku? Progi kosztów dla każdej stawki ryczałtu, porównanie ze skalą, składka zdrowotna, nowy limit ryczałtu (2 mln czy 250 tys. euro), termin wyboru do 20 lutego i najczęstsze pułapki.
+meta_description: "Ryczałt czy liniowy w 2027 roku? Progi kosztów dla każdej stawki, porównanie ze skalą, nowy limit ryczałtu i termin zmiany formy do 20 lutego."
 lead: Wybór formy opodatkowania na 2027 rok trzeba zgłosić najpóźniej do 20 lutego – a w tym roku decyzja jest trudniejsza niż zwykle, bo ważą się nowe przepisy o limicie ryczałtu. Pokazujemy, przy jakich kosztach ryczałt przestaje się opłacać, kiedy wygrywa liniowy, a kiedy skala, i co zmieni podpis albo weto prezydenta.
 sekcja: firma
 w_skrocie:

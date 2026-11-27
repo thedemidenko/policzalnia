@@ -3,8 +3,8 @@ slug: ike
 sekcja: oszczedzanie
 title: Kalkulator IKE 2026 - ile zyskasz bez podatku Belki i ile możesz wpłacić
 nazwa_krotka: Kalkulator IKE
-meta_title: Kalkulator IKE 2026 - zysk, limit 28 260 zł i IKE czy IKZE | Policzalnia
-meta_description: Policz, ile uzbierasz na IKE i ile zaoszczędzisz na podatku Belki – przy ETF, obligacjach i lokacie. Limit IKE 2026 i 2027, ile możesz jeszcze wpłacić w tym roku, warunki wypłaty i porównanie IKE, IKZE i zwykłego konta.
+meta_title: "Kalkulator IKE 2026 - zysk i limit 28 260 zł | Policzalnia"
+meta_description: "Policz, ile uzbierasz na IKE i ile oszczędzisz na podatku Belki przy ETF, obligacjach i lokacie. Limity 2026 i 2027, warunki wypłaty, IKE czy IKZE."
 kalkulator: ike
 lead: Wpisz, ile chcesz odkładać co miesiąc, swój wiek i stopę zwrotu, a kalkulator pokaże, ile będziesz mieć na IKE w wieku 60 lat i ile więcej niż na zwykłym koncie, gdzie obowiązuje podatek Belki. Porówna też IKE z IKZE przy twoim progu podatkowym i policzy, ile możesz jeszcze wpłacić w tym roku.
 faq:

@@ -3,8 +3,8 @@ slug: kalkulator-vat
 sekcja: firma
 title: Kalkulator VAT 2026 - netto, brutto i kwota VAT, także dla faktury
 nazwa_krotka: Kalkulator VAT
-meta_title: Kalkulator VAT 2026 - netto brutto, 23% 8% 5%, faktura i waluta | Policzalnia
-meta_description: Przelicz netto na brutto i odwrotnie, wylicz VAT z ceny brutto albo netto ze znanej kwoty VAT. Faktura z kilkoma stawkami, VAT w walucie po kursie NBP i kwota słownie.
+meta_title: "Kalkulator VAT 2026 - netto brutto, 23% 8% 5% | Policzalnia"
+meta_description: "Przelicz netto na brutto i odwrotnie, wylicz VAT z kwoty brutto. Faktura z kilkoma stawkami, VAT w walucie po kursie NBP i kwota słownie."
 kalkulator: vat
 lead: Wpisz kwotę netto, brutto albo samą kwotę VAT i wybierz stawkę – resztę policzymy od razu. Możesz też podliczyć całą fakturę z kilkoma stawkami, przeliczyć VAT z faktury w euro po kursie NBP i skopiować kwotę słownie.
 faq:

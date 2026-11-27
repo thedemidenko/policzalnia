@@ -1,8 +1,8 @@
 ---
 slug: umowa-na-czas-okreslony
 title: Umowa na czas określony – prawa pracownika, wypowiedzenie i koniec umowy w 2026 roku
-meta_title: Umowa na czas określony 2026 - prawa, wypowiedzenie, ciąża | Policzalnia
-meta_description: Umowa na czas określony w 2026 roku - czym różni się od umowy na stałe, kiedy można ją wypowiedzieć, czy trzeba podać przyczynę, co z ciążą, L4 i urlopem, jak przejść na umowę stałą i co przysługuje na koniec.
+meta_title: "Umowa na czas określony 2026 - prawa pracownika | Policzalnia"
+meta_description: "Umowa na czas określony w 2026 roku – wypowiedzenie i przyczyna, ciąża, L4, urlop, przejście na umowę stałą oraz co przysługuje, gdy umowa się kończy."
 lead: Umowa na czas określony daje dziś prawie te same prawa co umowa na stałe – ten sam okres wypowiedzenia, obowiązek podania przyczyny i odwołanie do sądu. Różnica jest jedna, ale ważna – umowa kończy się sama, bez wypowiedzenia. Wyjaśniamy, co ci przysługuje w trakcie umowy i na jej koniec.
 sekcja: praca
 w_skrocie:

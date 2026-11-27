@@ -3,8 +3,8 @@ slug: umowa-o-dzielo
 sekcja: praca
 title: Kalkulator umowy o dzieło 2026 - brutto, netto i koszty 50%
 nazwa_krotka: Kalkulator umowy o dzieło
-meta_title: Kalkulator umowy o dzieło 2026 - netto z kosztami 20% i 50% | Policzalnia
-meta_description: Przelicz umowę o dzieło z brutto na netto i odwrotnie. Koszty 20% i 50% za prawa autorskie (także dla części wynagrodzenia), limit 120 000 zł, PIT-2, ryczałt do 200 zł i dzieło u własnego pracodawcy.
+meta_title: "Kalkulator umowy o dzieło 2026 - netto 20% i 50% | Policzalnia"
+meta_description: "Przelicz umowę o dzieło z brutto na netto i odwrotnie – koszty 20% i 50%, limit 120 000 zł, PIT-2, ryczałt do 200 zł i dzieło u własnego pracodawcy."
 kalkulator: dzielo
 lead: Wpisz kwotę z umowy o dzieło, a kalkulator policzy, ile dostaniesz na rękę – albo ile wpisać w umowę, żeby dostać konkretną kwotę. Z kosztami 20% lub 50%, PIT-2, ryczałtem do 200 zł i limitem kosztów autorskich.
 faq:

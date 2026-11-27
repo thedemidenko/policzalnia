@@ -3,8 +3,8 @@ slug: umowa-zlecenie
 sekcja: praca
 title: Kalkulator umowy zlecenia 2026 i 2027 - brutto, netto i koszt zleceniodawcy
 nazwa_krotka: Kalkulator umowy zlecenia
-meta_title: Kalkulator umowy zlecenia 2026 - netto dla studenta, przy etacie i bez | Policzalnia
-meta_description: Przelicz umowę zlecenia z brutto na netto i odwrotnie. Student do 26 lat, zbieg z etatem, składka chorobowa, ulga dla młodych, PIT-2, stawka minimalna 31,40 zł i koszt zleceniodawcy.
+meta_title: "Kalkulator umowy zlecenia 2026 - netto, student | Policzalnia"
+meta_description: "Przelicz zlecenie z brutto na netto i odwrotnie – student do 26 lat, zbieg z etatem, chorobowe, ulga dla młodych, stawka 31,40 zł i koszt zleceniodawcy."
 kalkulator: zlecenie
 lead: Wybierz swoją sytuację i wpisz kwotę, a kalkulator policzy składki ZUS, zdrowotną, podatek i kwotę na rękę ze zlecenia – albo ile brutto wpisać w umowę, żeby dostać konkretną kwotę. Pokaże też, ile zlecenie kosztuje firmę.
 faq:

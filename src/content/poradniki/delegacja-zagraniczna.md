@@ -1,8 +1,8 @@
 ---
 slug: delegacja-zagraniczna
 title: Delegacja zagraniczna krok po kroku – od polecenia wyjazdu do rozliczenia
-meta_title: Delegacja zagraniczna 2026 - rozliczenie krok po kroku | Policzalnia
-meta_description: Delegacja zagraniczna 2026 krok po kroku - co przysługuje pracownikowi, od kiedy liczyć czas, zaliczka i kurs, A1, odmowa wyjazdu, czas pracy, podatek. Pełny przykład rozliczenia wyjazdu do Niemiec.
+meta_title: "Delegacja zagraniczna 2026 krok po kroku | Policzalnia"
+meta_description: "Delegacja zagraniczna krok po kroku – co przysługuje, od kiedy liczyć czas, zaliczka i kurs, A1, czas pracy i podatek. Pełny przykład rozliczenia."
 lead: Wyjazd służbowy za granicę to więcej niż dieta w euro. Trzeba ustalić zaliczkę, zadbać o zaświadczenie A1 i ubezpieczenie, dobrze policzyć czas podróży, a po powrocie zmieścić się w 14 dniach z rozliczeniem. Przeprowadzamy przez całą delegację – z pełnym przykładem wyjazdu do Niemiec.
 sekcja: praca
 w_skrocie:

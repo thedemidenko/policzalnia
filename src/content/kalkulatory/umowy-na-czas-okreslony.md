@@ -3,8 +3,8 @@ slug: umowy-na-czas-okreslony
 sekcja: praca
 title: Kalkulator umów na czas określony - limit 33 miesięcy i 3 umów, okres wypowiedzenia
 nazwa_krotka: Kalkulator umów na czas określony
-meta_title: Kalkulator 33 miesięcy - umowa na czas określony i limit 3 umów | Policzalnia
-meta_description: Wpisz swoje umowy o pracę, a kalkulator policzy, ile zostało do limitu 33 miesięcy i 3 umów, kiedy umowa przechodzi na czas nieokreślony, jak długo może trwać kolejna umowa, jaki masz okres wypowiedzenia i kiedy skończy się umowa po wypowiedzeniu.
+meta_title: "Kalkulator 33 miesięcy - umowa na czas określony | Policzalnia"
+meta_description: "Sprawdź, ile zostało do limitu 33 miesięcy i 3 umów, kiedy umowa przechodzi na stałą, jak długo może trwać kolejna i jaki masz okres wypowiedzenia."
 kalkulator: umowy-terminowe
 lead: Wpisz wszystkie umowy o pracę z obecnym pracodawcą, a kalkulator sprawdzi limit z Kodeksu pracy – 33 miesiące i 3 umowy na czas określony. Pokaże, od kiedy jesteś zatrudniony na czas nieokreślony albo ile jeszcze może trwać kolejna umowa, a także twój okres wypowiedzenia i dzień, w którym umowa ustanie po wypowiedzeniu.
 faq:

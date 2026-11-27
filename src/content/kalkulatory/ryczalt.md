@@ -3,8 +3,8 @@ slug: ryczalt
 sekcja: firma
 title: Kalkulator ryczałtu 2026 - stawki ryczałtu, podatek i ile na rękę
 nazwa_krotka: Kalkulator ryczałtu
-meta_title: Kalkulator ryczałtu 2026 - stawki, podatek i na rękę | Policzalnia
-meta_description: Sprawdź stawkę ryczałtu dla swojej działalności i policz podatek, składkę zdrowotną i kwotę na rękę w 2026 r. Kilka stawek naraz, najem 8,5/12,5%, warianty ZUS i porównanie z podatkiem liniowym i skalą.
+meta_title: "Kalkulator ryczałtu 2026 - stawki i na rękę | Policzalnia"
+meta_description: "Sprawdź stawkę ryczałtu dla swojej działalności i policz podatek, składkę zdrowotną i kwotę na rękę. Kilka stawek, najem i porównanie z liniowym."
 kalkulator: ryczalt
 lead: Wpisz, czym się zajmujesz, a kalkulator podpowie stawkę ryczałtu. Potem policzy podatek, składki ZUS, składkę zdrowotną według progu przychodu i kwotę na rękę – miesięcznie albo rocznie. Po wpisaniu kosztów porówna ryczałt z podatkiem liniowym i skalą.
 faq:

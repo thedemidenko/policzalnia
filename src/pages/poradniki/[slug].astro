@@ -38,13 +38,15 @@ const schema = graf(
   {
     '@type': 'Article', headline: d.title, description: d.meta_description, url: abs(url), inLanguage: 'pl-PL', ...(og ? { image: abs(og) } : {}),
     datePublished: d.date.toISOString().slice(0, 10), dateModified: zmiana.toISOString().slice(0, 10),
-    author: autor ? { '@type': 'Person', name: autor.data.imie, ...(autor.data.url ? { url: abs(autor.data.url) } : {}) } : undefined,
-    publisher: { '@type': 'Organization', name: 'Policzalnia', url: abs('/') },
+    // „Redakcja” to zespół, nie osoba – oznaczamy ją jako Organization
+    author: autor ? { '@type': autor.id === 'redakcja' ? 'Organization' : 'Person', name: autor.data.imie, ...(autor.data.url ? { url: abs(autor.data.url) } : {}) } : undefined,
+    publisher: { '@type': 'Organization', name: 'Policzalnia', url: abs('/'), logo: { '@type': 'ImageObject', url: abs('/logo-512.png'), width: 512, height: 512 } },
+    mainEntityOfPage: abs(url),
   },
   faqPage(d.faq),
 );
 ---
-<Base title={d.meta_title} description={d.meta_description} schema={schema} obraz={og} sidebar>
+<Base title={d.meta_title} description={d.meta_description} schema={schema} obraz={og} artykul={{ opublikowano: d.date.toISOString().slice(0, 10), zmieniono: zmiana.toISOString().slice(0, 10) }} sidebar>
   <Okruszki sciezka={sciezka} />
   <div class="poradnik-meta" data-sekcja={d.sekcja}>
     <a class="pm-dzial" href={`/${d.sekcja}/`}>{DZIALY[d.sekcja]}</a>

@@ -3,8 +3,8 @@ slug: ppk
 sekcja: oszczedzanie
 title: Kalkulator PPK 2026 - ile uzbierasz, ile kosztuje i ile dostaniesz przy zwrocie
 nazwa_krotka: Kalkulator PPK
-meta_title: Kalkulator PPK 2026 - ile uzbierasz i ile dostaniesz przy zwrocie | Policzalnia
-meta_description: Policz wpłaty do PPK od pensji, ile uzbierasz do 60. roku życia i jaką ratę dostaniesz. Zwrot przed 60 – ile wróci na konto, ile do ZUS, podatek Belki. Dopłaty państwa, PIT od wpłaty pracodawcy, PPK czy samodzielne oszczędzanie.
+meta_title: "Kalkulator PPK 2026 - ile uzbierasz i zwrot | Policzalnia"
+meta_description: "Policz wpłaty do PPK, ile uzbierasz do 60. roku życia i ile dostaniesz przy zwrocie – z dopłatami państwa, PIT od wpłaty pracodawcy i podatkiem Belki."
 kalkulator: ppk
 lead: Wpisz pensję brutto i wiek, a kalkulator pokaże, ile co miesiąc trafia na twoje PPK, o ile mniej dostajesz na rękę i ile uzbierasz do 60. roku życia – razem z dopłatami państwa i wpłatami pracodawcy. W trybie „zwrot” policzysz, ile dostaniesz, jeśli wypłacisz pieniądze z PPK teraz.
 faq:

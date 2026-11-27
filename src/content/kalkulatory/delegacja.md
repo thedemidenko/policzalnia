@@ -3,8 +3,8 @@ slug: delegacja
 sekcja: praca
 title: Kalkulator delegacji krajowej 2026 - dieta, noclegi i kilometrówka
 nazwa_krotka: Kalkulator delegacji
-meta_title: Kalkulator delegacji krajowej 2026 - dieta 45 zł, nocleg, kilometrówka | Policzalnia
-meta_description: Rozlicz delegację krajową z godzinami wyjazdu i powrotu. Dieta 45 zł z potrąceniem za posiłki, ryczałt za nocleg, limit hotelu, komunikacja miejska, kilometrówka i zaliczka.
+meta_title: "Kalkulator delegacji krajowej 2026 - dieta, nocleg | Policzalnia"
+meta_description: "Rozlicz delegację krajową: dieta 45 zł z potrąceniem za posiłki, nocleg lub ryczałt, kilometrówka, komunikacja miejska i zaliczka. Wynik od razu."
 kalkulator: delegacja
 lead: Wpisz godzinę wyjazdu i powrotu, posiłki, nocleg i przejazd, a kalkulator rozliczy delegację krajową według rozporządzenia – z dietą, ryczałtami, kilometrówką i kwotą do wypłaty po odjęciu zaliczki.
 faq:

@@ -3,8 +3,8 @@ slug: dni-robocze
 sekcja: praca
 title: Kalkulator dni roboczych 2026 - dni robocze między datami i wymiar czasu pracy
 nazwa_krotka: Kalkulator dni roboczych
-meta_title: Kalkulator dni roboczych 2026 - ile dni roboczych między datami | Policzalnia
-meta_description: Policz dni robocze między dwiema datami albo datę za X dni roboczych. Święta z Wigilią, wymiar czasu pracy w godzinach i tabela na 2026 rok – 251 dni i 2008 godzin.
+meta_title: "Kalkulator dni roboczych 2026 - między datami | Policzalnia"
+meta_description: "Policz dni robocze między datami albo datę za X dni roboczych. Święta z Wigilią, wymiar czasu pracy w godzinach i tabela 2026 – 251 dni i 2008 h."
 kalkulator: dni-robocze
 lead: Wpisz dwie daty, a kalkulator policzy dni robocze, weekendy, święta i wymiar czasu pracy w godzinach. Możesz też sprawdzić, jaka data wypada za 14 dni roboczych, i zobaczyć wymiar czasu pracy na cały rok.
 faq:

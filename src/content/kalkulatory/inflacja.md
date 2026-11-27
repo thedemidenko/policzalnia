@@ -3,8 +3,8 @@ slug: inflacja
 sekcja: oszczedzanie
 title: Kalkulator inflacji - ile warte są pieniądze, inflacja skumulowana i pensja realnie
 nazwa_krotka: Kalkulator inflacji
-meta_title: Kalkulator inflacji GUS od 1950 r. - wartość pieniądza i pensja realnie | Policzalnia
-meta_description: Sprawdź, ile dziś warte są pieniądze z dowolnego roku lub miesiąca, policz inflację skumulowaną między datami, realną zmianę pensji i siłę nabywczą w przyszłości. Oficjalne wskaźniki GUS od 1950 r., z denominacją 1995 r.
+meta_title: "Kalkulator inflacji GUS - wartość pieniądza od 1950 | Policzalnia"
+meta_description: "Sprawdź, ile dziś warte są pieniądze z dowolnego roku, policz inflację między datami i realną zmianę pensji. Oficjalne wskaźniki GUS od 1950 r."
 kalkulator: inflacja
 lead: Wybierz kwotę i dwie daty, a kalkulator pokaże, ile te pieniądze są warte po uwzględnieniu inflacji – na podstawie oficjalnych wskaźników cen GUS od 1950 r., miesiąc po miesiącu od 1982 r. Sprawdzisz też, czy twoja pensja realnie wzrosła, i ile pieniądze stracą w przyszłości.
 faq:

@@ -3,8 +3,8 @@ slug: ikze
 sekcja: oszczedzanie
 title: Kalkulator IKZE 2026 - zwrot podatku dokładnie z twojego dochodu i oszczędzanie do 65 lat
 nazwa_krotka: Kalkulator IKZE
-meta_title: Kalkulator IKZE 2026 - zwrot podatku, limit 11 304 zł i JDG | Policzalnia
-meta_description: Policz zwrot podatku z IKZE dokładnie dla twojego dochodu – na skali, liniowym i ryczałcie, także dla JDG. Limity 2026 i 2027, wpłaty ponad limit, kwota wolna i próg 120 000 zł. Ile uzbierasz do 65 lat i czy IKZE wygrywa z IKE.
+meta_title: "Kalkulator IKZE 2026 - zwrot podatku i limit | Policzalnia"
+meta_description: "Policz zwrot podatku z IKZE dla swojego dochodu – na skali, liniowym i ryczałcie, także w JDG. Limity 2026 i 2027, wypłata po 65 lat, IKZE czy IKE."
 kalkulator: ikze
 lead: Wpisz dochód, formę opodatkowania i wpłatę, a kalkulator policzy, ile podatku odzyskasz dzięki IKZE – dokładnie, z kwotą wolną i progami skali, a nie przez proste „wpłata × 12%”. W drugim trybie zobaczysz, ile uzbierasz do 65 lat po 10% ryczałcie i czy IKZE da więcej niż IKE – zależnie od tego, co zrobisz ze zwrotem podatku.
 faq:

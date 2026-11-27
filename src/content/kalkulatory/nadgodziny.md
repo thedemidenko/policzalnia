@@ -3,8 +3,8 @@ slug: nadgodziny
 sekcja: praca
 title: Kalkulator nadgodzin 2026 - ile zapłacą za nadgodziny z dodatkiem 50% i 100%
 nazwa_krotka: Kalkulator nadgodzin
-meta_title: Kalkulator nadgodzin 2026 - dodatek 50% i 100%, dodatek nocny | Policzalnia
-meta_description: Policz wynagrodzenie za nadgodziny ze stawką z wymiaru konkretnego miesiąca, dodatkiem 50% lub 100%, dodatkiem nocnym i wariantem 60%. Zobacz też, ile czasu wolnego należy się zamiast pieniędzy.
+meta_title: "Kalkulator nadgodzin 2026 - dodatek 50% i 100% | Policzalnia"
+meta_description: "Policz wynagrodzenie za nadgodziny ze stawką z wymiaru miesiąca, dodatkiem 50% lub 100% i nocnym. Zobacz też, ile czasu wolnego należy się zamiast tego."
 kalkulator: nadgodziny
 lead: Wpisz pensję albo stawkę godzinową, miesiąc i liczbę nadgodzin, a kalkulator policzy wynagrodzenie z dodatkiem 50% albo 100% i dodatkiem nocnym – ze stawką liczoną od wymiaru czasu pracy w wybranym miesiącu.
 faq:

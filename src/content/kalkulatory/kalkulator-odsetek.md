@@ -3,8 +3,8 @@ slug: kalkulator-odsetek
 sekcja: oszczedzanie
 title: Kalkulator odsetek ustawowych 2026 - za opóźnienie i w transakcjach handlowych
 nazwa_krotka: Kalkulator odsetek ustawowych
-meta_title: Kalkulator odsetek ustawowych 2026 - za opóźnienie i handlowe | Policzalnia
-meta_description: Policz odsetki ustawowe za opóźnienie, kapitałowe, handlowe i umowne. Rozbicie na okresy, wpłaty częściowe, rekompensata 40/70/100 euro z kursem NBP i wydruk do noty odsetkowej.
+meta_title: "Kalkulator odsetek ustawowych 2026 i handlowych | Policzalnia"
+meta_description: "Policz odsetki ustawowe za opóźnienie, kapitałowe, handlowe i umowne – z wpłatami częściowymi, rekompensatą 40/70/100 euro i wydrukiem do noty."
 kalkulator: odsetki
 lead: Wpisz kwotę, termin płatności i dzień zapłaty, a kalkulator policzy odsetki za każdy dzień opóźnienia – z rozbiciem na okresy, wpłatami częściowymi i rekompensatą w transakcjach handlowych. Stawki aktualizujemy po każdej zmianie stóp NBP.
 faq:

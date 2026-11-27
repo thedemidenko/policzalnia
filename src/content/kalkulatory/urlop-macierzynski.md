@@ -3,8 +3,8 @@ slug: urlop-macierzynski
 sekcja: praca
 title: Kalkulator urlopu macierzyńskiego i rodzicielskiego 2026 - daty i zasiłek
 nazwa_krotka: Urlop macierzyński i rodzicielski
-meta_title: Kalkulator urlopu macierzyńskiego 2026 - zasiłek 81,5% czy 100% i 70% | Policzalnia
-meta_description: Zaplanuj urlop macierzyński, rodzicielski i ojcowski z datami i policz zasiłek na etacie albo w JDG. Porównanie 81,5% z 100% + 70%, 9 tygodni taty i minimum 1000 zł.
+meta_title: "Kalkulator urlopu macierzyńskiego 2026 - zasiłek | Policzalnia"
+meta_description: "Zaplanuj urlop macierzyński, rodzicielski i ojcowski z datami i policz zasiłek na etacie albo w JDG. 81,5% czy 100% + 70%, minimum 1000 zł."
 kalkulator: macierzynski
 lead: Wpisz datę porodu i wynagrodzenie, a kalkulator rozpisze urlop macierzyński, rodzicielski i ojcowski z datami oraz policzy zasiłek dla mamy i taty – i podpowie, czy bardziej opłaca się 81,5% przez cały urlop, czy 100% i 70%.
 faq:

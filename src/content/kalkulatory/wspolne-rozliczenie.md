@@ -3,8 +3,8 @@ slug: wspolne-rozliczenie
 sekcja: firma
 title: Kalkulator wspólnego rozliczenia małżonków 2026 - czy się opłaca i ile zyskacie
 nazwa_krotka: Kalkulator wspólnego rozliczenia
-meta_title: Wspólne rozliczenie małżonków 2026 - kalkulator PIT, ile zyskacie | Policzalnia
-meta_description: Porównaj PIT osobno i wspólnie z małżonkiem albo jako samotny rodzic - podatek, ulga na dzieci z limitem 112 000 zł, zwrot niewykorzystanej ulgi i wynik zeznania. Za 2025, 2026 i 2027 rok.
+meta_title: "Wspólne rozliczenie małżonków 2026 - kalkulator | Policzalnia"
+meta_description: "Porównaj PIT osobno i wspólnie z małżonkiem albo jako samotny rodzic – ulga na dzieci, zwrot niewykorzystanej ulgi i wynik zeznania za 2025–2027."
 kalkulator: wspolne-rozliczenie
 lead: Wpisz przychody, koszty i składki obojga małżonków, a kalkulator porówna podatek przy rozliczeniu osobno i wspólnie, uwzględni ulgę na dzieci z limitami dochodu i zwrotem niewykorzystanej ulgi oraz pokaże, ile wyniesie zwrot albo dopłata w zeznaniu. Policzysz też rozliczenie samotnego rodzica z dzieckiem.
 faq:

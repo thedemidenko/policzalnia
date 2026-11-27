@@ -3,8 +3,8 @@ slug: procent-skladany
 sekcja: oszczedzanie
 title: Kalkulator procentu składanego 2026 - z wpłatami, podatkiem Belki i inflacją
 nazwa_krotka: Kalkulator procentu składanego
-meta_title: Kalkulator procentu składanego 2026 - wpłaty, podatek i inflacja | Policzalnia
-meta_description: Policz procent składany z kapitałem na start i regularnymi wpłatami. Kapitalizacja od dziennej do ciągłej, podatek Belki na lokacie, w ETF i na IKE/IKZE, inflacja, wykres, ile wpłacać do celu i wzór.
+meta_title: "Kalkulator procentu składanego 2026 z wpłatami | Policzalnia"
+meta_description: "Policz procent składany z kapitałem i regularnymi wpłatami – kapitalizacja, podatek Belki, IKE, inflacja, wykres i ile wpłacać, żeby dojść do celu."
 kalkulator: procent-skladany
 lead: Wpisz kapitał na start, regularną wpłatę, oprocentowanie i liczbę lat, a kalkulator pokaże, ile uzbierasz dzięki procentowi składanemu – po podatku i w dzisiejszych pieniądzach. Porównasz lokatę, fundusz, IKE i IKZE, sprawdzisz, ile wpłacać, żeby dojść do celu, i zobaczysz na wykresie, jak rośnie kapitał.
 faq:

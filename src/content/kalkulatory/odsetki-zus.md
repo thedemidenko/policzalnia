@@ -3,8 +3,8 @@ slug: odsetki-zus
 sekcja: firma
 title: Kalkulator odsetek ZUS 2026 - od zaległych składek, osobno dla każdego funduszu
 nazwa_krotka: Kalkulator odsetek ZUS
-meta_title: Kalkulator odsetek ZUS 2026 - odsetki od zaległych składek | Policzalnia
-meta_description: Policz odsetki od zaległych składek ZUS tak jak ZUS - osobno dla każdego miesiąca i funduszu, ze stawką 10,5%, progiem 49 zł i terminem z dnia wolnego. Kilka miesięcy naraz, wpłaty częściowe i data, do której zapłacisz bez odsetek.
+meta_title: "Kalkulator odsetek ZUS 2026 - zaległe składki | Policzalnia"
+meta_description: "Policz odsetki od zaległych składek ZUS tak jak ZUS – osobno dla miesięcy i funduszy, stawka 10,5%, próg 49 zł, wpłaty częściowe i raty."
 kalkulator: odsetki-zus
 lead: Wpisz nieopłacone składki za jeden lub kilka miesięcy i dzień zapłaty, a kalkulator policzy odsetki za zwłokę tak, jak robi to ZUS – osobno dla każdego miesiąca i funduszu, z progiem 1% płacy minimalnej i zaokrągleniem do pełnych złotych. Pokaże też, do kiedy możesz zapłacić bez odsetek i ile dopłacisz, jeśli zapłacisz później.
 faq:

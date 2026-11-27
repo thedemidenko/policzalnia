@@ -8,11 +8,14 @@ export async function GET() {
   const por = await getCollection('poradniki', (p) => !p.data.draft);
   const dzialy = await getCollection('dzialy');
   const strony = await getCollection('strony');
+  // lastmod listingów = najnowsza zmiana wśród stron, które na nich są
+  const max = (ds: (Date | undefined)[]) => ds.filter((d): d is Date => !!d).sort((a, b) => +b - +a)[0];
+  const datyPor = por.map((p) => p.data.updated ?? p.data.date);
   const urls = [
-    ['/', undefined],
-    ...dzialy.map((d) => [`/${d.data.slug}/`, undefined]),
+    ['/', max([...kalk.map((e) => e.data.updated), ...datyPor])],
+    ...dzialy.map((d) => [`/${d.data.slug}/`, max(kalk.filter((e) => e.data.sekcja === d.data.slug).map((e) => e.data.updated))]),
     ...kalk.map((e) => [`/${e.data.sekcja}/${e.data.slug}/`, e.data.updated]),
-    ['/poradniki/', undefined],
+    ['/poradniki/', max(datyPor)],
     ...por.map((p) => [`/poradniki/${p.data.slug}/`, p.data.updated ?? p.data.date]),
     ...strony.map((s) => [`/${s.data.slug}/`, undefined]),
   ] as [string, Date | undefined][];

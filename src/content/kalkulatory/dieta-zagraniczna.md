@@ -3,8 +3,8 @@ slug: dieta-zagraniczna
 sekcja: praca
 title: Dieta zagraniczna 2026 - kalkulator delegacji zagranicznej i stawki dla wszystkich państw
 nazwa_krotka: Kalkulator diety zagranicznej
-meta_title: Dieta zagraniczna 2026 - kalkulator i tabela stawek wszystkich państw | Policzalnia
-meta_description: Policz dietę i należności z delegacji zagranicznej - 120 państw i stawek, niepełne doby, posiłki, hotel lub ryczałt 25% limitu, ryczałty na dojazdy, kilka państw, część krajowa i kurs NBP pobierany automatycznie.
+meta_title: "Dieta zagraniczna 2026 - kalkulator i stawki | Policzalnia"
+meta_description: "Policz dietę zagraniczną dla 120 państw: niepełne doby, posiłki, hotel lub ryczałt, kilka państw, część krajowa i kurs NBP pobierany automatycznie."
 kalkulator: dieta-zagraniczna
 lead: Wybierz państwo, wpisz godzinę wylotu lub przekroczenia granicy i powrotu, a kalkulator policzy dietę zagraniczną według rozporządzenia – z niepełnymi dobami, posiłkami, noclegiem, ryczałtami na dojazdy i komunikację, częścią krajową i przeliczeniem na złote po kursie NBP. Policzysz też podróż do kilku państw i rozliczenie zaliczki.
 faq:

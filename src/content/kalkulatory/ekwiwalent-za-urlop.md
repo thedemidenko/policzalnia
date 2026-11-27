@@ -3,8 +3,8 @@ slug: ekwiwalent-za-urlop
 sekcja: praca
 title: Kalkulator ekwiwalentu za urlop 2026 - współczynnik 20,92
 nazwa_krotka: Kalkulator ekwiwalentu za urlop
-meta_title: Kalkulator ekwiwalentu za urlop 2026 - współczynnik 20,92 i dni do wypłaty | Policzalnia
-meta_description: Policz ekwiwalent za niewykorzystany urlop przy odejściu z pracy. Kalkulator ustali dni urlopu proporcjonalnego, uwzględni premie i niepełny etat oraz współczynnik 20,92 na 2026 rok.
+meta_title: "Ekwiwalent za urlop 2026 - kalkulator, współczynnik | Policzalnia"
+meta_description: "Policz ekwiwalent za niewykorzystany urlop przy odejściu z pracy – urlop proporcjonalny, premie, niepełny etat i współczynnik 20,92 na 2026 rok."
 kalkulator: ekwiwalent
 lead: Wpisz ostatni dzień pracy i pensję, a kalkulator policzy, ile dni urlopu ci zostało, i ile pracodawca musi za nie zapłacić – z premiami, niepełnym etatem i współczynnikiem na właściwy rok.
 faq:

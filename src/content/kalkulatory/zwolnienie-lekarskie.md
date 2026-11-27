@@ -3,8 +3,8 @@ slug: zwolnienie-lekarskie
 sekcja: praca
 title: Kalkulator L4 2026 - ile dostanę na zwolnieniu lekarskim
 nazwa_krotka: Kalkulator L4
-meta_title: Kalkulator L4 2026 - wynagrodzenie chorobowe i zasiłek 80% | Policzalnia
-meta_description: Policz, ile dostaniesz za zwolnienie lekarskie na etacie, zleceniu i w JDG. Podział na dni płatne przez pracodawcę i ZUS, 80% lub 100%, limit 33 i 14 dni, okres zasiłkowy i kwota na rękę.
+meta_title: "Kalkulator L4 2026 - chorobowe i zasiłek 80% | Policzalnia"
+meta_description: "Policz, ile dostaniesz za L4 na etacie, zleceniu i w JDG – dni płatne przez pracodawcę i ZUS, 80% lub 100%, okres zasiłkowy i kwota na rękę."
 kalkulator: l4
 lead: Wpisz wynagrodzenie i liczbę dni zwolnienia, a kalkulator policzy wynagrodzenie chorobowe i zasiłek z ZUS – z podziałem na dni płatne przez pracodawcę i przez ZUS, stawką 80% albo 100% i kwotą na rękę.
 faq:

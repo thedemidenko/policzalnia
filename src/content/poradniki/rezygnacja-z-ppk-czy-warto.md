@@ -1,8 +1,8 @@
 ---
 slug: rezygnacja-z-ppk-czy-warto
 title: Rezygnacja z PPK – czy warto się wypisać? Liczymy przed autozapisem 2027
-meta_title: Rezygnacja z PPK - czy warto się wypisać? Autozapis 2027 | Policzalnia
-meta_description: Czy warto zrezygnować z PPK? Liczymy, ile tracisz przy pensji 4806-12 000 zł, co z pieniędzmi po rezygnacji, kiedy autozapis 2027 i jak złożyć deklarację. Zwrot przy stracie funduszu, 55+, niska pensja.
+meta_title: "Rezygnacja z PPK - czy warto? Autozapis 2027 | Policzalnia"
+meta_description: "Czy warto zrezygnować z PPK? Ile tracisz, co z pieniędzmi po rezygnacji, kiedy autozapis 2027 i jak złożyć deklarację – wyliczenia dla różnych pensji."
 lead: 1 marca 2027 r. wygasną wszystkie deklaracje rezygnacji z PPK, a pracodawcy znów zaczną potrącać wpłaty. Zanim podpiszesz kolejną rezygnację, sprawdź liczby – ile kosztuje cię PPK, ile tracisz, wypisując się na 4 lata, i co dostaniesz nawet wtedy, gdy fundusz straci.
 sekcja: oszczedzanie
 w_skrocie:

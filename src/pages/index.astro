@@ -8,7 +8,13 @@ import site from '../site.json';
 const dzialy = (await getCollection('dzialy')).sort((a, b) => a.data.kolejnosc - b.data.kolejnosc);
 const kalk = (await getCollection('kalkulatory', (e) => !e.data.draft)).sort((a, b) => a.data.title.localeCompare(b.data.title, 'pl'));
 const poradniki = (await getCollection('poradniki', (p) => !p.data.draft)).sort((a, b) => +(b.data.updated ?? b.data.date) - +(a.data.updated ?? a.data.date)).slice(0, 3);
-const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: 'https://policzalnia.pl/', inLanguage: 'pl-PL' };
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', '@id': 'https://policzalnia.pl/#strona', name: site.name, url: 'https://policzalnia.pl/', inLanguage: 'pl-PL', publisher: { '@id': 'https://policzalnia.pl/#organizacja' } },
+    { '@type': 'Organization', '@id': 'https://policzalnia.pl/#organizacja', name: site.name, url: 'https://policzalnia.pl/', logo: { '@type': 'ImageObject', url: 'https://policzalnia.pl/logo-512.png', width: 512, height: 512 } },
+  ],
+};
 ---
 <Base title={`${site.name} - kalkulatory dla pracujących i JDG`} description="Kalkulatory wynagrodzeń, umów, urlopów, podatków, kredytów i oszczędności. Aktualne stawki, wynik od razu." schema={schema}>
   <section class="hero">

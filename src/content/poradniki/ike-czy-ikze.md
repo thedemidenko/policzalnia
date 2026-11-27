@@ -1,8 +1,8 @@
 ---
 slug: ike-czy-ikze
 title: IKE czy IKZE – co wybrać w 2026 i 2027 roku?
-meta_title: IKE czy IKZE 2026 - co wybrać i co się bardziej opłaca | Policzalnia
-meta_description: IKE czy IKZE? Porównanie na liczbach - limity 2026 i 2027, ulga w PIT, podatek przy wypłacie, ryczałt i JDG, wiek, OKI od 2027 r. Wykresy i kalkulator na twoich danych.
+meta_title: "IKE czy IKZE 2026 - co się bardziej opłaca | Policzalnia"
+meta_description: "IKE czy IKZE? Porównanie na liczbach – limity 2026 i 2027, ulga w PIT, podatek przy wypłacie, ryczałt i JDG, OKI od 2027 r. Z kalkulatorem."
 lead: IKZE daje ulgę w podatku od razu, IKE – brak podatku przy wypłacie. Liczymy, przy jakiej stawce podatku wygrywa które konto, co zmienia ryczałt, wiek i nowe OKI od 2027 roku – i dlaczego najczęściej warto mieć oba.
 sekcja: oszczedzanie
 w_skrocie:

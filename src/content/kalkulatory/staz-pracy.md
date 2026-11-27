@@ -3,8 +3,8 @@ slug: staz-pracy
 sekcja: praca
 title: Kalkulator stażu pracy 2026 - z umowami zlecenia i działalnością
 nazwa_krotka: Kalkulator stażu pracy
-meta_title: Kalkulator stażu pracy 2026 - lata, miesiące, dni i staż urlopowy | Policzalnia
-meta_description: Zsumuj okresy pracy na etacie, zleceniu i w działalności według zasad od 2026 r. Kalkulator doliczy lata szkoły, policzy staż urlopowy i pokaże, od kiedy masz 26 dni urlopu.
+meta_title: "Kalkulator stażu pracy 2026 - staż urlopowy | Policzalnia"
+meta_description: "Zsumuj okresy pracy na etacie, zleceniu i w działalności według zasad od 2026 r. Doliczy lata szkoły i pokaże, od kiedy masz 26 dni urlopu."
 kalkulator: staz
 lead: Wpisz okresy pracy ze świadectw i zaświadczeń, a kalkulator policzy staż w latach, miesiącach i dniach, porówna go z dawnymi zasadami i pokaże, od którego dnia przysługuje ci 26 dni urlopu.
 faq:

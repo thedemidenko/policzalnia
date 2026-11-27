@@ -2,7 +2,7 @@
 slug: obligacje-czy-lokata
 title: Obligacje skarbowe czy lokata – gdzie trzymać oszczędności w 2026 roku?
 meta_title: Obligacje czy lokata 2026 - co się bardziej opłaca | Policzalnia
-meta_description: Obligacje skarbowe czy lokata? Porównanie na liczbach dla 3 miesięcy, roku, 3, 4 i 10 lat - oprocentowanie z listopada 2026, inflacja, podatek Belki, bezpieczeństwo, wcześniejsza wypłata i OKI od 2027 r.
+meta_description: "Obligacje skarbowe czy lokata? Porównanie na 3 miesiące, rok, 4 i 10 lat – oprocentowanie, inflacja, podatek Belki, bezpieczeństwo i OKI od 2027 r."
 lead: Na krótko dobra lokata potrafi wygrać z obligacjami, ale już od kilku lat obligacje indeksowane inflacją zostawiają ją w tyle. Porównujemy obie formy na liczbach z listopada 2026 roku – z podatkiem Belki, opłatami za wcześniejszy wykup i scenariuszami inflacji.
 sekcja: oszczedzanie
 w_skrocie:

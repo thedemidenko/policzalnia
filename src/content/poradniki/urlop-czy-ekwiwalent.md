@@ -1,8 +1,8 @@
 ---
 slug: urlop-czy-ekwiwalent
 title: Urlop czy ekwiwalent przy odejściu z pracy? Co ci przysługuje i co się bardziej opłaca
-meta_title: Urlop w okresie wypowiedzenia czy ekwiwalent - co się opłaca | Policzalnia
-meta_description: Urlop w okresie wypowiedzenia czy ekwiwalent za niewykorzystany urlop? Kiedy pracodawca może cię wysłać na urlop, ile dni przysługuje w roku odejścia, ile ekwiwalentu na rękę, czy urlop przepada i co z nim u nowego pracodawcy.
+meta_title: "Urlop w okresie wypowiedzenia czy ekwiwalent | Policzalnia"
+meta_description: "Urlop w okresie wypowiedzenia czy ekwiwalent? Kiedy pracodawca może cię wysłać na urlop, ile dni zostaje w roku odejścia i ile ekwiwalentu na rękę."
 lead: Odchodzisz z pracy i zostało ci kilkanaście dni urlopu? Możesz je wykorzystać w okresie wypowiedzenia albo dostać za nie pieniądze. Czasem decyduje pracodawca, czasem ty – a różnica bywa warta kilka tysięcy złotych. Wyjaśniamy zasady, liczymy przykłady i podpowiadamy, co wybrać.
 sekcja: praca
 w_skrocie:

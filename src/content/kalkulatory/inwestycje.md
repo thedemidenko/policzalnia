@@ -3,8 +3,8 @@ slug: inwestycje
 sekcja: oszczedzanie
 title: Kalkulator inwestycyjny - S&P 500 i złoto historycznie, prognoza i stopa zwrotu
 nazwa_krotka: Kalkulator inwestycyjny
-meta_title: Kalkulator inwestycyjny - S&P 500, złoto, ETF i stopa zwrotu | Policzalnia
-meta_description: Sprawdź, ile byłoby dziś warte inwestowanie w S&P 500 albo złoto od wybranego miesiąca – w złotych lub dolarach, jednorazowo lub co miesiąc. Prognoza z ryzykiem (2000 symulacji), średnioroczna stopa zwrotu, podatek Belki, IKE i inflacja.
+meta_title: "Kalkulator inwestycyjny - S&P 500, złoto, ETF | Policzalnia"
+meta_description: "Sprawdź, ile byłoby dziś warte inwestowanie w S&P 500 albo złoto, policz stopę zwrotu i prognozę z ryzykiem – z podatkiem Belki, IKE i inflacją."
 kalkulator: inwestycje
 lead: Kalkulator ma trzy tryby. „Co by było, gdyby…” pokazuje na prawdziwych danych, ile byłoby dziś warte 10 000 zł albo 500 zł miesięcznie w S&P 500 lub złocie. „Ile zarobię” symuluje 2000 możliwych przyszłości i pokazuje nie tylko średni wynik, ale też, jak źle i jak dobrze może pójść. „Stopa zwrotu” policzy, ile rocznie zarobiła twoja inwestycja – po podatku i inflacji.
 faq:

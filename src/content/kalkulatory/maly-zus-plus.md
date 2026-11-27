@@ -3,8 +3,8 @@ slug: maly-zus-plus
 sekcja: firma
 title: Kalkulator Mały ZUS Plus 2026 i 2027 - podstawa, składki i oszczędność
 nazwa_krotka: Kalkulator Mały ZUS Plus
-meta_title: Kalkulator Mały ZUS Plus 2026 i 2027 - podstawa i składki od dochodu | Policzalnia
-meta_description: Policz podstawę i składki na Mały ZUS Plus w 2026 i 2027 roku - z dochodu na skali, liniowym, ryczałcie lub karcie, z limitem 120 000 zł, Funduszem Pracy, porównaniem z pełnym ZUS i licznikiem 36 miesięcy ulgi.
+meta_title: "Mały ZUS Plus 2026 i 2027 - kalkulator składek | Policzalnia"
+meta_description: "Policz podstawę i składki na Mały ZUS Plus z dochodu na skali, liniowym, ryczałcie lub karcie. Limit 120 000 zł, porównanie z pełnym ZUS, 36 miesięcy ulgi."
 kalkulator: maly-zus
 lead: Wpisz przychód i dochód z poprzedniego roku, a kalkulator sprawdzi, czy możesz płacić Mały ZUS Plus, policzy podstawę i wszystkie składki na 2026 albo 2027 rok, porówna je z pełnym ZUS i pokaże, ile realnie zaoszczędzisz. Policzy też, do kiedy możesz korzystać z ulgi według zasad obowiązujących od 2026 roku.
 faq:

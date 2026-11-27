@@ -3,8 +3,8 @@ slug: lokaty
 sekcja: oszczedzanie
 title: Kalkulator lokat 2026 - zysk z lokaty po podatku Belki, także na OKI
 nazwa_krotka: Kalkulator lokat
-meta_title: Kalkulator lokat 2026 - zysk z lokaty po podatku Belki i na OKI | Policzalnia
-meta_description: Oblicz zysk z lokaty na dni, miesiące lub lata po podatku Belki. Kapitalizacja dzienna i miesięczna, lokaty odnawialne i rentierskie, OKI od 2027, inflacja, ile wpłacić i porównanie ofert.
+meta_title: "Kalkulator lokat 2026 - zysk po podatku Belki | Policzalnia"
+meta_description: "Oblicz zysk z lokaty po podatku Belki – na dni, miesiące lub lata. Kapitalizacja, lokaty odnawialne, OKI od 2027, inflacja i porównanie ofert."
 kalkulator: lokaty
 lead: Wpisz kwotę, oprocentowanie i okres, a kalkulator policzy odsetki, podatek Belki i zysk na czysto – z dokładnością do grosza, tak jak bank. Sprawdzisz też lokatę odnawialną i rentierską, zysk na OKI od 2027 r., realny zysk po inflacji i to, ile trzeba wpłacić, żeby zarobić konkretną kwotę.
 faq:

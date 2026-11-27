@@ -3,8 +3,8 @@ slug: obligacje
 sekcja: oszczedzanie
 title: Kalkulator obligacji skarbowych 2026 - EDO, COI, TOS, ROR, DOR i rodzinne
 nazwa_krotka: Kalkulator obligacji skarbowych
-meta_title: Kalkulator obligacji skarbowych - grudzień 2026, EDO, COI, TOS | Policzalnia
-meta_description: Policz zysk z obligacji skarbowych po podatku Belki – EDO, COI, TOS, ROR, DOR, OTS i rodzinnych ROS i ROD. Wcześniejszy wykup z opłatą, zamiana, inflacja na kolejne lata, IKE i porównanie wszystkich serii.
+meta_title: "Kalkulator obligacji skarbowych 2026 - EDO, COI | Policzalnia"
+meta_description: "Policz zysk z obligacji skarbowych po podatku Belki – EDO, COI, TOS, ROR, DOR, OTS, ROS i ROD. Wcześniejszy wykup, inflacja, IKE i porównanie serii."
 kalkulator: obligacje
 lead: Wpisz kwotę, wybierz obligacje i okres oszczędzania, a kalkulator policzy, ile dostaniesz na rękę – po podatku Belki i opłacie za wcześniejszy wykup, dokładnie według listów emisyjnych Ministerstwa Finansów. Porówna wszystkie serie na ten sam okres, pokaże, ile dostaniesz przy wykupie po każdym roku, i uwzględni inflację, którą wpiszesz na kolejne lata.
 faq:

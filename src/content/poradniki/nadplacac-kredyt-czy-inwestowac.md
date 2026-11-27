@@ -1,8 +1,8 @@
 ---
 slug: nadplacac-kredyt-czy-inwestowac
 title: Nadpłacać kredyt czy inwestować? Liczymy, co się bardziej opłaca w 2026 roku
-meta_title: Nadpłacać kredyt czy inwestować 2026 - co się bardziej opłaca | Policzalnia
-meta_description: Nadpłata kredytu czy inwestowanie? Porównanie na liczbach dla kredytu 400 000 zł - próg opłacalności, IKE i podatek Belki, Bezpieczny kredyt 2%, kredyt gotówkowy, małe nadpłaty i spadki stóp.
+meta_title: "Nadpłacać kredyt czy inwestować - co się opłaca | Policzalnia"
+meta_description: "Nadpłata kredytu czy inwestowanie? Próg opłacalności z podatkiem Belki i w IKE, Bezpieczny kredyt 2%, kredyt gotówkowy i małe nadpłaty – na liczbach."
 lead: Nadpłata kredytu to jedyna „inwestycja” z gwarantowanym zyskiem równym oprocentowaniu kredytu – bez podatku i bez ryzyka. Inwestowanie może dać więcej, ale nie musi. Sprawdzamy na liczbach, jaki zysk pobije nadpłatę, kiedy inwestowanie wygrywa i dlaczego dla większości kredytobiorców najlepsza jest kolejność, a nie wybór.
 sekcja: kredyty
 w_skrocie:

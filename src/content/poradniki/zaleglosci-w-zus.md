@@ -1,8 +1,8 @@
 ---
 slug: zaleglosci-w-zus
 title: Zaległości w ZUS – co grozi i jak wyjść z długu? Raty, umorzenie, przedawnienie
-meta_title: Zaległości w ZUS 2026 - raty, umorzenie, przedawnienie | Policzalnia
-meta_description: Zaległości w ZUS w 2026 roku - ile kosztują odsetki, co grozi (egzekucja, zasiłek, grzywna), jak rozłożyć dług na raty i ile kosztuje układ ratalny, kiedy ZUS umarza składki i po ilu latach dług się przedawnia.
+meta_title: "Zaległości w ZUS 2026 - raty i umorzenie | Policzalnia"
+meta_description: "Zaległości w ZUS – odsetki, co grozi, ile kosztuje układ ratalny, kiedy ZUS umarza składki i po ilu latach dług się przedawnia. Z kalkulatorem rat."
 lead: Dług w ZUS nie znika sam – co roku rośnie o ok. 10,5% odsetek, a przedsiębiorcy z zaległościami tracą prawo do zasiłku. Dobra wiadomość jest taka, że ZUS chętnie rozkłada składki na raty, a odsetki przestają rosnąć już od dnia po złożeniu wniosku. Wyjaśniamy, co zrobić krok po kroku i ile to kosztuje.
 sekcja: firma
 w_skrocie:
