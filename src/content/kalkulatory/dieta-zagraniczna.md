@@ -56,6 +56,8 @@ draft: false
 
 Wynik zobaczysz w walucie i w złotych, razem z rozliczeniem krok po kroku i kwotą do wypłaty albo zwrotu zaliczki.
 
+Co załatwić przed wyjazdem (A1, zaliczka, ubezpieczenie), kiedy można odmówić wyjazdu i jak liczyć czas pracy w podróży – opisujemy w poradniku [Delegacja zagraniczna krok po kroku](/poradniki/delegacja-zagraniczna/).
+
 ## Ile wynosi dieta zagraniczna w 2026 roku?
 
 Dietę i limit na nocleg określa załącznik do rozporządzenia w sprawie podróży służbowych. Obecne stawki obowiązują od **29 listopada 2022 r.** i w 2026 r. się nie zmieniły. Najczęstsze kierunki:

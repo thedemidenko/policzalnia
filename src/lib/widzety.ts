@@ -5,6 +5,61 @@ export type Widzet = (el: HTMLElement) => void;
 const zl = (n: number) => n.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN', maximumFractionDigits: 0, useGrouping: 'always' } as Intl.NumberFormatOptions);
 
 export const WIDZETY: Record<string, () => Promise<Widzet>> = {
+  // delegacja zagraniczna – szybka kalkulacja należności (lib kalkulatora diety zagranicznej), kurs NBP pobierany na żywo
+  'delegacja-zagraniczna': async () => {
+    const { obliczDieteZagraniczna, KRAJE } = await import('./dieta-zagraniczna');
+    return (el) => {
+      const kraje = [...KRAJE].sort((a, b) => a.nazwa.localeCompare(b.nazwa, 'pl'));
+      const domyslny = el.dataset.kraj ?? 'niemcy';
+      el.innerHTML = `<h3>Ile należy się za delegację zagraniczną?</h3>
+        <label>Państwo<select data-i="k">${kraje.map((k) => `<option value="${k.id}"${k.id === domyslny ? ' selected' : ''}>${k.nazwa}</option>`).join('')}</select></label>
+        <label>Pełne doby za granicą <output data-o="d"></output><input type="range" min="0" max="14" step="1" value="${el.dataset.doby ?? 2}" data-i="d"></label>
+        <label>Plus godziny <output data-o="g"></output><input type="range" min="0" max="23" step="1" value="${el.dataset.godziny ?? 13}" data-i="g"></label>
+        <label>Zapewnione śniadania <output data-o="s"></output><input type="range" min="0" max="14" step="1" value="${el.dataset.sniadania ?? 2}" data-i="s"></label>
+        <label>Zapewnione obiady i kolacje <output data-o="o"></output><input type="range" min="0" max="28" step="1" value="${el.dataset.obiady ?? 2}" data-i="o"></label>
+        <label>Nocleg<select data-i="n"><option value="rachunek">hotel z rachunkiem (zwrot do limitu)</option><option value="ryczalt">bez rachunku (ryczałt 25% limitu)</option><option value="zapewniony">zapewniony przez firmę</option></select></label>
+        <label>Podróż<select data-i="t"><option value="0">samolot, pociąg albo autobus</option><option value="1">samochodem</option></select></label>
+        <div class="wz-slupki" data-o="lista"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLInputElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const kursy = new Map<string, Promise<number | null>>();
+      const kurs = (w: string) => {
+        if (!kursy.has(w)) kursy.set(w, fetch(`https://api.nbp.pl/api/exchangerates/rates/a/${w.toLowerCase()}/?format=json`).then((r) => (r.ok ? r.json() : null)).then((j) => j?.rates?.[0]?.mid ?? null).catch(() => null));
+        return kursy.get(w)!;
+      };
+      const kw = (n: number, w: string) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${w}`;
+      const godz = (n: number) => `${n} ${n === 1 ? 'godzina' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'godziny' : 'godzin'}`;
+      let nr = 0;
+      const licz = async () => {
+        const id = i('k').value, d = +i('d').value, g = +i('g').value, s = +i('s').value, ob = +i('o').value;
+        o('d').textContent = String(d); o('g').textContent = godz(g); o('s').textContent = String(s); o('o').textContent = String(ob);
+        const k = KRAJE.find((x) => x.id === id)!;
+        const start = new Date(Date.UTC(2026, 11, 7, 8, 0));
+        const koniec = new Date(start.getTime() + (d * 24 + Math.max(g, d === 0 ? 1 : 0)) * 3600e3);
+        const f = (x: Date) => x.toISOString().slice(0, 16);
+        const noce = d; // noc po każdej pełnej dobie
+        const nocleg = i('n').value as 'rachunek' | 'ryczalt' | 'zapewniony';
+        const w = obliczDieteZagraniczna({
+          granica: f(start), powrotGranica: f(koniec), samochod: i('t').value === '1',
+          etapy: [{ kraj: id, sniadania: s, obiady: ob, nocleg, noce, rachunek: k.limit * noce }],
+        });
+        const e = w.etapy[0];
+        if (!e) { o('lista').innerHTML = ''; o('werdykt').textContent = w.blad ?? ''; o('opis').textContent = ''; return; }
+        const max = Math.max(...e.pozycje.map((p) => Math.abs(p.kwota)), 1);
+        o('lista').innerHTML = e.pozycje.map((p, j) => `<div class="ws-wiersz"><span class="ws-et">${p.nazwa}</span><span class="ws-pasek"><i style="--w:${((Math.abs(p.kwota) / max) * 100).toFixed(1)}%;--k:var(--w${p.kwota < 0 ? 1 : j === 0 ? 0 : 2})"></i></span><b>${kw(p.kwota, k.waluta)}</b></div>`).join('');
+        o('werdykt').textContent = `Razem ${kw(e.razem, k.waluta)}`;
+        const opisBaza = `Dieta ${kw(k.dieta, k.waluta)} za dobę, limit hotelu ${kw(k.limit, k.waluta)} za noc${nocleg === 'rachunek' ? ' – zwrot do limitu, zakładamy rachunek w tej wysokości' : ''}. Bez biletów i innych wydatków z rachunkami.`;
+        o('opis').textContent = opisBaza;
+        const moj = ++nr;
+        const m = k.waluta === 'PLN' ? 1 : await kurs(k.waluta);
+        if (moj !== nr || !m) return;
+        o('opis').textContent = `ok. ${kw(e.razem * m, 'zł')} po kursie NBP ${m.toLocaleString('pl-PL', { minimumFractionDigits: 4 })}. ${opisBaza}`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   // PPK – zostać czy wypisać się: koszt z własnej kieszeni vs PPK (wypłata po 60 albo zwrot) vs samodzielne odkładanie tych samych pieniędzy
   'ppk-zostac-czy-wypisac': async () => {
     const { obliczPPK } = await import('./ppk');
