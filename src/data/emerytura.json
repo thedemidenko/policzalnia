@@ -1,0 +1,11 @@
+{
+  "_opis": "Dane do kalkulatora emerytury. Tablica: komunikat Prezesa GUS z 25.03.2026 (tablica średniego dalszego trwania życia kobiet i mężczyzn, wspólna, w miesiącach), stosowana do wniosków od 1.04.2026 do 31.03.2027 (art. 26 ust. 5 ustawy o emeryturach z FUS). Aktualizować co roku pod koniec marca.",
+  "tablica": {
+    "obowiazuje": "2026-04-01",
+    "wiek": { "55": 318.6, "56": 308.4, "57": 298.3, "58": 288.5, "59": 278.6, "60": 268.9, "61": 259.4, "62": 250.0, "63": 240.7, "64": 231.7, "65": 222.7, "66": 214.1, "67": 205.4, "68": 197.0, "69": 188.8, "70": 180.6, "71": 172.6, "72": 164.6, "73": 156.8, "74": 149.2, "75": 141.7 },
+    "poprzednia": { "60": 266.4, "65": 220.8 }
+  },
+  "waloryzacja_roczna": { "rok": 2026, "za": 2025, "konto": 9.81, "subkonto": 10.61, "zrodlo": "komunikat Prezesa GUS z 14.05.2026, stosowane od 1.06.2026" },
+  "minimalna": { "kwota": 1978.49, "od": "2026-03-01", "waloryzacja": 5.3 },
+  "skladka": { "razem": 19.52, "subkonto": 7.3 }
+}

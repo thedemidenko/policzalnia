@@ -1,0 +1,137 @@
+---
+import { parametry } from '../../lib/maly-zus';
+const p = parametry(2026);
+---
+<form id="k-em" class="pola" autocomplete="off" data-jdg={String(p?.max ?? 5652)}>
+  <fieldset class="segmenty">
+    <legend>Płeć (wiek emerytalny)</legend>
+    <label><input type="radio" name="plec" value="k" /><span>kobieta – 60 lat</span></label>
+    <label><input type="radio" name="plec" value="m" checked /><span>mężczyzna – 65 lat</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="e-wiek">Twój wiek</label>
+      <div class="kwota" data-jedn="lat"><input id="e-wiek" name="wiek" type="text" inputmode="numeric" value="35" /></div>
+    </div>
+    <div class="pole">
+      <label for="e-we">Przejście na emeryturę</label>
+      <div class="kwota" data-jedn="lat"><input id="e-we" name="wiekEm" type="text" inputmode="numeric" value="65" /></div>
+    </div>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Składki płacisz od</legend>
+    <label><input type="radio" name="forma" value="etat" checked /><span>pensji (etat)</span></label>
+    <label><input type="radio" name="forma" value="jdg" /><span>JDG – pełny ZUS</span></label>
+    <label><input type="radio" name="forma" value="wlasna" /><span>innej podstawy</span></label>
+  </fieldset>
+  <div class="pole-para">
+    <div class="pole" data-podstawa>
+      <label for="e-pod" id="e-pod-et">Pensja brutto</label>
+      <div class="kwota" data-jedn="zł"><input id="e-pod" name="podstawa" type="text" inputmode="decimal" value="7000" /></div>
+    </div>
+    <div class="pole">
+      <label for="e-staz">Lata pracy do dziś</label>
+      <div class="kwota" data-jedn="lat"><input id="e-staz" name="staz" type="text" inputmode="numeric" value="10" /></div>
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="znam" value="1" /> Znam stan konta w ZUS (konto + kapitał początkowy + subkonto)</label>
+  <div class="pole" data-kapital hidden>
+    <label for="e-kap">Kwota zgromadzona w ZUS</label>
+    <div class="kwota" data-jedn="zł"><input id="e-kap" name="kapital" type="text" inputmode="decimal" value="0" aria-describedby="e-kap-pod" /></div>
+    <small id="e-kap-pod">Sprawdzisz ją w eZUS (dawniej PUE) albo w Informacji o stanie konta – zsumuj konto, kapitał początkowy i subkonto.</small>
+  </div>
+  <details class="wplaty" data-wiecej>
+    <summary>Założenia prognozy</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="e-wz">Realny wzrost płac i waloryzacji</label>
+        <select id="e-wz" name="wzrost"><option value="0">0% – pesymistycznie</option><option value="1">1% rocznie</option><option value="2" selected>2% rocznie</option><option value="3">3% – optymistycznie</option></select>
+      </div>
+      <div class="pole">
+        <label for="e-wyd">Wydłużanie się życia</label>
+        <select id="e-wyd" name="wydluzanie"><option value="0">bez zmian</option><option value="1" selected>+1 miesiąc rocznie</option><option value="2">+2 miesiące rocznie</option></select>
+      </div>
+    </div>
+    <small>Wynik jest w dzisiejszych złotych – realny wzrost oznacza wzrost ponad inflację.</small>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt id="e-kd-et">Kapitał dziś</dt><dd id="e-kd"></dd>
+    <dt>Kapitał na emeryturze</dt><dd id="e-ke"></dd>
+    <dt>Dzielnik GUS</dt><dd id="e-dz"></dd>
+    <dt>Na rękę</dt><dd id="e-net"></dd>
+    <dt>Stopa zastąpienia</dt><dd id="e-sz"></dd>
+  </dl>
+  <ul class="uwagi" id="e-uwagi" hidden></ul>
+  <div class="suma"><span>Emerytura brutto</span><strong id="e-wynik" data-glowny="Emerytura brutto"></strong></div>
+  <div class="stopka-paragonu" id="e-stopka">policzalnia.pl · w dzisiejszych złotych</div>
+</div></div>
+
+<div class="rozbicie zus-podsumowanie">
+  <p class="struktura-tytul">Kiedy przejść na emeryturę?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Wiek</th><th>Brutto</th><th>Na rękę</th><th>% ostatniej pensji</th></tr></thead><tbody id="e-wieki"></tbody></table></div>
+  <p class="struktura-tytul" style="margin-top:18px">Co jeśli gospodarka będzie rosła wolniej albo szybciej?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Realny wzrost</th><th>Emerytura brutto</th><th>Na rękę</th></tr></thead><tbody id="e-scen"></tbody></table></div>
+  <p class="pit37" id="e-info"></p>
+</div>
+<script>
+  import { obliczEmeryture, nettoPensji, MINIMALNA, type DaneEmerytury } from '../../lib/emerytura';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-em') as HTMLFormElement;
+  const JDG = Number(form.dataset.jdg);
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if ((p.has('wzrost') && p.get('wzrost') !== '2') || (p.has('wydluzanie') && p.get('wydluzanie') !== '1')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const zl0 = (n: number) => zl(Math.round(n)).replace(/,00\s/, ' ');
+  let poprzPlec = val('plec'), poprzForma = val('forma');
+
+  const przelicz = () => {
+    const plec = val('plec'), forma = val('forma');
+    if (plec !== poprzPlec) { el('wiekEm').value = plec === 'k' ? '60' : '65'; poprzPlec = plec; }
+    if (forma !== poprzForma) { if (forma === 'jdg') el('podstawa').value = String(JDG).replace('.', ','); else if (poprzForma === 'jdg') el('podstawa').value = '7000'; poprzForma = forma; }
+    $('e-pod-et').textContent = forma === 'etat' ? 'Pensja brutto' : forma === 'jdg' ? 'Podstawa składek (pełny ZUS)' : 'Podstawa składek';
+    el('podstawa').readOnly = forma === 'jdg';
+    const znam = el('znam').checked;
+    form.querySelector<HTMLElement>('[data-kapital]')!.hidden = !znam;
+    const d: DaneEmerytury = {
+      wiek: Math.min(70, Math.max(16, liczba(val('wiek')))), wiekEmerytalny: Math.min(75, Math.max(55, liczba(val('wiekEm')))), kobieta: plec === 'k',
+      podstawa: liczba(val('podstawa')), kapital: znam ? liczba(val('kapital')) : undefined, staz: Math.max(0, liczba(val('staz'))),
+      wzrost: +val('wzrost'), wydluzanie: +val('wydluzanie'),
+    };
+    const w = obliczEmeryture(d);
+    $('e-kd-et').textContent = w.szacowanyKapital ? 'Kapitał dziś (szacunek)' : 'Kapitał dziś';
+    ustawKwote($('e-kd'), w.kapitalDzis); ustawKwote($('e-ke'), w.kapitalEmerytalny);
+    $('e-dz').textContent = `${w.dzielnik.toLocaleString('pl-PL')} mies.`;
+    ustawKwote($('e-net'), w.netto);
+    $('e-sz').textContent = `${w.stopaZastapienia.toLocaleString('pl-PL')}%`;
+    ustawKwote($('e-wynik'), w.brutto);
+    $('e-stopka').textContent = `policzalnia.pl · w dzisiejszych złotych · emerytura w wieku ${d.wiekEmerytalny} lat`;
+
+    const uwagi: string[] = [];
+    if (w.szacowanyKapital && d.staz > 0) uwagi.push('Kapitał zgromadzony do dziś szacujemy na podstawie obecnej pensji i stażu – dokładną kwotę sprawdzisz w eZUS. Kapitał początkowy za pracę przed 1999 r. może być wyższy.');
+    if (w.minimalnaGwarantowana && w.wyliczona < MINIMALNA) uwagi.push(`Wyliczona emerytura (${zl(w.wyliczona)}) jest niższa od najniższej – ZUS podwyższy ją do ${zl(MINIMALNA)}, bo masz wymagany staż.`);
+    if (!w.minimalnaGwarantowana && w.brutto < MINIMALNA) uwagi.push(`Bez ${d.kobieta ? '20' : '25'} lat stażu ${d.wiekEmerytalny < (d.kobieta ? 60 : 65) ? 'i bez osiągnięcia wieku emerytalnego ' : ''}nie przysługuje podwyższenie do najniższej emerytury (${zl(MINIMALNA)}).`);
+    if (d.wiekEmerytalny < (d.kobieta ? 60 : 65)) uwagi.push(`Wiek emerytalny to ${d.kobieta ? '60' : '65'} lat – wcześniej emerytura przysługuje tylko w szczególnych przypadkach (np. pomostowa).`);
+    if (forma === 'jdg') uwagi.push('W JDG składki płaci się od podstawy 60% prognozowanego przeciętnego wynagrodzenia, a nie od dochodu – emerytura nie rośnie razem z zarobkami firmy.');
+    const ul = $('e-uwagi'); ul.hidden = !uwagi.length; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const wieki = (d.kobieta ? [60, 62, 63, 65, 67, 70] : [65, 66, 67, 68, 70]).filter((a) => a > d.wiek);
+    $('e-wieki').innerHTML = wieki.map((a) => {
+      const q = obliczEmeryture({ ...d, wiekEmerytalny: a });
+      return `<tr${a === d.wiekEmerytalny ? ' class="inny"' : ''}><td>${a} lat</td><td><b>${zl0(q.brutto)}</b></td><td>${zl0(q.netto)}</td><td>${q.stopaZastapienia.toLocaleString('pl-PL')}%</td></tr>`;
+    }).join('');
+    $('e-scen').innerHTML = [0, 1, 2, 3].map((s) => {
+      const q = obliczEmeryture({ ...d, wzrost: s });
+      return `<tr${s === d.wzrost ? ' class="inny"' : ''}><td>${s}% rocznie</td><td><b>${zl0(q.brutto)}</b></td><td>${zl0(q.netto)}</td></tr>`;
+    }).join('');
+    const info: string[] = [`Emerytura to ${w.stopaZastapienia.toLocaleString('pl-PL')}% ostatniej pensji (${zl0(w.ostatniaPensja)} brutto w dzisiejszych złotych, ok. ${zl0(nettoPensji(w.ostatniaPensja))} na rękę).`];
+    if (w.luka > 0) info.push(`Do 60% ostatniej pensji brakuje ok. ${zl0(w.luka)} miesięcznie – pokryjesz to, odkładając ok. <b>${zl0(w.oszczednosc)}</b> miesięcznie z realnym zyskiem 2% rocznie, np. na <a href="/oszczedzanie/ikze/">IKZE</a> albo <a href="/oszczedzanie/ike/">IKE</a>.`);
+    $('e-info').innerHTML = info.join(' ');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
