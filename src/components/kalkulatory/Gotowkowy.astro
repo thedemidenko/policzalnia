@@ -1,0 +1,121 @@
+---
+const okresy = [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120];
+---
+<form id="k-got" class="pola" autocomplete="off">
+  <div class="pole-para">
+    <div class="pole">
+      <label for="g-kw">Kwota kredytu</label>
+      <div class="kwota" data-jedn="zł"><input id="g-kw" name="kwota" type="text" inputmode="decimal" value="30000" /></div>
+    </div>
+    <div class="pole">
+      <label for="g-okr">Okres spłaty</label>
+      <select id="g-okr" name="miesiace">{okresy.map((m) => <option value={String(m)} selected={m === 48}>{m < 12 ? `${m} mies.` : `${m} mies. (${m / 12 >= 1 && m % 12 === 0 ? `${m / 12} ${m / 12 === 1 ? 'rok' : m / 12 < 5 ? 'lata' : 'lat'}` : `${(m / 12).toLocaleString('pl-PL')} roku`})`}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="g-opr">Oprocentowanie</label>
+      <div class="kwota" data-jedn="%"><input id="g-opr" name="oprocentowanie" type="text" inputmode="decimal" value="9,5" /></div>
+    </div>
+    <div class="pole">
+      <label for="g-prow">Prowizja</label>
+      <div class="kwota" data-jedn="%"><input id="g-prow" name="prowizja" type="text" inputmode="decimal" value="0" /></div>
+    </div>
+  </div>
+  <label class="przelacznik"><input type="checkbox" name="kredytowane" value="1" checked /> Prowizja i ubezpieczenie doliczane do kredytu (kredytowane)</label>
+  <fieldset class="segmenty">
+    <legend>Raty</legend>
+    <label><input type="radio" name="raty" value="rowne" checked /><span>równe</span></label>
+    <label><input type="radio" name="raty" value="malejace" /><span>malejące</span></label>
+  </fieldset>
+  <details class="wplaty" data-wiecej>
+    <summary>Ubezpieczenie i wcześniejsza spłata</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="g-ub">Ubezpieczenie jednorazowe</label>
+        <div class="kwota" data-jedn="zł"><input id="g-ub" name="ubezpieczenie" type="text" inputmode="decimal" value="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="g-ubm">Ubezpieczenie miesięcznie</label>
+        <div class="kwota" data-jedn="zł"><input id="g-ubm" name="ubezpieczenieMies" type="text" inputmode="decimal" value="0" /></div>
+      </div>
+    </div>
+    <div class="pole">
+      <label for="g-spl">Spłata całości po</label>
+      <select id="g-spl" name="splata"><option value="0">nie planuję</option>{okresy.filter((m) => m < 120).map((m) => <option value={String(m)}>{m} mies.</option>)}</select>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Odsetki</dt><dd id="g-ods"></dd>
+    <dt>Prowizja</dt><dd id="g-pr"></dd>
+    <dt>Ubezpieczenie</dt><dd id="g-ubz"></dd>
+    <dt>Całkowity koszt</dt><dd id="g-koszt"></dd>
+    <dt>Do zapłaty łącznie</dt><dd id="g-razem"></dd>
+    <dt>RRSO</dt><dd id="g-rrso"></dd>
+  </dl>
+  <ul class="uwagi" id="g-uwagi" hidden></ul>
+  <div class="suma"><span id="g-suma-et">Rata miesięczna</span><strong id="g-wynik" data-glowny="Rata miesięczna"></strong></div>
+  <div class="stopka-paragonu" id="g-stopka">policzalnia.pl</div>
+</div></div>
+
+<div class="rozbicie zus-podsumowanie">
+  <p class="struktura-tytul">Ile kosztuje ta sama kwota przy innym okresie?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Okres</th><th>Rata</th><th>Całkowity koszt</th><th>RRSO</th></tr></thead><tbody id="g-okresy"></tbody></table></div>
+  <p class="pit37" id="g-info"></p>
+</div>
+
+<details class="rozbicie">
+  <summary>Harmonogram spłaty</summary>
+  <div class="tabela-przewijana"><table class="tabela-roku"><thead><tr><th>Rata</th><th>Kwota raty</th><th>Kapitał</th><th>Odsetki</th><th>Do spłaty</th></tr></thead><tbody id="g-harm"></tbody></table></div>
+</details>
+<script>
+  import { oblicz, odsetkiMaksymalne, zwrotPrzySplacie, type DaneGotowkowego } from '../../lib/gotowkowy';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-got') as HTMLFormElement;
+  const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (['ubezpieczenie', 'ubezpieczenieMies', 'splata'].some((k) => p.has(k) && p.get(k) !== '0')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const pr = (n: number) => `${n.toLocaleString('pl-PL', { maximumFractionDigits: 2 })}%`;
+  const dzis = new Date().toISOString().slice(0, 10);
+
+  const przelicz = () => {
+    const d: DaneGotowkowego = {
+      kwota: liczba(val('kwota')), miesiace: +val('miesiace'), oprocentowanie: liczba(val('oprocentowanie')), prowizja: liczba(val('prowizja')),
+      ubezpieczenie: liczba(val('ubezpieczenie')), ubezpieczenieMies: liczba(val('ubezpieczenieMies')), kredytowane: el('kredytowane').checked, raty: val('raty') as 'rowne' | 'malejace',
+    };
+    const w = oblicz(d);
+    ustawKwote($('g-ods'), w.odsetki); ustawKwote($('g-pr'), w.prowizja); ustawKwote($('g-ubz'), w.ubezpieczenie);
+    ustawKwote($('g-koszt'), w.koszt); ustawKwote($('g-razem'), w.doZaplaty);
+    $('g-rrso').textContent = pr(w.rrso);
+    $('g-suma-et').textContent = d.raty === 'rowne' ? 'Rata miesięczna' : 'Pierwsza rata';
+    ustawKwote($('g-wynik'), w.rata);
+    $('g-stopka').textContent = `policzalnia.pl · ${d.miesiace} rat · ${d.kredytowane ? 'koszty kredytowane' : 'koszty płatne z góry'}`;
+
+    const max = odsetkiMaksymalne(dzis);
+    const uwagi: string[] = [];
+    if (d.oprocentowanie > max) uwagi.push(`Oprocentowanie przekracza odsetki maksymalne (${pr(max)} rocznie) – ponad tę stopę odsetki się nie należą.`);
+    if (w.ponadLimit > 0) uwagi.push(`Prowizja i ubezpieczenia (${zl(w.pozaodsetkowe)}) przekraczają ustawowy limit kosztów pozaodsetkowych (${zl(w.mpkk)}) – nadwyżka ${zl(w.ponadLimit)} się nie należy.`);
+    if (d.kredytowane && w.prowizja + (d.ubezpieczenie ?? 0) > 0) uwagi.push(`Kredytowane koszty zwiększają kapitał do ${zl(w.kapital)} – od prowizji i ubezpieczenia też płacisz odsetki.`);
+    if (w.rrso > d.oprocentowanie + 1.5) uwagi.push(`RRSO jest wyraźnie wyższe od oprocentowania – porównując oferty, patrz na RRSO i całkowity koszt.`);
+    const spl = +val('splata');
+    if (spl > 0 && spl < d.miesiace) {
+      const z = zwrotPrzySplacie(d, w, spl);
+      uwagi.push(`Spłacając całość po ${spl} mies. (${zl(z.saldo)}), nie zapłacisz ${zl(z.oszczednoscOdsetek)} odsetek, a bank powinien zwrócić ok. ${zl(z.zwrot)} prowizji i ubezpieczenia jednorazowego – proporcjonalnie do skróconego okresu.`);
+    }
+    const ul = $('g-uwagi'); ul.hidden = !uwagi.length; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    $('g-okresy').innerHTML = [12, 24, 36, 48, 60, 84, 120].map((m) => {
+      const q = oblicz({ ...d, miesiace: m });
+      return `<tr${m === d.miesiace ? ' class="inny"' : ''}><td>${m} mies.</td><td>${zl(q.rata)}</td><td><b>${zl(q.koszt)}</b></td><td>${pr(q.rrso)}</td></tr>`;
+    }).join('');
+    $('g-info').innerHTML = `Koszty pozaodsetkowe (prowizja, ubezpieczenia) nie mogą przekroczyć ${zl(w.mpkk)} przy tej kwocie i okresie (10% kwoty + 10% za każdy rok, najwyżej 45%). Oprocentowanie nie może być wyższe niż ${pr(max)} rocznie. Przez 14 dni od zawarcia umowy możesz od niej odstąpić bez podania przyczyny.`;
+    $('g-harm').innerHTML = w.raty.map((q, i) => `<tr><td>${i + 1}</td><td>${zl(q.rata)}</td><td>${zl(q.kapital)}</td><td>${zl(q.odsetki)}</td><td>${zl(q.saldo)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
