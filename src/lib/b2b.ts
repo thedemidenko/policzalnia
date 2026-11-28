@@ -31,6 +31,8 @@ export interface DaneB2B {
   koszty?: number;
   /** dni robocze w roku bez faktury (urlop, choroba) */
   dniBezFaktury?: number;
+  /** miesiąc wakacji składkowych (0–11) */
+  wakacje?: number;
 }
 
 export interface WynikB2B {
@@ -58,7 +60,7 @@ export function obliczB2B(x: DaneB2B): WynikB2B {
   const przychodMies = przychod / 12;
   const kosztyRok = r2(Math.max(0, x.koszty ?? 0) * 12);
   const chor = x.chorobowe !== false;
-  const baza = { rok: x.rok, etap: x.etap as Etap, podstawa: x.podstawaMzp, chorobowe: chor, forma: x.forma as 'ryczalt' | 'liniowy' | 'skala' };
+  const baza = { rok: x.rok, etap: x.etap as Etap, podstawa: x.podstawaMzp, chorobowe: chor, forma: x.forma as 'ryczalt' | 'liniowy' | 'skala', wakacje: x.wakacje };
   // FP jest kosztem (liniowy, skala) – najpierw ustalamy jego wysokość, potem dochód do składki zdrowotnej
   const fpMies = obliczZus({ ...baza, dochod: 0, przychod: 0 }).typowy.fp;
   const z = x.forma === 'ryczalt'

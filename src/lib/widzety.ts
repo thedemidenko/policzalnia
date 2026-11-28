@@ -118,6 +118,40 @@ export const WIDZETY: Record<string, () => Promise<Widzet>> = {
   },
   // układ ratalny w ZUS: odsetki narosłe do wniosku + opłata prolongacyjna (50% stawki odsetek, art. 29 ust. 4 ustawy o sus)
   // wobec spłaty w tym samym tempie bez układu (odsetki za zwłokę od malejącego długu); stawka z ostatniej stopy lombardowej NBP
+  // wakacje składkowe: art. 17a–17b, 18d ustawy o sus (zwolnienie ze składek społecznych i FP od najniższej podstawy, raz w roku);
+  // składki zwolnione nie są odliczane od dochodu/przychodu (art. 21 ust. 1 pkt 160 PIT), więc rośnie podatek (i zdrowotna na skali/liniowym)
+  'wakacje-skladkowe': async () => {
+    const { obliczZus } = await import('./skladki-zus');
+    return (el) => {
+      const rok0 = +(el.dataset.rok ?? 2027);
+      el.innerHTML = `<h3>Ile naprawdę zyskasz na wakacjach składkowych?</h3>
+        <label>Rok<select data-i="r"><option value="2026"${rok0 === 2026 ? ' selected' : ''}>2026</option><option value="2027"${rok0 === 2027 ? ' selected' : ''}>2027</option></select></label>
+        <label>Twój ZUS<select data-i="e"><option value="pelny">pełny ZUS</option><option value="pref">preferencyjny</option></select></label>
+        <label>Dobrowolna chorobowa<select data-i="c"><option value="1">tak</option><option value="0">nie</option></select></label>
+        <label>Opodatkowanie<select data-i="f"><option value="r12">ryczałt 12%</option><option value="r8.5">ryczałt 8,5%</option><option value="r15">ryczałt 15%</option><option value="liniowy">podatek liniowy 19%</option><option value="s12">skala – próg 12%</option><option value="s32">skala – próg 32%</option></select></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLSelectElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const licz = () => {
+        const rok = +i('r').value, etap = i('e').value as 'pelny' | 'pref', chor = i('c').value === '1', f = i('f').value;
+        const t = obliczZus({ rok, etap, forma: 'skala', dochod: 0, chorobowe: chor }).typowy;
+        const S = t.spoleczne, F = t.fp, zus = Math.round((S + F) * 100) / 100;
+        let zdr = 0, pod = 0;
+        if (f.startsWith('r')) pod = S * parseFloat(f.slice(1)) / 100;
+        else if (f === 'liniowy') { zdr = 0.049 * S; pod = 0.19 * (S + F - zdr); }
+        else { zdr = 0.09 * (S + F); pod = (f === 's32' ? 0.32 : 0.12) * (S + F); }
+        const zysk = zus - pod - zdr;
+        const wiersze: [string, number, number][] = [['Niższe składki ZUS', zus, 1], ['Wyższy podatek', pod, 2], ['Wyższa składka zdrowotna', zdr, 0]];
+        const max = Math.max(...wiersze.map((w) => w[1]), 1);
+        o('s').innerHTML = wiersze.map(([n, v, k]) => `<div class="ws-wiersz"><span class="ws-et">${n}</span><span class="ws-pasek"><i style="--w:${((v / max) * 100).toFixed(1)}%;--k:var(--w${k})"></i></span><b>${zl(v)}</b></div>`).join('');
+        o('werdykt').textContent = `Realnie zyskujesz ok. ${zl(zysk)}`;
+        o('opis').textContent = `Składki za miesiąc wakacji (${zl(zus)}) płaci budżet państwa i liczą się do emerytury. Nie odliczysz ich jednak od ${f.startsWith('r') ? 'przychodu' : 'dochodu'}, więc podatek${f.startsWith('r') ? '' : ' i składka zdrowotna'} trochę rosną. Szacunek dla jednego miesiąca.`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   'zus-raty': async () => {
     const stopy = (await import('../data/stopy-nbp.json')).default as { zmiany: { od: string; lomb: number }[] };
     const lomb = [...stopy.zmiany].sort((a, b) => a.od.localeCompare(b.od)).at(-1)!.lomb;
