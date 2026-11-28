@@ -1,0 +1,16 @@
+{
+  "_opis": "Wskaźniki i zakresy ofert do kalkulatora kredytu hipotecznego. Aktualizować co miesiąc (GPW Benchmark: WIBOR, POLSTR; ranking Bankier.pl). Od 1.01.2027 nowe umowy tylko na POLSTR albo stałej stopie (WIBOR dla nowych umów do 31.12.2026).",
+  "wskazniki": {
+    "polstr1m": { "nazwa": "POLSTR 1M", "wartosc": 3.48, "data": "2026-11-24" },
+    "polstr3m": { "nazwa": "POLSTR 3M", "wartosc": 3.53, "data": "2026-11-24" },
+    "wibor3m": { "nazwa": "WIBOR 3M", "wartosc": 3.89, "data": "2026-11-24" },
+    "wibor6m": { "nazwa": "WIBOR 6M", "wartosc": 3.98, "data": "2026-11-20" }
+  },
+  "oferty": {
+    "zrodlo": "Bankier.pl – rankingi kredytów hipotecznych, listopad 2026 (kredyt 592 000 zł, 25 lat, LTV 80%)",
+    "marza_polstr": { "od": 1.63, "do": 2.9 },
+    "zmienne": { "od": 5.05, "do": 6.31 },
+    "stale5": { "od": 5.83, "do": 6.63 }
+  },
+  "domyslne": { "marza": 1.8, "stala": 6.1, "okresStaly": 5 }
+}

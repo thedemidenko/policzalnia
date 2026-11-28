@@ -1,0 +1,178 @@
+---
+import { DOMYSLNE, WSKAZNIKI } from '../../lib/hipoteczny';
+const dataPl = (d: string) => new Date(d).toLocaleDateString('pl-PL', { day: 'numeric', month: 'numeric', year: 'numeric' });
+const wsk = Object.entries(WSKAZNIKI);
+const opcjeWsk = wsk.map(([k, w]) => ({ k, t: `${w.nazwa} – ${String(w.wartosc).replace('.', ',')}% (${dataPl(w.data)})` }));
+---
+<form id="k-hip" class="pola" autocomplete="off">
+  <div class="pole-para">
+    <div class="pole">
+      <label for="h-cena">Cena nieruchomości</label>
+      <div class="kwota" data-jedn="zł"><input id="h-cena" name="cena" type="text" inputmode="decimal" value="600000" /></div>
+    </div>
+    <div class="pole">
+      <label for="h-wklad">Wkład własny</label>
+      <div class="kwota" data-jedn="zł"><input id="h-wklad" name="wklad" type="text" inputmode="decimal" value="120000" aria-describedby="h-wklad-pod" /></div>
+      <small id="h-wklad-pod"></small>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="h-lata">Okres spłaty</label>
+      <div class="kwota" data-jedn="lat"><input id="h-lata" name="lata" type="text" inputmode="numeric" value="25" /></div>
+    </div>
+    <fieldset class="segmenty">
+      <legend>Raty</legend>
+      <label><input type="radio" name="raty" value="rowne" checked /><span>równe</span></label>
+      <label><input type="radio" name="raty" value="malejace" /><span>malejące</span></label>
+    </fieldset>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Oprocentowanie</legend>
+    <label><input type="radio" name="typ" value="zmienne" checked /><span>zmienne</span></label>
+    <label><input type="radio" name="typ" value="stale" /><span>okresowo stałe</span></label>
+  </fieldset>
+  <div class="pole-para" data-stale hidden>
+    <div class="pole">
+      <label for="h-stala">Stała stopa</label>
+      <div class="kwota" data-jedn="%"><input id="h-stala" name="stala" type="text" inputmode="decimal" value={String(DOMYSLNE.stala).replace('.', ',')} /></div>
+    </div>
+    <div class="pole">
+      <label for="h-okr">Przez</label>
+      <select id="h-okr" name="okres"><option value="5" selected>5 lat</option><option value="7">7 lat</option><option value="10">10 lat</option></select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="h-wsk" id="h-wsk-et">Wskaźnik</label>
+      <select id="h-wsk" name="wskaznik">{opcjeWsk.map((o) => <option value={o.k}>{o.t}</option>)}</select>
+    </div>
+    <div class="pole">
+      <label for="h-marza">Marża banku</label>
+      <div class="kwota" data-jedn="%"><input id="h-marza" name="marza" type="text" inputmode="decimal" value={String(DOMYSLNE.marza).replace('.', ',')} /></div>
+    </div>
+  </div>
+  <details class="wplaty" data-wiecej>
+    <summary>Prowizja i ubezpieczenia</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="h-prow">Prowizja</label>
+        <div class="kwota" data-jedn="%"><input id="h-prow" name="prowizja" type="text" inputmode="decimal" value="0" /></div>
+      </div>
+      <div class="pole">
+        <label for="h-koszty">Ubezpieczenia miesięcznie</label>
+        <div class="kwota" data-jedn="zł"><input id="h-koszty" name="koszty" type="text" inputmode="decimal" value="0" aria-describedby="h-koszty-pod" /></div>
+        <small id="h-koszty-pod">Np. na życie lub nieruchomości, jeśli bank ich wymaga.</small>
+      </div>
+    </div>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="h-niski">Niski wkład (LTV ponad 80%)</label>
+        <div class="kwota" data-jedn="pp"><input id="h-niski" name="niski" type="text" inputmode="decimal" value="0,25" aria-describedby="h-niski-pod" /></div>
+        <small id="h-niski-pod">Podwyższenie marży, dopóki do spłaty zostaje ponad 80% wartości.</small>
+      </div>
+      <div class="pole">
+        <label for="h-pom">Ubezpieczenie pomostowe</label>
+        <div class="kwota" data-jedn="pp"><input id="h-pom" name="pomostowe" type="text" inputmode="decimal" value="0" aria-describedby="h-pom-pod" /></div>
+        <small id="h-pom-pod">Do wpisu hipoteki – zwykle 3–6 miesięcy (liczymy 4).</small>
+      </div>
+    </div>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Kwota kredytu</dt><dd id="h-kwota"></dd>
+    <dt>Oprocentowanie</dt><dd id="h-opr"></dd>
+    <dt>Suma odsetek</dt><dd id="h-ods"></dd>
+    <dt>Prowizja i koszty</dt><dd id="h-kos"></dd>
+    <dt>Do zapłaty łącznie</dt><dd id="h-razem"></dd>
+    <dt>RRSO</dt><dd id="h-rrso"></dd>
+  </dl>
+  <ul class="uwagi" id="h-uwagi" hidden></ul>
+  <div class="suma"><span id="h-suma-et">Rata</span><strong id="h-wynik" data-glowny="Rata"></strong></div>
+  <div class="stopka-paragonu" id="h-stopka">policzalnia.pl</div>
+</div></div>
+
+<div class="rozbicie zus-podsumowanie">
+  <p class="struktura-tytul">Raty równe czy malejące?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th></th><th>Pierwsza rata</th><th>Ostatnia rata</th><th>Suma odsetek</th></tr></thead><tbody id="h-raty"></tbody></table></div>
+  <p class="struktura-tytul" style="margin-top:18px">Co jeśli stopy wzrosną?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Wskaźnik</th><th id="h-szok-rata">Rata</th><th>Suma odsetek</th></tr></thead><tbody id="h-szok"></tbody></table></div>
+  <p class="pit37" id="h-info"></p>
+</div>
+
+<details class="rozbicie" id="h-harm-det">
+  <summary>Harmonogram spłaty – rok po roku</summary>
+  <div class="tabela-przewijana"><table class="tabela-roku">
+    <thead><tr><th>Rok</th><th>Raty</th><th>Kapitał</th><th>Odsetki</th><th>Do spłaty</th></tr></thead>
+    <tbody id="h-harm"></tbody>
+  </table></div>
+</details>
+<script>
+  import { oblicz, roczny, WSKAZNIKI, type DaneKredytu, type KluczWskaznika } from '../../lib/hipoteczny';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-hip') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if (['prowizja', 'koszty', 'pomostowe'].some((k) => p.has(k) && p.get(k) !== '0')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const pr = (n: number) => `${n.toLocaleString('pl-PL', { maximumFractionDigits: 2 })}%`;
+  const zl0 = (n: number) => zl(Math.round(n)).replace(/,00\s/, ' ');
+
+  const przelicz = () => {
+    const cena = liczba(val('cena'));
+    const wklad = Math.min(cena, liczba(val('wklad')));
+    const kwota = Math.max(0, cena - wklad);
+    const typ = val('typ') as 'zmienne' | 'stale';
+    form.querySelector<HTMLElement>('[data-stale]')!.hidden = typ !== 'stale';
+    $('h-wsk-et').textContent = typ === 'stale' ? 'Po okresie stałej stopy: wskaźnik' : 'Wskaźnik';
+    const w = WSKAZNIKI[val('wskaznik') as KluczWskaznika];
+    const ltv = cena > 0 ? (kwota / cena) * 100 : 0;
+    $('h-wklad-pod').textContent = cena > 0 ? `${pr(Math.round((wklad / cena) * 1000) / 10)} ceny · LTV ${pr(Math.round(ltv * 10) / 10)}` : '';
+    const pom = liczba(val('pomostowe'));
+    const d: DaneKredytu = {
+      kwota, wartosc: cena, lata: Math.min(40, Math.max(1, liczba(val('lata')))), raty: val('raty') as 'rowne' | 'malejace', typ,
+      wskaznik: w.wartosc, marza: liczba(val('marza')), stala: liczba(val('stala')), okresStaly: +val('okres'),
+      prowizja: liczba(val('prowizja')), kosztyMies: liczba(val('koszty')), niskiWklad: liczba(val('niski')),
+      pomostowe: pom > 0 ? { pp: pom, miesiace: 4 } : undefined,
+    };
+    const r = oblicz(d);
+    const stopaStart = typ === 'stale' ? d.stala! : d.wskaznik + d.marza;
+    ustawKwote($('h-kwota'), kwota);
+    $('h-opr').textContent = typ === 'stale' ? `${pr(d.stala!)} przez ${d.okresStaly} lat` : `${pr(Math.round(stopaStart * 100) / 100)} (${w.nazwa} + ${pr(d.marza)})`;
+    ustawKwote($('h-ods'), r.odsetki);
+    ustawKwote($('h-kos'), r.prowizja + r.kosztyDodatkowe);
+    ustawKwote($('h-razem'), r.doZaplaty);
+    $('h-rrso').textContent = pr(r.rrso);
+    $('h-suma-et').textContent = d.raty === 'rowne' ? 'Rata miesięczna' : 'Pierwsza rata';
+    ustawKwote($('h-wynik'), r.pierwszaRata);
+    $('h-stopka').textContent = `policzalnia.pl · ${Math.round(d.lata * 12)} rat · ${w.nazwa} z ${new Date(w.data).toLocaleDateString('pl-PL')}`;
+
+    const uwagi: string[] = [];
+    if (ltv > 90) uwagi.push('Wkład własny poniżej 10% – banki zwykle wymagają co najmniej 10–20% (Rekomendacja S KNF). Bez wkładu kredyt jest możliwy tylko z gwarancją, np. w programie BGK.');
+    else if (ltv > 80) uwagi.push(`Wkład poniżej 20% – bank zwykle doliczy ubezpieczenie niskiego wkładu (w kalkulatorze +${pr(d.niskiWklad ?? 0)} marży, dopóki saldo przekracza 80% ceny).`);
+    if (r.rataPoStalej !== null) uwagi.push(`Po ${d.okresStaly} latach stałej stopy rata zmieni się na ok. ${zl(r.rataPoStalej)} – przy dzisiejszym ${w.nazwa} i marży ${pr(d.marza)}. Wtedy możesz też wybrać kolejny okres stałej stopy.`);
+    if (typ === 'zmienne') uwagi.push('Przy stopie zmiennej bank może pobrać opłatę za wcześniejszą spłatę tylko przez pierwsze 36 miesięcy – najwyżej 3% spłacanej kwoty.');
+    const ul = $('h-uwagi'); ul.hidden = !uwagi.length; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    const rr = oblicz({ ...d, raty: 'rowne' }), rm = oblicz({ ...d, raty: 'malejace' });
+    $('h-raty').innerHTML = [['Raty równe', rr, 'rowne'], ['Raty malejące', rm, 'malejace']].map(([n, q, k]) => {
+      const x = q as typeof rr;
+      return `<tr${k === d.raty ? ' class="inny"' : ''}><td>${n}</td><td>${zl(x.pierwszaRata)}</td><td>${zl(x.ostatniaRata)}</td><td><b>${zl(x.odsetki)}</b></td></tr>`;
+    }).join('');
+    $('h-szok-rata').textContent = typ === 'stale' ? `Rata po ${d.okresStaly} latach` : 'Rata';
+    $('h-szok').innerHTML = [0, 1, 2, 3].map((s) => {
+      const q = oblicz({ ...d, szok: s });
+      const rata = typ === 'stale' ? q.rataPoStalej ?? q.pierwszaRata : q.pierwszaRata;
+      return `<tr${s === 0 ? ' class="inny"' : ''}><td>${s === 0 ? `dziś (${pr(w.wartosc)})` : `+${s} pp (${pr(Math.round((w.wartosc + s) * 100) / 100)})`}</td><td><b>${zl(rata)}</b></td><td>${zl(q.odsetki)}</td></tr>`;
+    }).join('');
+    const info: string[] = [`Odsetki to ${pr(Math.round((r.odsetki / Math.max(1, kwota)) * 1000) / 10)} pożyczonej kwoty – przy ratach malejących zapłacisz ${zl0(rr.odsetki - rm.odsetki)} mniej, ale pierwsza rata jest wyższa o ${zl0(rm.pierwszaRata - rr.pierwszaRata)}.`];
+    if (r.kosztUbezpieczen > 0) info.push(`Podwyższona marża (ubezpieczenia) kosztuje łącznie ok. ${zl0(r.kosztUbezpieczen)}.`);
+    $('h-info').innerHTML = info.join(' ');
+
+    $('h-harm').innerHTML = roczny(r.harmonogram).map((y) => `<tr><td>${y.rok}</td><td>${zl(y.raty)}</td><td>${zl(y.kapital)}</td><td>${zl(y.odsetki)}</td><td>${zl(y.saldo)}</td></tr>`).join('');
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
