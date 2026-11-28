@@ -1,0 +1,150 @@
+---
+import { DOMYSLNE, WSKAZNIKI } from '../../lib/hipoteczny';
+const domZm = Math.round((WSKAZNIKI.polstr1m.wartosc + DOMYSLNE.marza) * 100) / 100;
+---
+<form id="k-zd" class="pola" autocomplete="off">
+  <fieldset class="segmenty">
+    <legend>Liczę</legend>
+    <label><input type="radio" name="tryb" value="kwota" checked /><span>ile kredytu dostanę</span></label>
+    <label><input type="radio" name="tryb" value="dochod" /><span>ile muszę zarabiać</span></label>
+  </fieldset>
+  <div class="pole" data-dochod>
+    <label for="d-doch">Dochód netto gospodarstwa miesięcznie</label>
+    <div class="kwota" data-jedn="zł"><input id="d-doch" name="dochod" type="text" inputmode="decimal" value="8000" aria-describedby="d-doch-pod" /></div>
+    <small id="d-doch-pod">Suma dochodów wszystkich kredytobiorców na rękę.</small>
+  </div>
+  <div class="pole" data-kwota hidden>
+    <label for="d-kw">Kwota kredytu, której potrzebujesz</label>
+    <div class="kwota" data-jedn="zł"><input id="d-kw" name="kwota" type="text" inputmode="decimal" value="500000" /></div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="d-kb">Kredytobiorcy</label>
+      <select id="d-kb" name="kredytobiorcy"><option value="1">1 osoba</option><option value="2">2 osoby</option></select>
+    </div>
+    <div class="pole">
+      <label for="d-os">Osób w gospodarstwie</label>
+      <select id="d-os" name="osoby">{[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={String(n)}>{n}</option>)}</select>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="d-raty">Raty innych kredytów</label>
+      <div class="kwota" data-jedn="zł"><input id="d-raty" name="raty" type="text" inputmode="decimal" value="0" /></div>
+    </div>
+    <div class="pole">
+      <label for="d-lim">Limity kart i debetów</label>
+      <div class="kwota" data-jedn="zł"><input id="d-lim" name="limity" type="text" inputmode="decimal" value="0" aria-describedby="d-lim-pod" /></div>
+      <small id="d-lim-pod">Bank liczy ok. 3% limitu jako ratę, nawet gdy z niego nie korzystasz.</small>
+    </div>
+  </div>
+  <div class="pole-para">
+    <div class="pole">
+      <label for="d-lata">Okres kredytu</label>
+      <div class="kwota" data-jedn="lat"><input id="d-lata" name="lata" type="text" inputmode="numeric" value="30" /></div>
+    </div>
+    <div class="pole">
+      <label for="d-opr" id="d-opr-et">Oprocentowanie</label>
+      <div class="kwota" data-jedn="%"><input id="d-opr" name="oprocentowanie" type="text" inputmode="decimal" value={String(domZm).replace('.', ',')} /></div>
+    </div>
+  </div>
+  <fieldset class="segmenty">
+    <legend>Oprocentowanie</legend>
+    <label><input type="radio" name="typ" value="zmienne" checked /><span>zmienne</span></label>
+    <label><input type="radio" name="typ" value="stale" /><span>stałe na 5 lat</span></label>
+  </fieldset>
+  <details class="wplaty" data-wiecej>
+    <summary>Koszty utrzymania</summary>
+    <div class="pole-para">
+      <div class="pole">
+        <label for="d-k1">Pierwsza osoba</label>
+        <div class="kwota" data-jedn="zł"><input id="d-k1" name="k1" type="text" inputmode="decimal" value="1500" /></div>
+      </div>
+      <div class="pole">
+        <label for="d-k2">Każda kolejna</label>
+        <div class="kwota" data-jedn="zł"><input id="d-k2" name="k2" type="text" inputmode="decimal" value="1000" /></div>
+      </div>
+    </div>
+    <small>Banki stosują własne tabele kosztów utrzymania – zwykle zależne od liczby osób i miejsca zamieszkania.</small>
+  </details>
+</form>
+<div class="paragon-cien"><div class="paragon" data-wynik aria-live="polite">
+  <dl>
+    <dt>Dochód netto</dt><dd id="d-r-doch"></dd>
+    <dt id="d-r-lim-et">Limit raty</dt><dd id="d-r-lim"></dd>
+    <dt>Koszty utrzymania</dt><dd id="d-r-kos"></dd>
+    <dt>Stopa testowa</dt><dd id="d-r-stopa"></dd>
+    <dt>Rata kredytu</dt><dd id="d-r-rata"></dd>
+  </dl>
+  <ul class="uwagi" id="d-uwagi" hidden></ul>
+  <div class="suma"><span id="d-suma-et">Zdolność kredytowa</span><strong id="d-wynik" data-glowny="Zdolność kredytowa"></strong></div>
+  <div class="stopka-paragonu" id="d-stopka">policzalnia.pl · według Rekomendacji S</div>
+</div></div>
+
+<div class="rozbicie zus-podsumowanie">
+  <p class="struktura-tytul">Ile mogą dać różne banki?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Limit raty (DStI)</th><th>Maks. rata</th><th>Kredyt</th><th>Mieszkanie (wkład 20%)</th></tr></thead><tbody id="d-dsti"></tbody></table></div>
+  <p class="struktura-tytul" style="margin-top:18px">A przy innym okresie?</p>
+  <div class="tabela-przewijana"><table class="tabela-etapow"><thead><tr><th>Okres</th><th>Kredyt</th><th>Rata</th></tr></thead><tbody id="d-okres"></tbody></table></div>
+  <p class="pit37" id="d-info"></p>
+</div>
+<script>
+  import { obliczZdolnosc, potrzebnyDochod, type DaneZdolnosci } from '../../lib/zdolnosc';
+  import { liczba, zl } from '../../lib/format';
+  import { podlaczKalkulator, ustawKwote } from '../../lib/udostepnij';
+
+  const form = document.getElementById('k-zd') as HTMLFormElement;
+  const val = (n: string) => (form.elements.namedItem(n) as RadioNodeList | HTMLInputElement).value;
+  const $ = (id: string) => document.getElementById(id)!;
+  const p = new URLSearchParams(location.search);
+  if ((p.has('k1') && p.get('k1') !== '1500') || (p.has('k2') && p.get('k2') !== '1000')) (form.querySelector('[data-wiecej]') as HTMLDetailsElement).open = true;
+  const zl0 = (n: number) => zl(Math.round(n)).replace(/,00\s/, ' ');
+  const dzis = new Date().toISOString().slice(0, 10);
+  let poprzTyp = val('typ');
+
+  const przelicz = () => {
+    const tryb = val('tryb');
+    form.querySelector<HTMLElement>('[data-dochod]')!.hidden = tryb !== 'kwota';
+    form.querySelector<HTMLElement>('[data-kwota]')!.hidden = tryb !== 'dochod';
+    const typ = val('typ') as 'zmienne' | 'stale';
+    const opr = form.elements.namedItem('oprocentowanie') as HTMLInputElement;
+    if (typ !== poprzTyp) { opr.value = typ === 'stale' ? '6,1' : '5,28'; poprzTyp = typ; }
+    const os = Math.max(+val('osoby'), +val('kredytobiorcy'));
+    const baza: Omit<DaneZdolnosci, 'dochod'> = {
+      kredytobiorcy: +val('kredytobiorcy'), osoby: os, raty: liczba(val('raty')), limity: liczba(val('limity')),
+      lata: Math.min(35, Math.max(5, liczba(val('lata')))), oprocentowanie: liczba(val('oprocentowanie')), typ, okresStaly: 5,
+      kosztPierwszej: liczba(val('k1')), kosztKolejnej: liczba(val('k2')), data: dzis, rok: new Date().getFullYear(),
+    };
+    const dochod = tryb === 'kwota' ? liczba(val('dochod')) : potrzebnyDochod(liczba(val('kwota')), baza);
+    const z = obliczZdolnosc({ ...baza, dochod });
+
+    ustawKwote($('d-r-doch'), dochod);
+    $('d-r-lim-et').textContent = `Limit raty (${Math.round(z.dsti * 100)}% dochodu)`;
+    ustawKwote($('d-r-lim'), z.rataMax);
+    ustawKwote($('d-r-kos'), z.kosztyUtrzymania);
+    $('d-r-stopa').textContent = `${z.stopaTestowa.toLocaleString('pl-PL')}% (+${z.bufor.toLocaleString('pl-PL')} pp)`;
+    ustawKwote($('d-r-rata'), z.rata);
+    const g = $('d-wynik');
+    if (tryb === 'kwota') { $('d-suma-et').textContent = 'Zdolność kredytowa'; g.dataset.glowny = 'Zdolność kredytowa'; ustawKwote(g, z.kwota); }
+    else { $('d-suma-et').textContent = 'Potrzebny dochód netto'; g.dataset.glowny = 'Potrzebny dochód netto'; ustawKwote(g, dochod); }
+    $('d-stopka').textContent = `policzalnia.pl · według Rekomendacji S · ${baza.lata} lat`;
+
+    const uwagi: string[] = [];
+    uwagi.push(`Bank sprawdza, czy udźwigniesz ratę przy oprocentowaniu wyższym o ${z.bufor.toLocaleString('pl-PL')} pp (${z.stopaTestowa.toLocaleString('pl-PL')}%) – dlatego zdolność jest niższa, niż wynikałoby z dzisiejszej raty.`);
+    if (z.ogranicza === 'koszty') uwagi.push('Ogranicza Cię koszt utrzymania gospodarstwa, a nie limit raty – przy większej rodzinie bank zostawia więcej pieniędzy na życie.');
+    if (z.zobowiazania > 0) uwagi.push(`Inne raty i limity kart zmniejszają możliwą ratę o ${zl(z.zobowiazania)} miesięcznie – zamknięcie nieużywanych kart podnosi zdolność.`);
+    if (baza.lata > 25) uwagi.push('Rekomendacja S zaleca okres do 25 lat – dłuższy (do 35 lat) bank da na Twój wniosek.');
+    const ul = $('d-uwagi'); ul.hidden = !uwagi.length; ul.innerHTML = uwagi.map((u) => `<li>${u}</li>`).join('');
+
+    $('d-dsti').innerHTML = [0.4, 0.5, 0.6].map((l) => {
+      const q = obliczZdolnosc({ ...baza, dochod, limitDsti: l });
+      return `<tr${l === z.dsti ? ' class="inny"' : ''}><td>${Math.round(l * 100)}%${l === z.dsti ? ' – Rekomendacja S' : l === 0.6 ? ' – liberalne banki' : ''}</td><td>${zl0(q.rataMax)}</td><td><b>${zl0(q.kwota)}</b></td><td>${zl0(q.cena20)}</td></tr>`;
+    }).join('');
+    $('d-okres').innerHTML = [20, 25, 30, 35].map((l) => {
+      const q = obliczZdolnosc({ ...baza, lata: l, dochod });
+      return `<tr${l === baza.lata ? ' class="inny"' : ''}><td>${l} lat</td><td><b>${zl0(q.kwota)}</b></td><td>${zl0(q.rata)}</td></tr>`;
+    }).join('');
+    $('d-info').innerHTML = `Z wkładem 20% kupisz mieszkanie za ok. <b>${zl0(z.cena20)}</b>, z wkładem 10% – za ok. ${zl0(z.cena10)} (wtedy bank doliczy ubezpieczenie niskiego wkładu). Limit raty ${Math.round(z.dsti * 100)}% wynika z tego, że dochód na kredytobiorcę jest ${dochod / baza.kredytobiorcy <= z.przecietne ? 'nie wyższy' : 'wyższy'} niż przeciętne wynagrodzenie netto (${zl0(z.przecietne)}). Ratę kredytu i harmonogram policzysz w <a href="/kredyty/kredyt-hipoteczny/">kalkulatorze kredytu hipotecznego</a>.`;
+  };
+  podlaczKalkulator(form, przelicz);
+</script>
