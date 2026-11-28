@@ -148,6 +148,45 @@ export const WIDZETY: Record<string, () => Promise<Widzet>> = {
       licz();
     };
   },
+  'drugi-prog': async () => {
+    const { obliczRok, MIESIACE, MIESIACE_OD } = await import('./wynagrodzenie');
+    const { podatekSkala, pit } = await import('./ikze');
+    return (el) => {
+      const kwoty = [10000, 11000, 12000, 13000, 14000, 15000, 16000, 18000, 20000, 22000, 25000, 30000];
+      el.innerHTML = `<h3>Kiedy wpadniesz w drugi próg w 2027 roku?</h3>
+        <label>Pensja brutto miesięcznie (umowa o pracę)<select data-i="b">${kwoty.map((k) => `<option value="${k}"${k === 15000 ? ' selected' : ''}>${zl(k)}</option>`).join('')}</select></label>
+        <label>Rozliczenie<select data-i="w"><option value="0">samodzielnie</option><option value="1">wspólnie z małżonkiem bez dochodów</option></select></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLSelectElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const p = pit(2027);
+      // zawetowana ustawa (druk 3293): 12% do 130 000 zł, 24% do 150 000 zł, 32% powyżej
+      const reforma = (d: number) => Math.round(d <= 130000 ? Math.max(0, d * 0.12 - 3600) : d <= 150000 ? 12000 + (d - 130000) * 0.24 : 16800 + (d - 150000) * 0.32);
+      const licz = () => {
+        const brutto = +i('b').value, wsp = i('w').value === '1';
+        const r = obliczRok({ rok: 2027, brutto, pit2: 300, wspolne: wsp ? 'bezDochodow' : 'brak' });
+        const sam = wsp ? obliczRok({ rok: 2027, brutto, pit2: 300 }) : r;
+        const max = Math.max(...r.miesiace.map((q) => q.netto), 1);
+        o('s').innerHTML = r.miesiace.map((q, m) => `<div class="ws-wiersz"><span class="ws-et">${MIESIACE[m]}</span><span class="ws-pasek"><i style="--w:${((q.netto / max) * 100).toFixed(1)}%;--k:var(--w${sam.miesiacProgu >= 0 && m >= sam.miesiacProgu && !wsp ? 1 : 0})"></i></span><b>${zl(q.netto)}</b></div>`).join('');
+        const d = r.pit37.dochod, podatek = Math.round(podatekSkala(d, p));
+        const wspolny = 2 * Math.round(podatekSkala(Math.round(d / 2), p));
+        const spadek = sam.miesiacProgu >= 0 ? Math.round(sam.miesiace[0].netto - sam.miesiace[11].netto) : 0;
+        if (wsp) {
+          o('werdykt').textContent = `Zaliczki 12% przez cały rok, a w zeznaniu ${zl(podatek - wspolny)} mniej podatku`;
+          o('opis').textContent = `Dochód ${zl(d)}: samodzielnie podatek ${zl(podatek)}, we wspólnym rozliczeniu z małżonkiem bez dochodów – ${zl(wspolny)}. Pensja na rękę nie spada pod koniec roku, bo po złożeniu oświadczenia pracodawca pobiera zaliczki według 12% (art. 32 ust. 3 ustawy o PIT).`;
+        } else if (sam.miesiacProgu < 0) {
+          o('werdykt').textContent = 'W 2027 r. nie przekroczysz progu';
+          o('opis').textContent = `Dochód ${zl(d)} – mniej niż 120 000 zł. Cały podatek liczony według 12%: ${zl(podatek)} rocznie.`;
+        } else {
+          o('werdykt').textContent = `Od ${MIESIACE_OD[sam.miesiacProgu]} dostaniesz do ${zl(spadek)} mniej na rękę`;
+          o('opis').textContent = `Dochód ${zl(d)}, z tego ${zl(d - 120000)} ponad próg – podatek ${zl(podatek)} rocznie. Gdyby weszła zawetowana reforma (24% od 130 000 do 150 000 zł), podatek byłby niższy o ${zl(podatek - reforma(d))}.`;
+        }
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   'wakacje-skladkowe': async () => {
     const { obliczZus } = await import('./skladki-zus');
     return (el) => {
