@@ -120,6 +120,34 @@ export const WIDZETY: Record<string, () => Promise<Widzet>> = {
   // wobec spłaty w tym samym tempie bez układu (odsetki za zwłokę od malejącego długu); stawka z ostatniej stopy lombardowej NBP
   // wakacje składkowe: art. 17a–17b, 18d ustawy o sus (zwolnienie ze składek społecznych i FP od najniższej podstawy, raz w roku);
   // składki zwolnione nie są odliczane od dochodu/przychodu (art. 21 ust. 1 pkt 160 PIT), więc rośnie podatek (i zdrowotna na skali/liniowym)
+  // płaca minimalna: rozporządzenie RM (2027: 4950 zł, Dz.U. 2026 poz. 1213); netto z ./wynagrodzenie; kwota wolna od potrąceń
+  // (art. 87¹ KP) = płaca minimalna po składkach, zaliczce i wpłacie do PPK, proporcjonalnie do etatu
+  'placa-minimalna': async () => {
+    const { obliczMiesiac, placaMinimalna } = await import('./wynagrodzenie');
+    return (el) => {
+      el.innerHTML = `<h3>Ile dostaniesz przy płacy minimalnej?</h3>
+        <label>Rok<select data-i="r"><option value="2026">2026</option><option value="2027" selected>2027</option></select></label>
+        <label>Wymiar etatu<select data-i="e"><option value="1">pełny etat</option><option value="0.75">3/4 etatu</option><option value="0.5">1/2 etatu</option><option value="0.25">1/4 etatu</option></select></label>
+        <label>PPK<select data-i="p"><option value="0">nie oszczędzam</option><option value="0.02">tak – wpłata 2%</option><option value="0.005">tak – obniżona wpłata 0,5%</option></select></label>
+        <label>Wiek<select data-i="m"><option value="0">26 lat lub więcej</option><option value="1">poniżej 26 lat (ulga dla młodych)</option></select></label>
+        <div class="wz-slupki" data-o="s"></div>
+        <div class="wz-wynik"><b data-o="werdykt"></b><small data-o="opis"></small></div>`;
+      const i = (k: string) => el.querySelector<HTMLSelectElement>(`[data-i="${k}"]`)!;
+      const o = (k: string) => el.querySelector<HTMLElement>(`[data-o="${k}"]`)!;
+      const licz = () => {
+        const rok = +i('r').value, etat = +i('e').value, ppk = +i('p').value, mlodzi = i('m').value === '1';
+        const brutto = Math.round(placaMinimalna(rok) * etat * 100) / 100;
+        const q = obliczMiesiac({ rok, brutto, pit2: 300, ppk: ppk > 0, ppkPracownik: ppk || undefined, zwolnienie: mlodzi ? 'mlodzi' : 'brak', etat });
+        const wiersze: [string, number, number][] = [['Brutto', brutto, 0], ['Na rękę', q.netto, 1], ['Koszt pracodawcy', q.kosztPracodawcy, 2]];
+        const max = Math.max(...wiersze.map((w) => w[1]), 1);
+        o('s').innerHTML = wiersze.map(([n, v, k]) => `<div class="ws-wiersz"><span class="ws-et">${n}</span><span class="ws-pasek"><i style="--w:${((v / max) * 100).toFixed(1)}%;--k:var(--w${k})"></i></span><b>${zl(v)}</b></div>`).join('');
+        o('werdykt').textContent = `Na rękę ${q.netto.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
+        o('opis').textContent = `Składki ZUS ${zl(q.spoleczne)}, zdrowotna ${zl(q.zdrowotna)}, zaliczka na PIT ${zl(q.zaliczka)}${q.ppkPracownika ? `, PPK ${zl(q.ppkPracownika)}` : ''}. Przy umowie o pracę z PIT-2. ${etat < 1 ? 'Na części etatu pracodawca nie płaci Funduszu Pracy (pensja niższa od pełnej płacy minimalnej).' : ''}`;
+      };
+      el.addEventListener('input', licz);
+      licz();
+    };
+  },
   'wakacje-skladkowe': async () => {
     const { obliczZus } = await import('./skladki-zus');
     return (el) => {
